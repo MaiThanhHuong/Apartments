@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -28,37 +29,38 @@ export function Sidebar({ className }: SidebarProps) {
 
   const navigationItems = [
     {
-      name: "Dashboard",
+      name: "TỔNG QUAN",
       href: "/dashboard",
       icon: Home,
     },
     {
-      name: "Apartments",
+      name: "CĂN HỘ",
       href: "/apartments",
       icon: Building,
     },
     {
-      name: "Residents",
+      name: "CƯ DÂN",
       href: "/residents",
       icon: Users,
     },
     {
-      name: "Service Requests",
+      name: "YÊU CẦU DỊCH VỤ",
       href: "/service-requests",
       icon: MessageSquare,
+    
     },
     {
-      name: "Billing",
+      name: "HÓA ĐƠN",
       href: "/billing",
       icon: FileText,
     },
     {
-      name: "Notifications",
+      name: "THÔNG BÁO",
       href: "/notifications",
       icon: Mail,
     },
     {
-      name: "Settings",
+      name: "CÀI ĐẶT",
       href: "/settings",
       icon: Settings,
     },
@@ -67,21 +69,19 @@ export function Sidebar({ className }: SidebarProps) {
   return (
     <div
       className={cn(
-        "bg-sidebar flex flex-col h-screen transition-all duration-300 border-r border-sidebar-border",
+        "bg-blue-50 flex flex-col h-screen transition-all duration-300 border-r border-blue-200",
         collapsed ? "w-20" : "w-64",
         className
       )}
     >
-      <div className="p-4 flex items-center justify-between border-b border-sidebar-border">
+      <div className="p-4 flex items-center justify-between border-b border-blue-200">
         {!collapsed && (
-          <h2 className="text-sidebar-foreground font-bold text-xl">
-            BuildingMS
-          </h2>
+          <h2 className="text-blue-600 font-bold text-xl">BLUE MOON</h2>
         )}
         <Button
           variant="ghost"
           size="icon"
-          className="text-sidebar-foreground"
+          className="text-blue-600 hover:bg-blue-100"
           onClick={() => setCollapsed(!collapsed)}
         >
           {collapsed ? <Menu /> : <X />}
@@ -96,8 +96,8 @@ export function Sidebar({ className }: SidebarProps) {
             className={cn(
               "flex items-center p-2 rounded-md transition-all",
               isActive(item.href)
-                ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                ? "bg-blue-700 text-white"
+                : "text-blue-800 hover:bg-blue-100 hover:text-blue-900",
               collapsed ? "justify-center" : "justify-start"
             )}
           >
@@ -107,24 +107,20 @@ export function Sidebar({ className }: SidebarProps) {
         ))}
       </div>
 
-      <div className="p-4 border-t border-sidebar-border">
+      <div className="p-4 border-t border-blue-200">
         <div
           className={cn(
             "flex items-center",
             collapsed ? "justify-center" : "justify-start"
           )}
         >
-          <div className="h-8 w-8 rounded-full bg-sidebar-primary flex items-center justify-center text-sidebar-primary-foreground">
+          <div className="h-8 w-8 rounded-full bg-blue-700 flex items-center justify-center text-white">
             A
           </div>
           {!collapsed && (
             <div className="ml-3">
-              <p className="text-sidebar-foreground text-sm font-medium">
-                Admin User
-              </p>
-              <p className="text-sidebar-foreground/60 text-xs">
-                Building Manager
-              </p>
+              <p className="text-blue-800 text-sm font-medium">Quản trị viên</p>
+              <p className="text-blue-600/60 text-xs">Quản lý tòa nhà</p>
             </div>
           )}
         </div>
