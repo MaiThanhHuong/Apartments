@@ -32,39 +32,39 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   return (
-    <DashboardLayout title="Dashboard">
+    <DashboardLayout title="Bảng điều khiển">
       <div className="space-y-6 animate-fade-in">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatsCard
-            title="Total Units"
+            title="Tổng số căn hộ"
             value="120"
             icon={Building}
             iconColor="primary"
-            description="Apartments and offices"
-            trend={{ direction: "up", value: "2 new this month" }}
+            description="Căn hộ và văn phòng"
+            trend={{ direction: "up", value: "2 căn mới trong tháng này" }}
           />
           <StatsCard
-            title="Occupancy Rate"
+            title="Tỷ lệ lấp đầy"
             value="92%"
             icon={Home}
             iconColor="success"
-            description="8 units available"
-            trend={{ direction: "up", value: "5% from last month" }}
+            description="8 căn còn trống"
+            trend={{ direction: "up", value: "Tăng 5% so với tháng trước" }}
           />
           <StatsCard
-            title="Total Residents"
+            title="Tổng số cư dân"
             value="243"
             icon={Users}
             iconColor="info"
-            description="In 112 units"
+            description="Trong 112 căn hộ"
           />
           <StatsCard
-            title="Pending Requests"
+            title="Yêu cầu đang chờ"
             value="18"
             icon={MessageSquare}
             iconColor="warning"
-            description="5 high priority"
-            trend={{ direction: "down", value: "3 from yesterday" }}
+            description="5 yêu cầu ưu tiên cao"
+            trend={{ direction: "down", value: "Giảm 3 so với hôm qua" }}
           />
         </div>
 
@@ -72,64 +72,64 @@ const Dashboard = () => {
           <Card className="hover-card-effect md:col-span-2">
             <CardHeader>
               <CardTitle className="flex justify-between items-center">
-                <span>Recent Service Requests</span>
+                <span>Yêu cầu dịch vụ gần đây</span>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => navigate("/service-requests")}
                 >
-                  View all <ArrowRight className="ml-1 h-4 w-4" />
+                  Xem tất cả <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>
               </CardTitle>
               <CardDescription>
-                Latest maintenance and service requests
+                Yêu cầu bảo trì và dịch vụ mới nhất
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Unit</TableHead>
-                    <TableHead>Issue</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Date</TableHead>
+                    <TableHead>Căn hộ</TableHead>
+                    <TableHead>Vấn đề</TableHead>
+                    <TableHead>Trạng thái</TableHead>
+                    <TableHead>Ngày</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   <TableRow>
                     <TableCell className="font-medium">201</TableCell>
-                    <TableCell>Plumbing leak in bathroom</TableCell>
+                    <TableCell>Rò rỉ ống nước trong phòng tắm</TableCell>
                     <TableCell>
                       <span className="px-2 py-1 bg-warning/10 text-warning rounded-full text-xs font-medium">
-                        Pending
+                        Chờ xử lý
                       </span>
                     </TableCell>
                     <TableCell className="text-muted-foreground">
-                      Today
+                      Hôm nay
                     </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell className="font-medium">305</TableCell>
-                    <TableCell>Electrical outlet not working</TableCell>
+                    <TableCell>Ổ cắm điện không hoạt động</TableCell>
                     <TableCell>
                       <span className="px-2 py-1 bg-info/10 text-info rounded-full text-xs font-medium">
-                        In Progress
+                        Đang xử lý
                       </span>
                     </TableCell>
                     <TableCell className="text-muted-foreground">
-                      Yesterday
+                      Hôm qua
                     </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell className="font-medium">512</TableCell>
-                    <TableCell>Air conditioning repair</TableCell>
+                    <TableCell>Sửa điều hòa không khí</TableCell>
                     <TableCell>
                       <span className="px-2 py-1 bg-success/10 text-success rounded-full text-xs font-medium">
-                        Completed
+                        Đã hoàn thành
                       </span>
                     </TableCell>
                     <TableCell className="text-muted-foreground">
-                      2 days ago
+                      2 ngày trước
                     </TableCell>
                   </TableRow>
                 </TableBody>
@@ -140,33 +140,31 @@ const Dashboard = () => {
           <Card className="hover-card-effect">
             <CardHeader>
               <CardTitle className="flex justify-between items-center">
-                <span>Announcements</span>
+                <span>Thông báo</span>
                 <Button variant="ghost" size="sm">
                   <Bell className="h-4 w-4" />
                 </Button>
               </CardTitle>
-              <CardDescription>Recent building notices</CardDescription>
+              <CardDescription>Thông báo mới nhất của tòa nhà</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-semibold">Elevator Maintenance</h4>
+                  <h4 className="font-semibold">Bảo trì thang máy</h4>
                   <p className="text-sm text-muted-foreground">
-                    Elevator #2 will be under maintenance on Saturday from 10 AM
-                    to 2 PM.
+                    Thang máy số 2 sẽ được bảo trì vào thứ Bảy từ 10 giờ sáng đến 2 giờ chiều.
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Posted 2 days ago
+                    Đăng 2 ngày trước
                   </p>
                 </div>
                 <div>
-                  <h4 className="font-semibold">Water Shutdown Notice</h4>
+                  <h4 className="font-semibold">Thông báo cắt nước</h4>
                   <p className="text-sm text-muted-foreground">
-                    Water will be shut off in the North Tower for pipe repairs
-                    on Monday from 9 AM to 11 AM.
+                    Nước sẽ bị cắt ở Tháp Bắc để sửa chữa đường ống vào thứ Hai từ 9 giờ sáng đến 11 giờ sáng.
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Posted 3 days ago
+                    Đăng 3 ngày trước
                   </p>
                 </div>
               </div>
@@ -178,50 +176,50 @@ const Dashboard = () => {
           <Card className="hover-card-effect">
             <CardHeader>
               <CardTitle className="flex justify-between items-center">
-                <span>Payment Summary</span>
+                <span>Tổng quan thanh toán</span>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => navigate("/billing")}
                 >
-                  View all <ArrowRight className="ml-1 h-4 w-4" />
+                  Xem tất cả <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>
               </CardTitle>
-              <CardDescription>Overview of recent payments</CardDescription>
+              <CardDescription>Tổng quan về các khoản thanh toán gần đây</CardDescription>
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="received">
                 <TabsList>
-                  <TabsTrigger value="received">Received</TabsTrigger>
-                  <TabsTrigger value="pending">Pending</TabsTrigger>
+                  <TabsTrigger value="received">Đã nhận</TabsTrigger>
+                  <TabsTrigger value="pending">Chờ thanh toán</TabsTrigger>
                 </TabsList>
                 <TabsContent value="received" className="pt-4">
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
                       <div>
-                        <p className="font-medium">Unit 402</p>
+                        <p className="font-medium">Căn hộ 402</p>
                         <p className="text-sm text-muted-foreground">
-                          Monthly maintenance
+                          Phí bảo trì hàng tháng
                         </p>
                       </div>
                       <div className="text-right">
                         <p className="font-medium text-success">$850.00</p>
                         <p className="text-xs text-muted-foreground">
-                          May 15, 2023
+                          15/05/2023
                         </p>
                       </div>
                     </div>
                     <div className="flex justify-between items-center">
                       <div>
-                        <p className="font-medium">Unit 205</p>
+                        <p className="font-medium">Căn hộ 205</p>
                         <p className="text-sm text-muted-foreground">
-                          Monthly maintenance
+                          Phí bảo trì hàng tháng
                         </p>
                       </div>
                       <div className="text-right">
                         <p className="font-medium text-success">$750.00</p>
                         <p className="text-xs text-muted-foreground">
-                          May 14, 2023
+                          14/05/2023
                         </p>
                       </div>
                     </div>
@@ -231,29 +229,29 @@ const Dashboard = () => {
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
                       <div>
-                        <p className="font-medium">Unit 301</p>
+                        <p className="font-medium">Căn hộ 301</p>
                         <p className="text-sm text-muted-foreground">
-                          Monthly maintenance
+                          Phí bảo trì hàng tháng
                         </p>
                       </div>
                       <div className="text-right">
                         <p className="font-medium text-warning">$800.00</p>
                         <p className="text-xs text-muted-foreground">
-                          Due May 20, 2023
+                          Hạn 20/05/2023
                         </p>
                       </div>
                     </div>
                     <div className="flex justify-between items-center">
                       <div>
-                        <p className="font-medium">Unit 507</p>
+                        <p className="font-medium">Căn hộ 507</p>
                         <p className="text-sm text-muted-foreground">
-                          Monthly maintenance
+                          Phí bảo trì hàng tháng
                         </p>
                       </div>
                       <div className="text-right">
                         <p className="font-medium text-warning">$900.00</p>
                         <p className="text-xs text-muted-foreground">
-                          Due May 25, 2023
+                          Hạn 25/05/2023
                         </p>
                       </div>
                     </div>
@@ -266,21 +264,21 @@ const Dashboard = () => {
           <Card className="hover-card-effect">
             <CardHeader>
               <CardTitle className="flex justify-between items-center">
-                <span>Occupancy Status</span>
+                <span>Trạng thái lấp đầy</span>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => navigate("/apartments")}
                 >
-                  View all <ArrowRight className="ml-1 h-4 w-4" />
+                  Xem tất cả <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>
               </CardTitle>
-              <CardDescription>Current building occupancy</CardDescription>
+              <CardDescription>Trạng thái lấp đầy hiện tại của tòa nhà</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Occupied</span>
+                  <span className="text-sm font-medium">Đã lấp đầy</span>
                   <span className="text-sm font-medium">92%</span>
                 </div>
                 <div className="w-full bg-secondary rounded-full h-2.5">
@@ -291,7 +289,7 @@ const Dashboard = () => {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Available</span>
+                  <span className="text-sm font-medium">Còn trống</span>
                   <span className="text-sm font-medium">7%</span>
                 </div>
                 <div className="w-full bg-secondary rounded-full h-2.5">
@@ -302,7 +300,7 @@ const Dashboard = () => {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Under Maintenance</span>
+                  <span className="text-sm font-medium">Đang bảo trì</span>
                   <span className="text-sm font-medium">1%</span>
                 </div>
                 <div className="w-full bg-secondary rounded-full h-2.5">
@@ -317,13 +315,13 @@ const Dashboard = () => {
                     <div className="bg-secondary/50 p-3 rounded-md text-center">
                       <p className="text-2xl font-bold">112</p>
                       <p className="text-xs text-muted-foreground">
-                        Occupied Units
+                        Căn hộ đã lấp đầy
                       </p>
                     </div>
                     <div className="bg-secondary/50 p-3 rounded-md text-center">
                       <p className="text-2xl font-bold">8</p>
                       <p className="text-xs text-muted-foreground">
-                        Available Units
+                        Căn hộ còn trống
                       </p>
                     </div>
                   </div>
