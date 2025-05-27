@@ -40,191 +40,204 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus, MoreHorizontal, Building } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 
-// Sample data for apartments
-const apartmentsData = [
-  {
-    id: 1,
-    unit: "101",
-    type: "1 Bedroom",
-    floor: 1,
-    size: "65 m²",
-    status: "Occupied",
-    resident: "John Smith",
-    direction: "North",
-  },
-  {
-    id: 2,
-    unit: "202",
-    type: "2 Bedroom",
-    floor: 2,
-    size: "85 m²",
-    status: "Vacant",
-    resident: "-",
-    direction: "East",
-  },
-  {
-    id: 3,
-    unit: "305",
-    type: "Studio",
-    floor: 3,
-    size: "45 m²",
-    status: "Maintenance",
-    resident: "-",
-    direction: "West",
-  },
-  {
-    id: 4,
-    unit: "401",
-    type: "3 Bedroom",
-    floor: 4,
-    size: "120 m²",
-    status: "Occupied",
-    resident: "Maria Garcia",
-    direction: "South",
-  },
-  {
-    id: 5,
-    unit: "502",
-    type: "2 Bedroom",
-    floor: 5,
-    size: "90 m²",
-    status: "Occupied",
-    resident: "Robert Johnson",
-    direction: "East",
-  },
-  {
-    id: 6,
-    unit: "603",
-    type: "1 Bedroom",
-    floor: 6,
-    size: "70 m²",
-    status: "Vacant",
-    resident: "-",
-    direction: "North",
-  },
-];
+// Interface cho dữ liệu apartment
+interface Apartment {
+  id: number;
+  sonha: string;
+  diachi: string;
+  duong: string;
+  phuong: string;
+  quan: string;
+  ngaylamhokhau: string;
+  hoten?: string; // Tên chủ hộ từ JOIN
+}
 
 const Apartments = () => {
-  const [apartments, setApartments] = useState(apartmentsData);
+  const [apartments, setApartments] = useState<Apartment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [formData, setFormData] = useState({
+    id: "",
+    sonha: "",
+    duong: "",
+    phuong: "",
+    quan: "",
+    ngaylamhokhau: "",
+  });
 
-  const filteredApartments = apartments.filter(
-    (apartment) =>
-      (apartment.unit.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        apartment.resident.toLowerCase().includes(searchTerm.toLowerCase())) &&
-      (statusFilter === "all" || apartment.status === statusFilter)
-  );
+  // Load apartments data từ API
+  useEffect(() => {
+    loadApartments();
+  }, []);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Occupied":
-        return "bg-success/10 text-success hover:bg-success/20";
-      case "Vacant":
-        return "bg-info/10 text-info hover:bg-info/20";
-      case "Maintenance":
-        return "bg-warning/10 text-warning hover:bg-warning/20";
-      default:
-        return "bg-secondary";
+  const loadApartments = async () => {
+    try {
+      setLoading(true);
+      console.log('🔄 Fetching apartments...');
+
+      const response = await fetch("/api/apartments");
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('✅ Apartments loaded:', data);
+      setApartments(data);
+      setError(null);
+    } catch (error) {
+      console.error("❌ Error loading apartments:", error);
+      setError(error instanceof Error ? error.message : 'Unknown error');
+      setApartments([]);
+    } finally {
+      setLoading(false);
     }
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async () => {
+    console.log(formData);
+    // Kiểm tra rỗng
+    if (!formData.id || !formData.sonha || !formData.duong || !formData.phuong || !formData.quan || !formData.ngaylamhokhau) {
+      alert("❌ Vui lòng nhập đầy đủ thông tin!");
+      return;
+    }
+    try {
+      const res = await fetch("/api/apartments/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        alert("✅ Thêm hộ khẩu thành công!");
+        // loadApartments();
+        window.location.reload(); // Reload trang
+        setFormData({ id: "", sonha: "", duong: "", phuong: "", quan: "", ngaylamhokhau: "" });
+      } else {
+        const error = await res.json();
+        alert("❌ Lỗi: " + error.message);
+      }
+    } catch (err) {
+      console.error("❌ Error:", err);
+      alert("❌ Lỗi kết nối server.");
+    }
+  };
+
+  const filteredApartments = apartments.filter(
+    (apartment) =>
+      (apartment.sonha?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        apartment.hoten?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        apartment.diachi?.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      (statusFilter === "all" || statusFilter === "occupied") // Tạm thời vì DB không có status
+  );
+
+  // Render loading state
+  if (loading) {
+    return (
+      <DashboardLayout title="Apartments">
+        <div className="space-y-6 animate-fade-in">
+          <Card>
+            <CardContent className="p-8">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                <p>Đang tải dữ liệu...</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // Render error state
+  if (error) {
+    return (
+      <DashboardLayout title="Apartments">
+        <div className="space-y-6 animate-fade-in">
+          <Card>
+            <CardContent className="p-8">
+              <div className="text-center text-red-600">
+                <p className="text-lg font-semibold mb-2">Lỗi kết nối</p>
+                <p>{error}</p>
+                <Button
+                  onClick={() => window.location.reload()}
+                  className="mt-4"
+                >
+                  Thử lại
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   return (
-    <DashboardLayout title="Apartments">
+    <DashboardLayout title="Hộ khẩu">
       <div className="space-y-6 animate-fade-in">
         <Card>
           <CardHeader>
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
-                <CardTitle>Units Management</CardTitle>
+                <CardTitle>Quản lý Hộ khẩu</CardTitle>
                 <CardDescription>
-                  Manage all apartments and office units in your building
+                  Quản lý tất cả hộ khẩu trong hệ thống ({apartments.length} hộ)
                 </CardDescription>
               </div>
               <Dialog>
                 <DialogTrigger asChild>
                   <Button className="w-full md:w-auto">
-                    <Plus className="mr-2 h-4 w-4" /> Add Unit
+                    <Plus className="mr-2 h-4 w-4" /> Thêm hộ khẩu
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Add New Unit</DialogTitle>
+                    <DialogTitle>Thêm hộ khẩu mới</DialogTitle>
                     <DialogDescription>
-                      Enter the details of the new unit to add it to the system
+                      Nhập thông tin hộ khẩu mới để thêm vào hệ thống
                     </DialogDescription>
                   </DialogHeader>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="unit-number">Unit Number</Label>
-                      <Input id="unit-number" placeholder="e.g. 101" />
+                      <Label htmlFor="id">Số hộ</Label>
+                      <Input id="id" placeholder="Nhập số hộ" required onChange={handleChange} />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="unit-type">Unit Type</Label>
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="studio">Studio</SelectItem>
-                          <SelectItem value="1br">1 Bedroom</SelectItem>
-                          <SelectItem value="2br">2 Bedroom</SelectItem>
-                          <SelectItem value="3br">3 Bedroom</SelectItem>
-                          <SelectItem value="office">Office Space</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <Label htmlFor="sonha">Số nhà</Label>
+                      <Input id="sonha" placeholder="Nhập số nhà" required onChange={handleChange} />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="floor">Floor</Label>
-                      <Input
-                        id="floor"
-                        type="number"
-                        min="1"
-                        placeholder="Floor number"
-                      />
+                      <Label htmlFor="duong">Đường</Label>
+                      <Input id="duong" placeholder="Nhập tên đường" required onChange={handleChange} />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="size">Size (m²)</Label>
-                      <Input id="size" type="text" placeholder="e.g. 65" />
+                      <Label htmlFor="phuong">Phường</Label>
+                      <Input id="phuong" placeholder="Nhập phường" required onChange={handleChange} />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="direction">Direction</Label>
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select direction" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="north">North</SelectItem>
-                          <SelectItem value="east">East</SelectItem>
-                          <SelectItem value="south">South</SelectItem>
-                          <SelectItem value="west">West</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <Label htmlFor="quan">Quận</Label>
+                      <Input id="quan" placeholder="Nhập quận" required onChange={handleChange} />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="status">Status</Label>
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="vacant">Vacant</SelectItem>
-                          <SelectItem value="occupied">Occupied</SelectItem>
-                          <SelectItem value="maintenance">
-                            Maintenance
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <Label htmlFor="ngaylamhokhau">Ngày làm hộ khẩu</Label>
+                      <Input id="ngaylamhokhau" type="date" required onChange={handleChange} />
                     </div>
                   </div>
 
                   <DialogFooter>
-                    <Button variant="outline">Cancel</Button>
-                    <Button>Save Unit</Button>
+                    <Button variant="outline">Hủy</Button>
+                    <Button onClick={handleSubmit}>Lưu</Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
@@ -234,7 +247,7 @@ const Apartments = () => {
             <div className="flex flex-col md:flex-row gap-4 mb-6">
               <div className="flex-1">
                 <Input
-                  placeholder="Search by unit or resident name..."
+                  placeholder="Tìm kiếm theo số hộ, chủ hộ ..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -244,13 +257,11 @@ const Apartments = () => {
                 onValueChange={(value) => setStatusFilter(value)}
               >
                 <SelectTrigger className="w-full md:w-[180px]">
-                  <SelectValue placeholder="Filter by status" />
+                  <SelectValue placeholder="Lọc theo trạng thái" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Statuses</SelectItem>
-                  <SelectItem value="Occupied">Occupied</SelectItem>
-                  <SelectItem value="Vacant">Vacant</SelectItem>
-                  <SelectItem value="Maintenance">Maintenance</SelectItem>
+                  <SelectItem value="all">Tất cả</SelectItem>
+                  <SelectItem value="occupied">Có chủ hộ</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -259,18 +270,14 @@ const Apartments = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Unit</TableHead>
-                    <TableHead className="hidden md:table-cell">Type</TableHead>
-                    <TableHead className="hidden md:table-cell">
-                      Floor
-                    </TableHead>
-                    <TableHead className="hidden md:table-cell">Size</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Resident</TableHead>
-                    <TableHead className="hidden md:table-cell">
-                      Direction
-                    </TableHead>
-                    <TableHead className="w-[50px]"></TableHead>
+                    <TableHead>Số hộ</TableHead>
+                    <TableHead className="hidden md:table-cell">Số nhà</TableHead>
+                    <TableHead className="hidden md:table-cell">Đường</TableHead>
+                    <TableHead className="hidden md:table-cell">Phường</TableHead>
+                    <TableHead>Quận</TableHead>
+                    <TableHead>Ngày làm hộ khẩu</TableHead>
+                    <TableHead>Chủ hộ</TableHead>
+                    <TableHead className="w-[50px]">Thao tác</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -279,29 +286,33 @@ const Apartments = () => {
                       <TableCell className="font-medium">
                         <div className="flex items-center">
                           <Building className="mr-2 h-4 w-4 text-primary" />
-                          {apartment.unit}
+                          {apartment.id || 'N/A'}
                         </div>
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                        {apartment.type}
+                        {apartment.sonha || 'N/A'}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                        {apartment.floor}
+                        {apartment.duong || 'N/A'}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                        {apartment.size}
+                        {apartment.phuong || 'N/A'}
+                      </TableCell>
+                      <TableCell>{apartment.quan || 'N/A'}</TableCell>
+                      <TableCell>
+                        {apartment.ngaylamhokhau
+                          ? new Date(apartment.ngaylamhokhau).toLocaleDateString()
+                          : 'N/A'}
                       </TableCell>
                       <TableCell>
                         <Badge
                           variant="outline"
-                          className={getStatusColor(apartment.status)}
+                          className={apartment.hoten
+                            ? "bg-success/10 text-success hover:bg-success/20"
+                            : "bg-gray/10 text-gray hover:bg-gray/20"}
                         >
-                          {apartment.status}
+                          {apartment.hoten || 'Chưa có chủ hộ'}
                         </Badge>
-                      </TableCell>
-                      <TableCell>{apartment.resident}</TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        {apartment.direction}
                       </TableCell>
                       <TableCell>
                         <DropdownMenu>
@@ -311,9 +322,9 @@ const Apartments = () => {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem>View Details</DropdownMenuItem>
-                            <DropdownMenuItem>Edit Unit</DropdownMenuItem>
-                            <DropdownMenuItem>Assign Resident</DropdownMenuItem>
+                            <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
+                            <DropdownMenuItem>Chỉnh sửa</DropdownMenuItem>
+                            <DropdownMenuItem>Quản lý nhân khẩu</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
@@ -321,9 +332,11 @@ const Apartments = () => {
                   ))}
                 </TableBody>
               </Table>
-              {filteredApartments.length === 0 && (
-                <div className="p-4 text-center text-muted-foreground">
-                  No units matching your search criteria
+              {filteredApartments.length === 0 && !loading && (
+                <div className="p-8 text-center text-muted-foreground">
+                  {apartments.length === 0
+                    ? "Không có dữ liệu hộ khẩu"
+                    : "Không tìm thấy hộ khẩu phù hợp"}
                 </div>
               )}
             </div>
