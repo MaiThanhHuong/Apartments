@@ -52,83 +52,83 @@ import {
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 
-// Sample data for invoices
+// Dữ liệu mẫu cho hóa đơn
 const invoicesData = [
   {
     id: 1,
-    invoiceNumber: "INV-2023-001",
+    invoiceNumber: "HD-2023-001",
     unit: "101",
-    resident: "John Smith",
+    resident: "Nguyễn Văn A",
     issueDate: "2023-05-01",
     dueDate: "2023-05-15",
     amount: 850,
-    status: "Paid",
-    category: "Monthly Maintenance",
-    paymentMethod: "Credit Card",
+    status: "Đã thanh toán",
+    category: "Bảo trì hàng tháng",
+    paymentMethod: "Thẻ tín dụng",
     paymentDate: "2023-05-10",
   },
   {
     id: 2,
-    invoiceNumber: "INV-2023-002",
+    invoiceNumber: "HD-2023-002",
     unit: "202",
-    resident: "Jane Doe",
+    resident: "Trần Thị B",
     issueDate: "2023-05-01",
     dueDate: "2023-05-15",
     amount: 750,
-    status: "Pending",
-    category: "Monthly Maintenance",
+    status: "Chờ thanh toán",
+    category: "Bảo trì hàng tháng",
     paymentMethod: "-",
     paymentDate: "-",
   },
   {
     id: 3,
-    invoiceNumber: "INV-2023-003",
+    invoiceNumber: "HD-2023-003",
     unit: "305",
-    resident: "David Wu",
+    resident: "Lê Văn C",
     issueDate: "2023-05-01",
     dueDate: "2023-05-15",
     amount: 900,
-    status: "Paid",
-    category: "Monthly Maintenance",
-    paymentMethod: "Bank Transfer",
+    status: "Đã thanh toán",
+    category: "Bảo trì hàng tháng",
+    paymentMethod: "Chuyển khoản ngân hàng",
     paymentDate: "2023-05-05",
   },
   {
     id: 4,
-    invoiceNumber: "INV-2023-004",
+    invoiceNumber: "HD-2023-004",
     unit: "401",
-    resident: "Maria Garcia",
+    resident: "Phạm Thị D",
     issueDate: "2023-05-01",
     dueDate: "2023-05-15",
     amount: 850,
-    status: "Overdue",
-    category: "Monthly Maintenance",
+    status: "Quá hạn",
+    category: "Bảo trì hàng tháng",
     paymentMethod: "-",
     paymentDate: "-",
   },
   {
     id: 5,
-    invoiceNumber: "INV-2023-005",
+    invoiceNumber: "HD-2023-005",
     unit: "502",
-    resident: "Robert Johnson",
+    resident: "Hoàng Văn E",
     issueDate: "2023-05-01",
     dueDate: "2023-05-15",
     amount: 950,
-    status: "Paid",
-    category: "Monthly Maintenance",
-    paymentMethod: "Credit Card",
+    status: "Đã thanh toán",
+    category: "Bảo trì hàng tháng",
+    paymentMethod: "Thẻ tín dụng",
     paymentDate: "2023-05-12",
   },
   {
     id: 6,
-    invoiceNumber: "INV-2023-006",
+    invoiceNumber: "HD-2023-006",
     unit: "603",
-    resident: "Lisa Wong",
+    resident: "Võ Thị F",
     issueDate: "2023-05-01",
     dueDate: "2023-05-15",
     amount: 1200,
-    status: "Pending",
-    category: "Monthly Maintenance",
+    status: "Chờ thanh toán",
+    category: "Bảo trì hàng tháng",
     paymentMethod: "-",
     paymentDate: "-",
   },
@@ -141,46 +141,46 @@ const Billing = () => {
   const [activeTab, setActiveTab] = useState("all");
 
   const filteredInvoices = invoices.filter((invoice) => {
-    // Filter by search term
+    // Lọc theo từ khóa tìm kiếm
     const searchMatch =
       invoice.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
       invoice.unit.toLowerCase().includes(searchTerm.toLowerCase()) ||
       invoice.resident.toLowerCase().includes(searchTerm.toLowerCase());
 
-    // Filter by status
+    // Lọc theo trạng thái
     const statusMatch =
       statusFilter === "all" || invoice.status === statusFilter;
 
-    // Filter by tab
+    // Lọc theo tab
     const tabMatch =
       activeTab === "all" ||
-      (activeTab === "paid" && invoice.status === "Paid") ||
-      (activeTab === "pending" && invoice.status === "Pending") ||
-      (activeTab === "overdue" && invoice.status === "Overdue");
+      (activeTab === "Đã thanh toán" && invoice.status === "Đã thanh toán") ||
+      (activeTab === "Chờ thanh toán" && invoice.status === "Chờ thanh toán") ||
+      (activeTab === "Quá hạn" && invoice.status === "Quá hạn");
 
     return searchMatch && statusMatch && tabMatch;
   });
 
-  // Calculate total amount for each status
+  // Tính tổng số tiền cho từng trạng thái
   const totalPaid = invoices
-    .filter((invoice) => invoice.status === "Paid")
+    .filter((invoice) => invoice.status === "Đã thanh toán")
     .reduce((sum, invoice) => sum + invoice.amount, 0);
 
   const totalPending = invoices
-    .filter((invoice) => invoice.status === "Pending")
+    .filter((invoice) => invoice.status === "Chờ thanh toán")
     .reduce((sum, invoice) => sum + invoice.amount, 0);
 
   const totalOverdue = invoices
-    .filter((invoice) => invoice.status === "Overdue")
+    .filter((invoice) => invoice.status === "Quá hạn")
     .reduce((sum, invoice) => sum + invoice.amount, 0);
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "Paid":
+      case "Đã thanh toán":
         return "bg-success/10 text-success hover:bg-success/20";
-      case "Pending":
+      case "Chờ thanh toán":
         return "bg-warning/10 text-warning hover:bg-warning/20";
-      case "Overdue":
+      case "Quá hạn":
         return "bg-destructive/10 text-destructive hover:bg-destructive/20";
       default:
         return "bg-secondary";
@@ -188,47 +188,45 @@ const Billing = () => {
   };
 
   return (
-    <DashboardLayout title="Billing">
+    <DashboardLayout title="Quản lý hóa đơn">
       <div className="space-y-6 animate-fade-in">
         <div className="grid gap-4 md:grid-cols-3">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Total Paid</CardTitle>
+              <CardTitle className="text-sm font-medium">Tổng đã thanh toán</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-success">
                 ${totalPaid.toLocaleString()}
               </div>
               <p className="text-xs text-muted-foreground">
-                {invoices.filter((i) => i.status === "Paid").length} invoices
+                {invoices.filter((i) => i.status === "Đã thanh toán").length} hóa đơn
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">
-                Pending Payments
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Chờ thanh toán</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-warning">
                 ${totalPending.toLocaleString()}
               </div>
               <p className="text-xs text-muted-foreground">
-                {invoices.filter((i) => i.status === "Pending").length} invoices
+                {invoices.filter((i) => i.status === "Chờ thanh toán").length} hóa đơn
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Overdue</CardTitle>
+              <CardTitle className="text-sm font-medium">Quá hạn</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-destructive">
                 ${totalOverdue.toLocaleString()}
               </div>
               <p className="text-xs text-muted-foreground">
-                {invoices.filter((i) => i.status === "Overdue").length} invoices
+                {invoices.filter((i) => i.status === "Quá hạn").length} hóa đơn
               </p>
             </CardContent>
           </Card>
@@ -238,83 +236,76 @@ const Billing = () => {
           <CardHeader>
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
-                <CardTitle>Invoice Management</CardTitle>
+                <CardTitle>Quản lý hóa đơn</CardTitle>
                 <CardDescription>
-                  Create and manage invoices for residents
+                  Tạo và quản lý hóa đơn cho cư dân
                 </CardDescription>
               </div>
               <Dialog>
                 <DialogTrigger asChild>
                   <Button className="w-full md:w-auto">
-                    <Plus className="mr-2 h-4 w-4" /> Create Invoice
+                    <Plus className="mr-2 h-4 w-4" /> Tạo hóa đơn
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>Create New Invoice</DialogTitle>
+                    <DialogTitle>Tạo hóa đơn mới</DialogTitle>
                     <DialogDescription>
-                      Enter invoice details to generate a new invoice for a
-                      resident
+                      Nhập chi tiết hóa đơn để tạo hóa đơn mới cho cư dân
                     </DialogDescription>
                   </DialogHeader>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="unit">Unit</Label>
+                      <Label htmlFor="unit">Căn hộ</Label>
                       <Select>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select unit" />
+                          <SelectValue placeholder="Chọn căn hộ" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="101">101 - John Smith</SelectItem>
-                          <SelectItem value="202">202 - Jane Doe</SelectItem>
-                          <SelectItem value="305">305 - David Wu</SelectItem>
-                          <SelectItem value="401">
-                            401 - Maria Garcia
-                          </SelectItem>
-                          <SelectItem value="502">
-                            502 - Robert Johnson
-                          </SelectItem>
+                          <SelectItem value="101">101 - Nguyễn Văn A</SelectItem>
+                          <SelectItem value="202">202 - Trần Thị B</SelectItem>
+                          <SelectItem value="305">305 - Lê Văn C</SelectItem>
+                          <SelectItem value="401">401 - Phạm Thị D</SelectItem>
+                          <SelectItem value="502">502 - Hoàng Văn E</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="category">Category</Label>
+                      <Label htmlFor="category">Danh mục</Label>
                       <Select>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select category" />
+                          <SelectValue placeholder="Chọn danh mục" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="maintenance">
-                            Monthly Maintenance
-                          </SelectItem>
-                          <SelectItem value="utilities">Utilities</SelectItem>
-                          <SelectItem value="parking">Parking Fee</SelectItem>
-                          <SelectItem value="repair">Repair Charges</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
+                          <SelectItem value="maintenance">Bảo trì hàng tháng</SelectItem>
+                          <SelectItem value="utilities">Tiện ích</SelectItem>
+                          <SelectItem value="parking">Phí đỗ xe</SelectItem>
+                          <SelectItem value="repair">Phí sửa chữa</SelectItem>
+                          <SelectItem value="other">Khác</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="amount">Amount ($)</Label>
+                      <Label htmlFor="amount">Số tiền ($)</Label>
                       <Input id="amount" type="number" placeholder="0.00" />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="due-date">Due Date</Label>
+                      <Label htmlFor="due-date">Ngày đến hạn</Label>
                       <Input id="due-date" type="date" />
                     </div>
                     <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor="description">Description</Label>
+                      <Label htmlFor="description">Mô tả</Label>
                       <Input
                         id="description"
-                        placeholder="Invoice description..."
+                        placeholder="Mô tả hóa đơn..."
                       />
                     </div>
                   </div>
 
                   <DialogFooter className="mt-4">
-                    <Button variant="outline">Cancel</Button>
-                    <Button>Create Invoice</Button>
+                    <Button variant="outline">Hủy</Button>
+                    <Button>Tạo hóa đơn</Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
@@ -325,15 +316,15 @@ const Billing = () => {
               <Tabs defaultValue="all" onValueChange={setActiveTab}>
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <TabsList>
-                    <TabsTrigger value="all">All Invoices</TabsTrigger>
-                    <TabsTrigger value="paid">Paid</TabsTrigger>
-                    <TabsTrigger value="pending">Pending</TabsTrigger>
-                    <TabsTrigger value="overdue">Overdue</TabsTrigger>
+                    <TabsTrigger value="all">Tất cả hóa đơn</TabsTrigger>
+                    <TabsTrigger value="paid">Đã thanh toán</TabsTrigger>
+                    <TabsTrigger value="pending">Chờ thanh toán</TabsTrigger>
+                    <TabsTrigger value="overdue">Quá hạn</TabsTrigger>
                   </TabsList>
 
                   <div className="flex flex-col md:flex-row gap-4">
                     <Input
-                      placeholder="Search invoices..."
+                      placeholder="Tìm kiếm hóa đơn..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="md:w-[250px]"
@@ -344,13 +335,13 @@ const Billing = () => {
                       onValueChange={(value) => setStatusFilter(value)}
                     >
                       <SelectTrigger className="w-full md:w-[180px]">
-                        <SelectValue placeholder="Filter by status" />
+                        <SelectValue placeholder="Lọc theo trạng thái" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Statuses</SelectItem>
-                        <SelectItem value="Paid">Paid</SelectItem>
-                        <SelectItem value="Pending">Pending</SelectItem>
-                        <SelectItem value="Overdue">Overdue</SelectItem>
+                        <SelectItem value="all">Tất cả trạng thái</SelectItem>
+                        <SelectItem value="Đã thanh toán">Đã thanh toán</SelectItem>
+                        <SelectItem value="Chờ thanh toán">Chờ thanh toán</SelectItem>
+                        <SelectItem value="Quá hạn">Quá hạn</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -363,7 +354,7 @@ const Billing = () => {
                 <TabsContent value="paid" className="mt-4">
                   <InvoicesList
                     invoices={filteredInvoices.filter(
-                      (invoice) => invoice.status === "Paid"
+                      (invoice) => invoice.status === "Đã thanh toán"
                     )}
                   />
                 </TabsContent>
@@ -371,7 +362,7 @@ const Billing = () => {
                 <TabsContent value="pending" className="mt-4">
                   <InvoicesList
                     invoices={filteredInvoices.filter(
-                      (invoice) => invoice.status === "Pending"
+                      (invoice) => invoice.status === "Chờ thanh toán"
                     )}
                   />
                 </TabsContent>
@@ -379,7 +370,7 @@ const Billing = () => {
                 <TabsContent value="overdue" className="mt-4">
                   <InvoicesList
                     invoices={filteredInvoices.filter(
-                      (invoice) => invoice.status === "Overdue"
+                      (invoice) => invoice.status === "Quá hạn"
                     )}
                   />
                 </TabsContent>
@@ -390,97 +381,6 @@ const Billing = () => {
       </div>
     </DashboardLayout>
   );
-
-  interface InvoicesListProps {
-    invoices: typeof invoicesData;
-  }
-
-  function InvoicesList({ invoices }: InvoicesListProps) {
-    return (
-      <div className="rounded-md border overflow-hidden">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Invoice #</TableHead>
-              <TableHead>Unit</TableHead>
-              <TableHead className="hidden md:table-cell">Resident</TableHead>
-              <TableHead className="hidden md:table-cell">Issue Date</TableHead>
-              <TableHead>Due Date</TableHead>
-              <TableHead>Amount</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="w-[50px]"></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {invoices.map((invoice) => (
-              <TableRow key={invoice.id}>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-primary" />
-                    <span className="font-medium">{invoice.invoiceNumber}</span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-1">
-                    <Home className="h-4 w-4 text-muted-foreground" />
-                    <span>{invoice.unit}</span>
-                  </div>
-                </TableCell>
-                <TableCell className="hidden md:table-cell">
-                  {invoice.resident}
-                </TableCell>
-                <TableCell className="hidden md:table-cell">
-                  {new Date(invoice.issueDate).toLocaleDateString()}
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-1">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span>
-                      {new Date(invoice.dueDate).toLocaleDateString()}
-                    </span>
-                  </div>
-                </TableCell>
-                <TableCell className="font-medium">
-                  ${invoice.amount.toLocaleString()}
-                </TableCell>
-                <TableCell>
-                  <Badge
-                    variant="outline"
-                    className={getStatusColor(invoice.status)}
-                  >
-                    {invoice.status}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem>
-                        <Download className="mr-2 h-4 w-4" /> Download PDF
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <CreditCard className="mr-2 h-4 w-4" /> Record Payment
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>Send Reminder</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        {invoices.length === 0 && (
-          <div className="p-4 text-center text-muted-foreground">
-            No invoices matching your search criteria
-          </div>
-        )}
-      </div>
-    );
-  }
 };
 
 interface InvoicesListProps {
@@ -490,11 +390,11 @@ interface InvoicesListProps {
 function InvoicesList({ invoices }: InvoicesListProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "Paid":
+      case "Đã thanh toán":
         return "bg-success/10 text-success hover:bg-success/20";
-      case "Pending":
+      case "Chờ thanh toán":
         return "bg-warning/10 text-warning hover:bg-warning/20";
-      case "Overdue":
+      case "Quá hạn":
         return "bg-destructive/10 text-destructive hover:bg-destructive/20";
       default:
         return "bg-secondary";
@@ -506,13 +406,13 @@ function InvoicesList({ invoices }: InvoicesListProps) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Invoice #</TableHead>
-            <TableHead>Unit</TableHead>
-            <TableHead className="hidden md:table-cell">Resident</TableHead>
-            <TableHead className="hidden md:table-cell">Issue Date</TableHead>
-            <TableHead>Due Date</TableHead>
-            <TableHead>Amount</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead>Mã hóa đơn</TableHead>
+            <TableHead>Căn hộ</TableHead>
+            <TableHead className="hidden md:table-cell">Cư dân</TableHead>
+            <TableHead className="hidden md:table-cell">Ngày phát hành</TableHead>
+            <TableHead>Ngày đến hạn</TableHead>
+            <TableHead>Số tiền</TableHead>
+            <TableHead>Trạng thái</TableHead>
             <TableHead className="w-[50px]"></TableHead>
           </TableRow>
         </TableHeader>
@@ -563,12 +463,12 @@ function InvoicesList({ invoices }: InvoicesListProps) {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem>
-                      <Download className="mr-2 h-4 w-4" /> Download PDF
+                      <Download className="mr-2 h-4 w-4" /> Tải PDF
                     </DropdownMenuItem>
                     <DropdownMenuItem>
-                      <CreditCard className="mr-2 h-4 w-4" /> Record Payment
+                      <CreditCard className="mr-2 h-4 w-4" /> Ghi nhận thanh toán
                     </DropdownMenuItem>
-                    <DropdownMenuItem>Send Reminder</DropdownMenuItem>
+                    <DropdownMenuItem>Gửi nhắc nhở</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>
@@ -578,7 +478,7 @@ function InvoicesList({ invoices }: InvoicesListProps) {
       </Table>
       {invoices.length === 0 && (
         <div className="p-4 text-center text-muted-foreground">
-          No invoices matching your search criteria
+          Không có hóa đơn nào khớp với tiêu chí tìm kiếm
         </div>
       )}
     </div>

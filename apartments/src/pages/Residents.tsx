@@ -52,62 +52,62 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-// Sample data for residents
+// Dữ liệu mẫu cho cư dân (đồng nhất với mã Billing)
 const residentsData = [
   {
     id: 1,
-    name: "John Smith",
+    name: "Nguyễn Văn A",
     unit: "101",
     phone: "+84 912 345 678",
-    email: "john.smith@example.com",
-    status: "Active",
+    email: "nguyen.van.a@example.com",
+    status: "Hoạt động",
     moveInDate: "2023-01-15",
     leaseEnd: "2024-01-15",
-    type: "Owner",
+    type: "Chủ sở hữu",
   },
   {
     id: 2,
-    name: "Maria Garcia",
+    name: "Phạm Thị D",
     unit: "401",
     phone: "+84 903 456 789",
-    email: "maria.garcia@example.com",
-    status: "Active",
+    email: "pham.thi.d@example.com",
+    status: "Hoạt động",
     moveInDate: "2022-05-20",
     leaseEnd: "2023-05-20",
-    type: "Tenant",
+    type: "Người thuê",
   },
   {
     id: 3,
-    name: "Robert Johnson",
+    name: "Hoàng Văn E",
     unit: "502",
     phone: "+84 918 765 432",
-    email: "robert.johnson@example.com",
-    status: "Active",
+    email: "hoang.van.e@example.com",
+    status: "Hoạt động",
     moveInDate: "2023-03-10",
     leaseEnd: "2024-03-10",
-    type: "Tenant",
+    type: "Người thuê",
   },
   {
     id: 4,
-    name: "Sarah Williams",
+    name: "Nguyễn Thị G",
     unit: "203",
     phone: "+84 933 222 111",
-    email: "sarah.williams@example.com",
-    status: "Inactive",
+    email: "nguyen.thi.g@example.com",
+    status: "Không hoạt động",
     moveInDate: "2021-08-05",
     leaseEnd: "2022-08-05",
-    type: "Former Tenant",
+    type: "Cựu người thuê",
   },
   {
     id: 5,
-    name: "David Lee",
+    name: "Lê Văn C",
     unit: "307",
     phone: "+84 977 888 999",
-    email: "david.lee@example.com",
-    status: "Active",
+    email: "le.van.c@example.com",
+    status: "Hoạt động",
     moveInDate: "2023-02-15",
     leaseEnd: "2024-02-15",
-    type: "Owner",
+    type: "Chủ sở hữu",
   },
 ];
 
@@ -118,124 +118,123 @@ const Residents = () => {
   const [activeTab, setActiveTab] = useState("all");
 
   const filteredResidents = residents.filter((resident) => {
-    // Filter by search term
+    // Lọc theo từ khóa tìm kiếm
     const searchMatch =
       resident.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       resident.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       resident.unit.includes(searchTerm);
 
-    // Filter by type
+    // Lọc theo loại cư dân
     const typeMatch = typeFilter === "all" || resident.type === typeFilter;
 
-    // Filter by tab (status)
+    // Lọc theo tab (trạng thái)
     const statusMatch =
       activeTab === "all" ||
-      (activeTab === "active" && resident.status === "Active") ||
-      (activeTab === "inactive" && resident.status === "Inactive");
+      (activeTab === "active" && resident.status === "Hoạt động") ||
+      (activeTab === "inactive" && resident.status === "Không hoạt động");
 
     return searchMatch && typeMatch && statusMatch;
   });
 
   return (
-    <DashboardLayout title="Residents">
+    <DashboardLayout title="Quản lý cư dân">
       <div className="space-y-6 animate-fade-in">
         <Card>
           <CardHeader>
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
-                <CardTitle>Residents Management</CardTitle>
+                <CardTitle>Quản lý cư dân</CardTitle>
                 <CardDescription>
-                  Manage all residents, tenants, and owners in your building
+                  Quản lý tất cả cư dân, người thuê và chủ sở hữu trong tòa nhà
                 </CardDescription>
               </div>
               <Dialog>
                 <DialogTrigger asChild>
                   <Button className="w-full md:w-auto">
-                    <Plus className="mr-2 h-4 w-4" /> Add Resident
+                    <Plus className="mr-2 h-4 w-4" /> Thêm cư dân
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>Add New Resident</DialogTitle>
+                    <DialogTitle>Thêm cư dân mới</DialogTitle>
                     <DialogDescription>
-                      Enter the details of the new resident to add them to the
-                      system
+                      Nhập chi tiết của cư dân mới để thêm vào hệ thống
                     </DialogDescription>
                   </DialogHeader>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="name">Full Name</Label>
-                      <Input id="name" placeholder="John Smith" />
+                      <Label htmlFor="name">Họ và tên</Label>
+                      <Input id="name" placeholder="Nguyễn Văn A" />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
                       <Input
                         id="email"
                         type="email"
-                        placeholder="john@example.com"
+                        placeholder="nguyen.van.a@example.com"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
+                      <Label htmlFor="phone">Số điện thoại</Label>
                       <Input id="phone" placeholder="+84 123 456 789" />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="unit">Assign Unit</Label>
+                      <Label htmlFor="unit">Gán căn hộ</Label>
                       <Select>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select unit" />
+                          <SelectValue placeholder="Chọn căn hộ" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="101">101</SelectItem>
-                          <SelectItem value="202">202 (Vacant)</SelectItem>
-                          <SelectItem value="603">603 (Vacant)</SelectItem>
+                          <SelectItem value="202">202 (Còn trống)</SelectItem>
+                          <SelectItem value="603">603 (Còn trống)</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="move-in">Move-in Date</Label>
+                      <Label htmlFor="move-in">Ngày dọn vào</Label>
                       <Input id="move-in" type="date" />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="lease-end">Lease End Date</Label>
+                      <Label htmlFor="lease-end">Ngày kết thúc hợp đồng</Label>
                       <Input id="lease-end" type="date" />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="type">Resident Type</Label>
+                      <Label htmlFor="type">Loại cư dân</Label>
                       <Select>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select type" />
+                          <SelectValue placeholder="Chọn loại" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="owner">Owner</SelectItem>
-                          <SelectItem value="tenant">Tenant</SelectItem>
-                          <SelectItem value="family">Family Member</SelectItem>
+                          <SelectItem value="Chủ sở hữu">Chủ sở hữu</SelectItem>
+                          <SelectItem value="Người thuê">Người thuê</SelectItem>
+                          <SelectItem value="Thành viên gia đình">Thành viên gia đình</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="status">Status</Label>
+                      <Label htmlFor="status">Trạng thái</Label>
                       <Select defaultValue="active">
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="active">Active</SelectItem>
-                          <SelectItem value="inactive">Inactive</SelectItem>
+                          <SelectItem value="active">Hoạt động</SelectItem>
+                          <SelectItem value="inactive">Không hoạt động</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
 
                   <div className="space-y-2 mt-4">
-                    <Label htmlFor="notes">Additional Notes</Label>
-                    <Input id="notes" placeholder="Any special notes..." />
+                    <Label htmlFor="notes">Ghi chú bổ sung</Label>
+                    <Input id="notes" placeholder="Ghi chú đặc biệt..." />
                   </div>
 
                   <DialogFooter className="mt-4">
-                    <Button variant="outline">Cancel</Button>
-                    <Button>Add Resident</Button>
+                    <Button variant="outline">Hủy</Button>
+                    <Button>Thêm cư dân</Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
@@ -246,14 +245,14 @@ const Residents = () => {
               <Tabs defaultValue="all" onValueChange={setActiveTab}>
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <TabsList>
-                    <TabsTrigger value="all">All Residents</TabsTrigger>
-                    <TabsTrigger value="active">Active</TabsTrigger>
-                    <TabsTrigger value="inactive">Inactive</TabsTrigger>
+                    <TabsTrigger value="all">Tất cả cư dân</TabsTrigger>
+                    <TabsTrigger value="active">Hoạt động</TabsTrigger>
+                    <TabsTrigger value="inactive">Không hoạt động</TabsTrigger>
                   </TabsList>
 
                   <div className="flex flex-col md:flex-row gap-4">
                     <Input
-                      placeholder="Search by name, email or unit..."
+                      placeholder="Tìm kiếm theo tên, email hoặc căn hộ..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="md:w-[300px]"
@@ -263,15 +262,13 @@ const Residents = () => {
                       onValueChange={(value) => setTypeFilter(value)}
                     >
                       <SelectTrigger className="w-full md:w-[180px]">
-                        <SelectValue placeholder="Filter by type" />
+                        <SelectValue placeholder="Lọc theo loại" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Types</SelectItem>
-                        <SelectItem value="Owner">Owners</SelectItem>
-                        <SelectItem value="Tenant">Tenants</SelectItem>
-                        <SelectItem value="Former Tenant">
-                          Former Tenants
-                        </SelectItem>
+                        <SelectItem value="all">Tất cả loại</SelectItem>
+                        <SelectItem value="Chủ sở hữu">Chủ sở hữu</SelectItem>
+                        <SelectItem value="Người thuê">Người thuê</SelectItem>
+                        <SelectItem value="Cựu người thuê">Cựu người thuê</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -284,7 +281,7 @@ const Residents = () => {
                 <TabsContent value="active" className="mt-4">
                   <ResidentsList
                     residents={filteredResidents.filter(
-                      (r) => r.status === "Active"
+                      (r) => r.status === "Hoạt động"
                     )}
                   />
                 </TabsContent>
@@ -292,7 +289,7 @@ const Residents = () => {
                 <TabsContent value="inactive" className="mt-4">
                   <ResidentsList
                     residents={filteredResidents.filter(
-                      (r) => r.status === "Inactive"
+                      (r) => r.status === "Không hoạt động"
                     )}
                   />
                 </TabsContent>
@@ -315,12 +312,12 @@ const ResidentsList = ({ residents }: ResidentsListProps) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Unit</TableHead>
-            <TableHead className="hidden md:table-cell">Contact</TableHead>
-            <TableHead className="hidden md:table-cell">Type</TableHead>
-            <TableHead className="hidden md:table-cell">Lease End</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead>Họ và tên</TableHead>
+            <TableHead>Căn hộ</TableHead>
+            <TableHead className="hidden md:table-cell">Liên hệ</TableHead>
+            <TableHead className="hidden md:table-cell">Loại</TableHead>
+            <TableHead className="hidden md:table-cell">Ngày kết thúc hợp đồng</TableHead>
+            <TableHead>Trạng thái</TableHead>
             <TableHead className="w-[50px]"></TableHead>
           </TableRow>
         </TableHeader>
@@ -362,7 +359,7 @@ const ResidentsList = ({ residents }: ResidentsListProps) => {
                 <div className="flex items-center gap-1">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                   <span>
-                    {new Date(resident.leaseEnd).toLocaleDateString()}
+                    {new Date(resident.leaseEnd).toLocaleDateString("vi-VN")}
                   </span>
                 </div>
               </TableCell>
@@ -370,7 +367,7 @@ const ResidentsList = ({ residents }: ResidentsListProps) => {
                 <Badge
                   variant="outline"
                   className={
-                    resident.status === "Active"
+                    resident.status === "Hoạt động"
                       ? "bg-success/10 text-success hover:bg-success/20"
                       : "bg-muted text-muted-foreground"
                   }
@@ -386,9 +383,9 @@ const ResidentsList = ({ residents }: ResidentsListProps) => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>View Profile</DropdownMenuItem>
-                    <DropdownMenuItem>Edit Resident</DropdownMenuItem>
-                    <DropdownMenuItem>Manage Lease</DropdownMenuItem>
+                    <DropdownMenuItem>Xem hồ sơ</DropdownMenuItem>
+                    <DropdownMenuItem>Chỉnh sửa thông tin cư dân</DropdownMenuItem>
+                    <DropdownMenuItem>Quản lý hợp đồng</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>
@@ -398,7 +395,7 @@ const ResidentsList = ({ residents }: ResidentsListProps) => {
       </Table>
       {residents.length === 0 && (
         <div className="p-4 text-center text-muted-foreground">
-          No residents matching your search criteria
+          Không có cư dân nào khớp với tiêu chí tìm kiếm
         </div>
       )}
     </div>
