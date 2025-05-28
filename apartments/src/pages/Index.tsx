@@ -12,9 +12,7 @@ const Index = () => {
             <Building className="h-8 w-8 text-primary-foreground" />
           </div>
         </div>
-        <h1 className="text-3xl font-bold tracking-tight">
-          Building Management System
-        </h1>
+        <h1 className="text-3xl font-bold tracking-tight">Blue Moon</h1>
         <p className="text-muted-foreground max-w-md mx-auto mt-2">
           Complete building management solution for administrators and residents
         </p>
@@ -23,8 +21,8 @@ const Index = () => {
       <LoginForm />
 
       <p className="mt-6 text-sm text-muted-foreground text-center max-w-md">
-        Building Management System provides comprehensive tools for property
-        administrators and residents.
+        Blue Moon provides comprehensive tools for property administrators and
+        residents.
       </p>
     </div>
   );
