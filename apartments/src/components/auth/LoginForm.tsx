@@ -46,7 +46,7 @@ export function LoginForm() {
             <Building className="h-6 w-6 text-primary-foreground" />
           </div>
         </div>
-        <CardTitle className="text-2xl">Building Management System</CardTitle>
+        <CardTitle className="text-2xl">Blue Moon</CardTitle>
         <CardDescription>
           Enter your credentials to access your account
         </CardDescription>
@@ -111,11 +111,6 @@ export function LoginForm() {
           </TabsContent>
         </Tabs>
       </CardContent>
-      <CardFooter className="flex flex-col space-y-2 border-t p-4">
-        <div className="text-xs text-center text-muted-foreground">
-          Protected by BuildingMS security protocols
-        </div>
-      </CardFooter>
     </Card>
   );
 }

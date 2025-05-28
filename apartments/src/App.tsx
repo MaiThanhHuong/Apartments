@@ -10,6 +10,7 @@ import Residents from "./pages/Residents.tsx";
 import ServiceRequests from "./pages/ServiceRequests.tsx";
 import Billing from "./pages/Billing.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import SettingsPage from "@/pages/Settings";
 
 // Resident pages
 import ResidentDashboard from "./pages/resident/Dashboard.tsx";
@@ -55,6 +56,7 @@ const App = () => (
             element={<ResidentNotifications />}
           />
           <Route path="/resident/feedback" element={<ResidentFeedback />} />
+          <Route path="/settings" element={<SettingsPage />} />
 
           {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />

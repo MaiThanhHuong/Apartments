@@ -209,7 +209,9 @@ const Residents = () => {
                         <SelectContent>
                           <SelectItem value="Chủ sở hữu">Chủ sở hữu</SelectItem>
                           <SelectItem value="Người thuê">Người thuê</SelectItem>
-                          <SelectItem value="Thành viên gia đình">Thành viên gia đình</SelectItem>
+                          <SelectItem value="Thành viên gia đình">
+                            Thành viên gia đình
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -221,7 +223,9 @@ const Residents = () => {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="active">Hoạt động</SelectItem>
-                          <SelectItem value="inactive">Không hoạt động</SelectItem>
+                          <SelectItem value="inactive">
+                            Không hoạt động
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -244,12 +248,6 @@ const Residents = () => {
             <div className="mb-6 space-y-4">
               <Tabs defaultValue="all" onValueChange={setActiveTab}>
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <TabsList>
-                    <TabsTrigger value="all">Tất cả cư dân</TabsTrigger>
-                    <TabsTrigger value="active">Hoạt động</TabsTrigger>
-                    <TabsTrigger value="inactive">Không hoạt động</TabsTrigger>
-                  </TabsList>
-
                   <div className="flex flex-col md:flex-row gap-4">
                     <Input
                       placeholder="Tìm kiếm theo tên, email hoặc căn hộ..."
@@ -268,7 +266,9 @@ const Residents = () => {
                         <SelectItem value="all">Tất cả loại</SelectItem>
                         <SelectItem value="Chủ sở hữu">Chủ sở hữu</SelectItem>
                         <SelectItem value="Người thuê">Người thuê</SelectItem>
-                        <SelectItem value="Cựu người thuê">Cựu người thuê</SelectItem>
+                        <SelectItem value="Cựu người thuê">
+                          Cựu người thuê
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -316,7 +316,9 @@ const ResidentsList = ({ residents }: ResidentsListProps) => {
             <TableHead>Căn hộ</TableHead>
             <TableHead className="hidden md:table-cell">Liên hệ</TableHead>
             <TableHead className="hidden md:table-cell">Loại</TableHead>
-            <TableHead className="hidden md:table-cell">Ngày kết thúc hợp đồng</TableHead>
+            <TableHead className="hidden md:table-cell">
+              Ngày kết thúc hợp đồng
+            </TableHead>
             <TableHead>Trạng thái</TableHead>
             <TableHead className="w-[50px]"></TableHead>
           </TableRow>
@@ -384,7 +386,9 @@ const ResidentsList = ({ residents }: ResidentsListProps) => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem>Xem hồ sơ</DropdownMenuItem>
-                    <DropdownMenuItem>Chỉnh sửa thông tin cư dân</DropdownMenuItem>
+                    <DropdownMenuItem>
+                      Chỉnh sửa thông tin cư dân
+                    </DropdownMenuItem>
                     <DropdownMenuItem>Quản lý hợp đồng</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

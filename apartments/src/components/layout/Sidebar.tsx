@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -34,12 +33,12 @@ export function Sidebar({ className }: SidebarProps) {
       icon: Home,
     },
     {
-      name: "CĂN HỘ",
+      name: "QUẢN LÝ HỘ KHẨU",
       href: "/apartments",
       icon: Building,
     },
     {
-      name: "CƯ DÂN",
+      name: "QUẢN LÝ NHÂN KHẨU",
       href: "/residents",
       icon: Users,
     },
@@ -47,17 +46,11 @@ export function Sidebar({ className }: SidebarProps) {
       name: "YÊU CẦU DỊCH VỤ",
       href: "/service-requests",
       icon: MessageSquare,
-    
     },
     {
       name: "HÓA ĐƠN",
       href: "/billing",
       icon: FileText,
-    },
-    {
-      name: "THÔNG BÁO",
-      href: "/notifications",
-      icon: Mail,
     },
     {
       name: "CÀI ĐẶT",
