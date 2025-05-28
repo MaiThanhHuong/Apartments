@@ -315,12 +315,6 @@ const Billing = () => {
             <div className="mb-6 space-y-4">
               <Tabs defaultValue="all" onValueChange={setActiveTab}>
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <TabsList>
-                    <TabsTrigger value="all">Tất cả hóa đơn</TabsTrigger>
-                    <TabsTrigger value="paid">Đã thanh toán</TabsTrigger>
-                    <TabsTrigger value="pending">Chờ thanh toán</TabsTrigger>
-                    <TabsTrigger value="overdue">Quá hạn</TabsTrigger>
-                  </TabsList>
 
                   <div className="flex flex-col md:flex-row gap-4">
                     <Input
