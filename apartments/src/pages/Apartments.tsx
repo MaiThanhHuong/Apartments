@@ -78,7 +78,7 @@ const Apartments = () => {
   const loadApartments = async () => {
     try {
       setLoading(true);
-      console.log('🔄 Fetching apartments...');
+      console.log("🔄 Fetching apartments...");
 
       const response = await fetch("/api/apartments");
 
@@ -87,12 +87,12 @@ const Apartments = () => {
       }
 
       const data = await response.json();
-      console.log('✅ Apartments loaded:', data);
+      console.log("✅ Apartments loaded:", data);
       setApartments(data);
       setError(null);
     } catch (error) {
       console.error("❌ Error loading apartments:", error);
-      setError(error instanceof Error ? error.message : 'Unknown error');
+      setError(error instanceof Error ? error.message : "Unknown error");
       setApartments([]);
     } finally {
       setLoading(false);
@@ -106,7 +106,14 @@ const Apartments = () => {
   const handleSubmit = async () => {
     console.log(formData);
     // Kiểm tra rỗng
-    if (!formData.id || !formData.sonha || !formData.duong || !formData.phuong || !formData.quan || !formData.ngaylamhokhau) {
+    if (
+      !formData.id ||
+      !formData.sonha ||
+      !formData.duong ||
+      !formData.phuong ||
+      !formData.quan ||
+      !formData.ngaylamhokhau
+    ) {
       alert("❌ Vui lòng nhập đầy đủ thông tin!");
       return;
     }
@@ -121,7 +128,14 @@ const Apartments = () => {
         alert("✅ Thêm hộ khẩu thành công!");
         // loadApartments();
         window.location.reload(); // Reload trang
-        setFormData({ id: "", sonha: "", duong: "", phuong: "", quan: "", ngaylamhokhau: "" });
+        setFormData({
+          id: "",
+          sonha: "",
+          duong: "",
+          phuong: "",
+          quan: "",
+          ngaylamhokhau: "",
+        });
       } else {
         const error = await res.json();
         alert("❌ Lỗi: " + error.message);
@@ -208,30 +222,60 @@ const Apartments = () => {
                     </DialogDescription>
                   </DialogHeader>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
                     <div className="space-y-2">
                       <Label htmlFor="id">Số hộ</Label>
-                      <Input id="id" placeholder="Nhập số hộ" required onChange={handleChange} />
+                      <Input
+                        id="id"
+                        placeholder="Nhập số hộ"
+                        required
+                        onChange={handleChange}
+                      />
                     </div>
-                    <div className="space-y-2">
+                    <div className="grid grid-cols-2 gap-4">
                       <Label htmlFor="sonha">Số nhà</Label>
-                      <Input id="sonha" placeholder="Nhập số nhà" required onChange={handleChange} />
+                      <Input
+                        id="sonha"
+                        placeholder="Nhập số nhà"
+                        required
+                        onChange={handleChange}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="duong">Đường</Label>
-                      <Input id="duong" placeholder="Nhập tên đường" required onChange={handleChange} />
+                      <Input
+                        id="duong"
+                        placeholder="Nhập tên đường"
+                        required
+                        onChange={handleChange}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="phuong">Phường</Label>
-                      <Input id="phuong" placeholder="Nhập phường" required onChange={handleChange} />
+                      <Input
+                        id="phuong"
+                        placeholder="Nhập phường"
+                        required
+                        onChange={handleChange}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="quan">Quận</Label>
-                      <Input id="quan" placeholder="Nhập quận" required onChange={handleChange} />
+                      <Input
+                        id="quan"
+                        placeholder="Nhập quận"
+                        required
+                        onChange={handleChange}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="ngaylamhokhau">Ngày làm hộ khẩu</Label>
-                      <Input id="ngaylamhokhau" type="date" required onChange={handleChange} />
+                      <Input
+                        id="ngaylamhokhau"
+                        type="date"
+                        required
+                        onChange={handleChange}
+                      />
                     </div>
                   </div>
 
@@ -271,9 +315,15 @@ const Apartments = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Số hộ</TableHead>
-                    <TableHead className="hidden md:table-cell">Số nhà</TableHead>
-                    <TableHead className="hidden md:table-cell">Đường</TableHead>
-                    <TableHead className="hidden md:table-cell">Phường</TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Số nhà
+                    </TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Đường
+                    </TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Phường
+                    </TableHead>
                     <TableHead>Quận</TableHead>
                     <TableHead>Ngày làm hộ khẩu</TableHead>
                     <TableHead>Chủ hộ</TableHead>
@@ -284,34 +334,38 @@ const Apartments = () => {
                   {filteredApartments.map((apartment) => (
                     <TableRow key={apartment.id}>
                       <TableCell className="font-medium">
+                        {apartment.id || "N/A"}
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">
                         <div className="flex items-center">
                           <Building className="mr-2 h-4 w-4 text-primary" />
-                          {apartment.id || 'N/A'}
+                          {apartment.sonha || "N/A"}
                         </div>
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                        {apartment.sonha || 'N/A'}
+                        {apartment.duong || "N/A"}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                        {apartment.duong || 'N/A'}
+                        {apartment.phuong || "N/A"}
                       </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        {apartment.phuong || 'N/A'}
-                      </TableCell>
-                      <TableCell>{apartment.quan || 'N/A'}</TableCell>
+                      <TableCell>{apartment.quan || "N/A"}</TableCell>
                       <TableCell>
                         {apartment.ngaylamhokhau
-                          ? new Date(apartment.ngaylamhokhau).toLocaleDateString()
-                          : 'N/A'}
+                          ? new Date(
+                              apartment.ngaylamhokhau
+                            ).toLocaleDateString()
+                          : "N/A"}
                       </TableCell>
                       <TableCell>
                         <Badge
                           variant="outline"
-                          className={apartment.hoten
-                            ? "bg-success/10 text-success hover:bg-success/20"
-                            : "bg-gray/10 text-gray hover:bg-gray/20"}
+                          className={
+                            apartment.hoten
+                              ? "bg-success/10 text-success hover:bg-success/20"
+                              : "bg-gray/10 text-gray hover:bg-gray/20"
+                          }
                         >
-                          {apartment.hoten || 'Chưa có chủ hộ'}
+                          {apartment.hoten || "Chưa có chủ hộ"}
                         </Badge>
                       </TableCell>
                       <TableCell>
@@ -324,7 +378,9 @@ const Apartments = () => {
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
                             <DropdownMenuItem>Chỉnh sửa</DropdownMenuItem>
-                            <DropdownMenuItem>Quản lý nhân khẩu</DropdownMenuItem>
+                            <DropdownMenuItem>
+                              Quản lý nhân khẩu
+                            </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
