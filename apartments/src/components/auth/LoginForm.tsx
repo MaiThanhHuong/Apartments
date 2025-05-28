@@ -11,31 +11,58 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Building } from "lucide-react";
 
 export function LoginForm() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const handleAdminLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-    // Simulate login - In a real app, you'd validate credentials
-    setTimeout(() => {
-      setIsLoading(false);
-      navigate("/dashboard");
-    }, 1000);
-  };
-  const handleResidentLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    console.log({ username, password }); // Debug log like handleSubmit
 
-    // Simulate login - In a real app, you'd validate credentials
-    setTimeout(() => {
+    // Kiểm tra rỗng
+    if (!username || !password) {
+      alert("❌ Vui lòng nhập đầy đủ thông tin!");
+      return;
+    }
+
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
       setIsLoading(false);
-      navigate("/resident");
-    }, 1000);
+
+      if (response.ok) {
+        alert("✅ Đăng nhập thành công!");
+        setUsername(""); // Reset username field
+        setPassword(""); // Reset password field
+        const role = data.user.role;
+        if (role === "admin") {
+          navigate("/dashboard");
+        // } else if (role === "ketoan") {
+        //   navigate("/billing");
+        } else {
+          alert("❌ Vai trò không hợp lệ.");
+        }
+      } else {
+        alert("❌ Lỗi: " + (data.message || "Đăng nhập thất bại."));
+      }
+    } catch (err) {
+      console.error("❌ Error:", err);
+      setIsLoading(false);
+      alert("❌ Lỗi kết nối đến server.");
+    }
   };
 
   return (
@@ -46,70 +73,40 @@ export function LoginForm() {
             <Building className="h-6 w-6 text-primary-foreground" />
           </div>
         </div>
-        <CardTitle className="text-2xl">Building Management System</CardTitle>
+        <CardTitle className="text-2xl">BLUE MOON</CardTitle>
         <CardDescription>
           Enter your credentials to access your account
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
-        <Tabs defaultValue="admin" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="admin">Admin</TabsTrigger>
-            <TabsTrigger value="resident">Resident</TabsTrigger>
-          </TabsList>
-          <TabsContent value="admin">
-            <form onSubmit={handleAdminLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="admin-email">Email</Label>
-                <Input
-                  id="admin-email"
-                  placeholder="admin@example.com"
-                  type="email"
-                  required
-                  defaultValue="admin@example.com"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="admin-password">Password</Label>
-                <Input
-                  id="admin-password"
-                  type="password"
-                  required
-                  defaultValue="admin123"
-                />
-              </div>
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Logging in..." : "Login as Administrator"}
-              </Button>
-            </form>
-          </TabsContent>
-          <TabsContent value="resident">
-            <form onSubmit={handleResidentLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="resident-email">Email</Label>
-                <Input
-                  id="resident-email"
-                  placeholder="resident@example.com"
-                  type="email"
-                  required
-                  defaultValue="resident@example.com"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="resident-password">Password</Label>
-                <Input
-                  id="resident-password"
-                  type="password"
-                  required
-                  defaultValue="resident123"
-                />
-              </div>
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Logging in..." : "Login as Resident"}
-              </Button>
-            </form>
-          </TabsContent>
-        </Tabs>
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="username">Username</Label>
+            <Input
+              id="username"
+              placeholder="Enter your username"
+              type="text"
+              required
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              placeholder="Enter your password"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? "Logging in..." : "Login"}
+          </Button>
+        </form>
       </CardContent>
       <CardFooter className="flex flex-col space-y-2 border-t p-4">
         <div className="text-xs text-center text-muted-foreground">
@@ -119,3 +116,5 @@ export function LoginForm() {
     </Card>
   );
 }
+
+export default LoginForm;

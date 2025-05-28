@@ -12,15 +12,19 @@ import Billing from "./pages/Billing.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 // Resident pages
-import ResidentDashboard from "./pages/resident/Dashboard.tsx";
-import ResidentProfile from "./pages/resident/Profile.tsx";
-import ResidentApartment from "./pages/resident/Apartment.tsx";
-import ResidentServiceRequests from "./pages/resident/ServiceRequests.tsx";
-import ResidentPayments from "./pages/resident/Payments.tsx";
-import ResidentParking from "./pages/resident/Parking.tsx";
-import ResidentInternet from "./pages/resident/Internet.tsx";
-import ResidentNotifications from "./pages/resident/Notifications.tsx";
-import ResidentFeedback from "./pages/resident/Feedback.tsx";
+// import ResidentDashboard from "./pages/resident/Dashboard.tsx";
+// import ResidentProfile from "./pages/resident/Profile.tsx";
+// import ResidentApartment from "./pages/resident/Apartment.tsx";
+// import ResidentServiceRequests from "./pages/resident/ServiceRequests.tsx";
+// import ResidentPayments from "./pages/resident/Payments.tsx";
+// import ResidentParking from "./pages/resident/Parking.tsx";
+// import ResidentInternet from "./pages/resident/Internet.tsx";
+// import ResidentNotifications from "./pages/resident/Notifications.tsx";
+// import ResidentFeedback from "./pages/resident/Feedback.tsx";
+
+
+//Accountant Page
+import Accountant from "./pages/Billing.tsx"; 
 
 const queryClient = new QueryClient();
 
@@ -39,22 +43,10 @@ const App = () => (
           <Route path="/service-requests" element={<ServiceRequests />} />
           <Route path="/billing" element={<Billing />} />
 
-          {/* Resident Routes */}
-          <Route path="/resident" element={<ResidentDashboard />} />
-          <Route path="/resident/profile" element={<ResidentProfile />} />
-          <Route path="/resident/apartment" element={<ResidentApartment />} />
-          <Route
-            path="/resident/service-requests"
-            element={<ResidentServiceRequests />}
-          />
-          <Route path="/resident/payments" element={<ResidentPayments />} />
-          <Route path="/resident/parking" element={<ResidentParking />} />
-          <Route path="/resident/internet" element={<ResidentInternet />} />
-          <Route
-            path="/resident/notifications"
-            element={<ResidentNotifications />}
-          />
-          <Route path="/resident/feedback" element={<ResidentFeedback />} />
+          {/* Accountant Routes */}
+          <Route path="/accountant" element={<Accountant />} />
+
+        
 
           {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />
