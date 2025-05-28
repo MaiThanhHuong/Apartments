@@ -193,27 +193,33 @@ const Billing = () => {
         <div className="grid gap-4 md:grid-cols-3">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Tổng đã thanh toán</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Tổng đã thanh toán
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-success">
                 ${totalPaid.toLocaleString()}
               </div>
               <p className="text-xs text-muted-foreground">
-                {invoices.filter((i) => i.status === "Đã thanh toán").length} hóa đơn
+                {invoices.filter((i) => i.status === "Đã thanh toán").length}{" "}
+                hóa đơn
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Chờ thanh toán</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Chờ thanh toán
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-warning">
                 ${totalPending.toLocaleString()}
               </div>
               <p className="text-xs text-muted-foreground">
-                {invoices.filter((i) => i.status === "Chờ thanh toán").length} hóa đơn
+                {invoices.filter((i) => i.status === "Chờ thanh toán").length}{" "}
+                hóa đơn
               </p>
             </CardContent>
           </Card>
@@ -263,7 +269,9 @@ const Billing = () => {
                           <SelectValue placeholder="Chọn căn hộ" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="101">101 - Nguyễn Văn A</SelectItem>
+                          <SelectItem value="101">
+                            101 - Nguyễn Văn A
+                          </SelectItem>
                           <SelectItem value="202">202 - Trần Thị B</SelectItem>
                           <SelectItem value="305">305 - Lê Văn C</SelectItem>
                           <SelectItem value="401">401 - Phạm Thị D</SelectItem>
@@ -278,7 +286,9 @@ const Billing = () => {
                           <SelectValue placeholder="Chọn danh mục" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="maintenance">Bảo trì hàng tháng</SelectItem>
+                          <SelectItem value="maintenance">
+                            Bảo trì hàng tháng
+                          </SelectItem>
                           <SelectItem value="utilities">Tiện ích</SelectItem>
                           <SelectItem value="parking">Phí đỗ xe</SelectItem>
                           <SelectItem value="repair">Phí sửa chữa</SelectItem>
@@ -296,10 +306,7 @@ const Billing = () => {
                     </div>
                     <div className="space-y-2 md:col-span-2">
                       <Label htmlFor="description">Mô tả</Label>
-                      <Input
-                        id="description"
-                        placeholder="Mô tả hóa đơn..."
-                      />
+                      <Input id="description" placeholder="Mô tả hóa đơn..." />
                     </div>
                   </div>
 
@@ -315,13 +322,6 @@ const Billing = () => {
             <div className="mb-6 space-y-4">
               <Tabs defaultValue="all" onValueChange={setActiveTab}>
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <TabsList>
-                    <TabsTrigger value="all">Tất cả hóa đơn</TabsTrigger>
-                    <TabsTrigger value="paid">Đã thanh toán</TabsTrigger>
-                    <TabsTrigger value="pending">Chờ thanh toán</TabsTrigger>
-                    <TabsTrigger value="overdue">Quá hạn</TabsTrigger>
-                  </TabsList>
-
                   <div className="flex flex-col md:flex-row gap-4">
                     <Input
                       placeholder="Tìm kiếm hóa đơn..."
@@ -339,8 +339,12 @@ const Billing = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">Tất cả trạng thái</SelectItem>
-                        <SelectItem value="Đã thanh toán">Đã thanh toán</SelectItem>
-                        <SelectItem value="Chờ thanh toán">Chờ thanh toán</SelectItem>
+                        <SelectItem value="Đã thanh toán">
+                          Đã thanh toán
+                        </SelectItem>
+                        <SelectItem value="Chờ thanh toán">
+                          Chờ thanh toán
+                        </SelectItem>
                         <SelectItem value="Quá hạn">Quá hạn</SelectItem>
                       </SelectContent>
                     </Select>
@@ -409,7 +413,9 @@ function InvoicesList({ invoices }: InvoicesListProps) {
             <TableHead>Mã hóa đơn</TableHead>
             <TableHead>Căn hộ</TableHead>
             <TableHead className="hidden md:table-cell">Cư dân</TableHead>
-            <TableHead className="hidden md:table-cell">Ngày phát hành</TableHead>
+            <TableHead className="hidden md:table-cell">
+              Ngày phát hành
+            </TableHead>
             <TableHead>Ngày đến hạn</TableHead>
             <TableHead>Số tiền</TableHead>
             <TableHead>Trạng thái</TableHead>
@@ -466,7 +472,8 @@ function InvoicesList({ invoices }: InvoicesListProps) {
                       <Download className="mr-2 h-4 w-4" /> Tải PDF
                     </DropdownMenuItem>
                     <DropdownMenuItem>
-                      <CreditCard className="mr-2 h-4 w-4" /> Ghi nhận thanh toán
+                      <CreditCard className="mr-2 h-4 w-4" /> Ghi nhận thanh
+                      toán
                     </DropdownMenuItem>
                     <DropdownMenuItem>Gửi nhắc nhở</DropdownMenuItem>
                   </DropdownMenuContent>

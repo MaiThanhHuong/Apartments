@@ -10,6 +10,7 @@ import Residents from "./pages/Residents.tsx";
 import ServiceRequests from "./pages/ServiceRequests.tsx";
 import Billing from "./pages/Billing.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import SettingsPage from "@/pages/Settings";
 
 // Resident pages
 // import ResidentDashboard from "./pages/resident/Dashboard.tsx";
@@ -43,10 +44,12 @@ const App = () => (
           <Route path="/service-requests" element={<ServiceRequests />} />
           <Route path="/billing" element={<Billing />} />
 
+
           {/* Accountant Routes */}
           <Route path="/accountant" element={<Accountant />} />
 
         
+
 
           {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />

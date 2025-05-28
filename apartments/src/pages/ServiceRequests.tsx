@@ -40,13 +40,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Plus,
-  MoreHorizontal,
-  Home,
-  Calendar,
-  MessageSquare,
-} from "lucide-react";
+import { Plus, MoreHorizontal, Home, Calendar } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -116,7 +110,7 @@ const serviceRequestsData = [
 ];
 
 const ServiceRequests = () => {
-  const [requests, setRequests] = useState(serviceRequestsData);
+  const [requests] = useState(serviceRequestsData);
   const [searchTerm, setSearchTerm] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -214,8 +208,12 @@ const ServiceRequests = () => {
                           <SelectValue placeholder="Chọn căn hộ" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="101">101 - Nguyễn Văn A</SelectItem>
-                          <SelectItem value="203">203 - Nguyễn Thị G</SelectItem>
+                          <SelectItem value="101">
+                            101 - Nguyễn Văn A
+                          </SelectItem>
+                          <SelectItem value="203">
+                            203 - Nguyễn Thị G
+                          </SelectItem>
                           <SelectItem value="305">305 - Lê Văn C</SelectItem>
                           <SelectItem value="401">401 - Phạm Thị D</SelectItem>
                           <SelectItem value="502">502 - Hoàng Văn E</SelectItem>
@@ -273,13 +271,6 @@ const ServiceRequests = () => {
             <div className="mb-6 space-y-4">
               <Tabs defaultValue="all" onValueChange={setActiveTab}>
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <TabsList>
-                    <TabsTrigger value="all">Tất cả yêu cầu</TabsTrigger>
-                    <TabsTrigger value="pending">Chờ xử lý</TabsTrigger>
-                    <TabsTrigger value="inprogress">Đang xử lý</TabsTrigger>
-                    <TabsTrigger value="completed">Đã hoàn thành</TabsTrigger>
-                  </TabsList>
-
                   <div className="flex flex-col md:flex-row gap-4">
                     <Input
                       placeholder="Tìm kiếm yêu cầu..."
@@ -425,7 +416,9 @@ function ServiceRequestsList({ requests }: ServiceRequestsListProps) {
                 <div className="flex items-center gap-1">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                   <span>
-                    {new Date(request.dateSubmitted).toLocaleDateString("vi-VN")}
+                    {new Date(request.dateSubmitted).toLocaleDateString(
+                      "vi-VN"
+                    )}
                   </span>
                 </div>
               </TableCell>
