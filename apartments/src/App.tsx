@@ -14,6 +14,7 @@ import SettingsPage from "@/pages/Settings";
 //Accountant Page
 import Accountant from "./pages/Billing.tsx";
 
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -37,9 +38,6 @@ const App = () => (
 
           {/* Catch-all route */}
 
-
-          {/* Accountant Routes */}
-          <Route path="/accountant" element={<Accountant />} />
 
           {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />
