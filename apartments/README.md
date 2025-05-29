@@ -32,6 +32,12 @@ Apartments là một ứng dụng web quản lý căn hộ, cung cấp các ch�
   DB_PASSWORD=[mật_khẩu]
   DB_NAME=[tên_cơ_sở_dữ_liệu]
   PORT=[cổng_server]
+
+  MYSQL_HOST='localhost'
+  MYSQL_USER='root'
+  MYSQL_PASSWORD=''
+  MYSQL_DATABASE=''
+  MYSQL_PORT='3306'
   ```
 
 ### 3. Cài đặt môi trường

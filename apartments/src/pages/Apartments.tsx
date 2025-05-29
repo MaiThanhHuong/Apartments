@@ -113,6 +113,7 @@ const Apartments = () => {
       !formData.phuong ||
       !formData.quan ||
       !formData.ngaylamhokhau
+      
     ) {
       alert("❌ Vui lòng nhập đầy đủ thông tin!");
       return;
@@ -280,7 +281,7 @@ const Apartments = () => {
                   </div>
 
                   <DialogFooter>
-                    <Button variant="outline">Hủy</Button>
+                    {/* <Button variant="outline">Hủy</Button> */}
                     <Button onClick={handleSubmit}>Lưu</Button>
                   </DialogFooter>
                 </DialogContent>

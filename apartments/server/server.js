@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import apartmentsRouter from "./routes/apartments.js";
 import loginRouter from "./routes/Login.js";
+import settings from "./routes/settings.js";
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ app.use(express.json());
 
 app.use("/api/apartments", apartmentsRouter);
 app.use("/api", loginRouter);
+app.use("/api/settings",s)
 export const db = mysql.createPool({
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USER,
