@@ -12,6 +12,11 @@ import Billing from "./pages/Billing.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import SettingsPage from "@/pages/Settings";
 
+
+//Accountant Page
+import Accountant from "./pages/Billing.tsx";
+
+
 // Resident pages
 // import ResidentDashboard from "./pages/resident/Dashboard.tsx";
 // import ResidentProfile from "./pages/resident/Profile.tsx";
@@ -41,8 +46,16 @@ const App = () => (
           <Route path="/apartments" element={<Apartments />} />
           <Route path="/residents" element={<Residents />} />
           <Route path="/service-requests" element={<ServiceRequests />} />
+
+          <Route path="/billing" element={<Billing />} />
           <Route path="/billing" element={<Billing />} />
           <Route path="/settings" element={<SettingsPage />} />
+
+          {/* Accountant Routes */}
+          <Route path="/accountant" element={<Accountant />} />
+
+          {/* Catch-all route */}
+
 
           {/* Accountant Routes */}
           <Route path="/accountant" element={<Accountant />} />
