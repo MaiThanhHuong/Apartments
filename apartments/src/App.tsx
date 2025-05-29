@@ -14,7 +14,7 @@ import SettingsPage from "@/pages/Settings";
 
 
 //Accountant Page
-import Accountant from "./pages/Billing.tsx";
+// import Accountant from "./pages/Billing.tsx";
 
 
 // Resident pages
