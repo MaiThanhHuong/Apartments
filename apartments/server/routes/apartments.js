@@ -34,4 +34,39 @@ router.post("/add", async (req, res) => {
     }
 });
 
+router.put('/:id', async (req, res) => {
+    const id = req.params.id;
+    const { sonha, duong, phuong, quan, ngaylamhokhau } = req.body;
+
+    try {
+        const [result] = await db.query(
+            `UPDATE hokhau SET sonha = ?, duong = ?, phuong = ?, quan = ?, ngaylamhokhau = ? WHERE id = ?`,
+            [sonha, duong, phuong, quan, ngaylamhokhau, id]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Không tìm thấy hộ khẩu để cập nhật.' });
+        }
+
+        res.status(200).json({ message: 'Cập nhật thành công.' });
+    } catch (error) {
+        console.error('Lỗi khi cập nhật hộ khẩu:', error);
+        res.status(500).json({ message: 'Lỗi server.' });
+    }
+});
+
+router.delete("/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+        const [result] = await db.query("DELETE FROM hokhau WHERE id = ?", [id]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "Không tìm thấy căn hộ để xóa." });
+        }
+        res.json({ message: "Xóa căn hộ thành công." });
+    } catch (error) {
+        console.error("Lỗi khi xóa căn hộ:", error);
+        res.status(500).json({ message: "Lỗi máy chủ." });
+    }
+});
+
 export default router;

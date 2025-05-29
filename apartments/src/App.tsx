@@ -28,9 +28,6 @@ import Accountant from "./pages/Billing.tsx";
 // import ResidentNotifications from "./pages/resident/Notifications.tsx";
 // import ResidentFeedback from "./pages/resident/Feedback.tsx";
 
-//Accountant Page
-import Accountant from "./pages/Billing.tsx";
-
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -56,9 +53,6 @@ const App = () => (
 
           {/* Catch-all route */}
 
-
-          {/* Accountant Routes */}
-          <Route path="/accountant" element={<Accountant />} />
 
           {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />

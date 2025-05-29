@@ -3,6 +3,7 @@ import mysql from "mysql2"
 import cors from "cors";
 import dotenv from "dotenv";
 import apartmentsRouter from "./routes/apartments.js";
+import residentsRouter from "./routes/residents.js"
 import loginRouter from "./routes/Login.js";
 
 dotenv.config();
@@ -12,7 +13,9 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/apartments", apartmentsRouter);
+app.use("/api/residents", residentsRouter);
 app.use("/api", loginRouter);
+
 export const db = mysql.createPool({
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USER,
@@ -22,18 +25,6 @@ export const db = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0
 }).promise();
-
-// API lấy danh sách residents
-app.get("/api/residents", (req, res) => {
-  const query = "SELECT * FROM residents";
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error("Error fetching residents:", err);
-      return res.status(500).json({ error: "Database error" });
-    }
-    res.json(results);
-  });
-});
 
 const PORT = process.env.PORT || 3001;
 
