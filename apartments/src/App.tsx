@@ -26,6 +26,7 @@ import SettingsPage from "@/pages/Settings";
 
 //Accountant Page
 import Accountant from "./pages/Billing.tsx"; 
+import { Settings } from "lucide-react";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ const App = () => (
           <Route path="/residents" element={<Residents />} />
           <Route path="/service-requests" element={<ServiceRequests />} />
           <Route path="/billing" element={<Billing />} />
+          <Route path="/settings" element={<SettingsPage/>}/>
 
 
           {/* Accountant Routes */}
