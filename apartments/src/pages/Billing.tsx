@@ -322,13 +322,12 @@ const Billing = () => {
             <div className="mb-6 space-y-4">
               <Tabs defaultValue="all" onValueChange={setActiveTab}>
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-
                   <div className="flex flex-col md:flex-row gap-4">
                     <Input
                       placeholder="Tìm kiếm hóa đơn..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="md:w-[250px]"
+                      className="md:w-[500px]"
                     />
 
                     <Select
