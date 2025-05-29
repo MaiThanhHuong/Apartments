@@ -5,7 +5,11 @@ import dotenv from "dotenv";
 import apartmentsRouter from "./routes/apartments.js";
 import residentsRouter from "./routes/residents.js"
 import loginRouter from "./routes/Login.js";
-import initRoutes from "./routes/index.js";
+
+import settings from "./routes/settings.js";
+// =======
+// import initRoutes from "./routes/index.js";
+// >>>>>>> main
 
 dotenv.config({ path: '../.env' });
 
@@ -18,8 +22,12 @@ app.use("/api/apartments", apartmentsRouter);
 app.use("/api/residents", residentsRouter);
 app.use("/api", loginRouter);
 
-initRoutes(app);
+app.use("/api/settings",s)
+// =======
 
+// initRoutes(app);
+
+// >>>>>>> main
 export const db = mysql.createPool({
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USER,

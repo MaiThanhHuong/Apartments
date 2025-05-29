@@ -11,22 +11,9 @@ import ServiceRequests from "./pages/ServiceRequests.tsx";
 import Billing from "./pages/Billing.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import SettingsPage from "@/pages/Settings";
-
-
 //Accountant Page
-// import Accountant from "./pages/Billing.tsx";
+import Accountant from "./pages/Billing.tsx";
 
-
-// Resident pages
-// import ResidentDashboard from "./pages/resident/Dashboard.tsx";
-// import ResidentProfile from "./pages/resident/Profile.tsx";
-// import ResidentApartment from "./pages/resident/Apartment.tsx";
-// import ResidentServiceRequests from "./pages/resident/ServiceRequests.tsx";
-// import ResidentPayments from "./pages/resident/Payments.tsx";
-// import ResidentParking from "./pages/resident/Parking.tsx";
-// import ResidentInternet from "./pages/resident/Internet.tsx";
-// import ResidentNotifications from "./pages/resident/Notifications.tsx";
-// import ResidentFeedback from "./pages/resident/Feedback.tsx";
 
 const queryClient = new QueryClient();
 
@@ -43,8 +30,6 @@ const App = () => (
           <Route path="/apartments" element={<Apartments />} />
           <Route path="/residents" element={<Residents />} />
           <Route path="/service-requests" element={<ServiceRequests />} />
-
-          <Route path="/billing" element={<Billing />} />
           <Route path="/billing" element={<Billing />} />
           <Route path="/settings" element={<SettingsPage />} />
 

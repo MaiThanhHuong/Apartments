@@ -143,6 +143,7 @@ const Apartments = () => {
       !formData.phuong ||
       !formData.quan ||
       !formData.ngaylamhokhau
+      
     ) {
       alert("❌ Vui lòng nhập đầy đủ thông tin!");
       return;
@@ -412,6 +413,8 @@ const Apartments = () => {
                       />
                     </div>
                   </div>
+
+
 
                   <DialogFooter className="gap-2">
                     <Button 
