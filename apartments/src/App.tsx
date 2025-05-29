@@ -11,8 +11,11 @@ import ServiceRequests from "./pages/ServiceRequests.tsx";
 import Billing from "./pages/Billing.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import SettingsPage from "@/pages/Settings";
-import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import { userRole } from "@/lib/utils.ts"; // Update to import from utils.ts
+
+
+//Accountant Page
+import Accountant from "./pages/Billing.tsx";
+
 
 const queryClient = new QueryClient();
 
@@ -35,23 +38,15 @@ const App = () => (
           />
           <Route path="/residents" element={<Residents />} />
           <Route path="/service-requests" element={<ServiceRequests />} />
-          <Route
-            path="/billing"
-            element={
-              <ProtectedRoute userRole={userRole} requiredRole={null}>
-                <Billing userRole={userRole} />
-              </ProtectedRoute>
-            }
-          />
+
+          <Route path="/billing" element={<Billing />} />
           <Route path="/settings" element={<SettingsPage />} />
-          <Route
-            path="/accountant"
-            element={
-              <ProtectedRoute userRole={userRole} requiredRole="ketoan">
-                <Billing userRole={userRole} />
-              </ProtectedRoute>
-            }
-          />
+
+          {/* Accountant Routes */}
+          <Route path="/accountant" element={<Accountant />} />
+
+          {/* Catch-all route */}
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -328,7 +328,7 @@ const Billing = () => {
                       placeholder="Tìm kiếm hóa đơn..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="md:w-[250px]"
+                      className="md:w-[500px]"
                     />
 
                     <Select
