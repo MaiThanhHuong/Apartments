@@ -5,13 +5,13 @@ import dotenv from "dotenv";
 import apartmentsRouter from "./routes/apartments.js";
 import residentsRouter from "./routes/residents.js"
 import loginRouter from "./routes/Login.js";
-
 import settings from "./routes/settings.js";
-// =======
-// import initRoutes from "./routes/index.js";
-// >>>>>>> main
+import initRoutes from "./routes/index.js";
 
-dotenv.config({ path: '../.env' });
+// dotenv.config({ path: '../.env' });
+dotenv.config();
+
+
 
 export const app = express();
 app.use(cors());
@@ -21,13 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/apartments", apartmentsRouter);
 app.use("/api/residents", residentsRouter);
 app.use("/api", loginRouter);
-
-app.use("/api/settings",s)
-// =======
-
-// initRoutes(app);
-
-// >>>>>>> main
+initRoutes(app);
 export const db = mysql.createPool({
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USER,
