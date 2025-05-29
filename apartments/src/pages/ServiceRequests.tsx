@@ -276,14 +276,14 @@ const ServiceRequests = () => {
                       placeholder="Tìm kiếm yêu cầu..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="md:w-[200px]"
+                      className="md:w-[500px]"
                     />
 
                     <Select
                       value={priorityFilter}
                       onValueChange={(value) => setPriorityFilter(value)}
                     >
-                      <SelectTrigger className="w-full md:w-[150px]">
+                      <SelectTrigger className="w-full md:w-[180px]">
                         <SelectValue placeholder="Mức độ ưu tiên" />
                       </SelectTrigger>
                       <SelectContent>
@@ -298,7 +298,7 @@ const ServiceRequests = () => {
                       value={categoryFilter}
                       onValueChange={(value) => setCategoryFilter(value)}
                     >
-                      <SelectTrigger className="w-full md:w-[150px]">
+                      <SelectTrigger className="w-full md:w-[180px]">
                         <SelectValue placeholder="Danh mục" />
                       </SelectTrigger>
                       <SelectContent>

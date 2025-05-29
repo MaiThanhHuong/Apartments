@@ -253,7 +253,7 @@ const Residents = () => {
                       placeholder="Tìm kiếm theo tên, email hoặc căn hộ..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="md:w-[300px]"
+                      className="md:w-[500px]"
                     />
                     <Select
                       value={typeFilter}

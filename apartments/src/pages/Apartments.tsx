@@ -289,7 +289,7 @@ const Apartments = () => {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col md:flex-row gap-4 mb-6">
-              <div className="flex-1">
+              <div className="md:w-[500px]">
                 <Input
                   placeholder="Tìm kiếm theo số hộ, chủ hộ ..."
                   value={searchTerm}
