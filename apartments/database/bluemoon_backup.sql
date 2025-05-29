@@ -220,6 +220,7 @@ INSERT INTO `user` VALUES ('admin1','admin1','admin'),('admin2','admin2','admin'
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
+INSERT INTO bluemoon.user (username, password, vaitro)VALUES ('ketoan', '123456', 'ketoan');
 --
 -- Dumping events for database 'bluemoon'
 --
