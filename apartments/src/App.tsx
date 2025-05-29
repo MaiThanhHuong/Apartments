@@ -17,6 +17,20 @@ import SettingsPage from "@/pages/Settings";
 import Accountant from "./pages/Billing.tsx";
 
 
+// Resident pages
+// import ResidentDashboard from "./pages/resident/Dashboard.tsx";
+// import ResidentProfile from "./pages/resident/Profile.tsx";
+// import ResidentApartment from "./pages/resident/Apartment.tsx";
+// import ResidentServiceRequests from "./pages/resident/ServiceRequests.tsx";
+// import ResidentPayments from "./pages/resident/Payments.tsx";
+// import ResidentParking from "./pages/resident/Parking.tsx";
+// import ResidentInternet from "./pages/resident/Internet.tsx";
+// import ResidentNotifications from "./pages/resident/Notifications.tsx";
+// import ResidentFeedback from "./pages/resident/Feedback.tsx";
+
+//Accountant Page
+import Accountant from "./pages/Billing.tsx";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -26,19 +40,14 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* Admin/Management Routes */}
           <Route path="/" element={<Index />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route
-            path="/apartments"
-            element={
-              <ProtectedRoute userRole={userRole} requiredRole="admin">
-                <Apartments />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/apartments" element={<Apartments />} />
           <Route path="/residents" element={<Residents />} />
           <Route path="/service-requests" element={<ServiceRequests />} />
 
+          <Route path="/billing" element={<Billing />} />
           <Route path="/billing" element={<Billing />} />
           <Route path="/settings" element={<SettingsPage />} />
 
@@ -47,6 +56,11 @@ const App = () => (
 
           {/* Catch-all route */}
 
+
+          {/* Accountant Routes */}
+          <Route path="/accountant" element={<Accountant />} />
+
+          {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
