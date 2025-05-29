@@ -50,8 +50,8 @@ export function LoginForm() {
         const role = data.user.role;
         if (role === "admin") {
           navigate("/dashboard");
-        // } else if (role === "ketoan") {
-        //   navigate("/billing");
+        } else if (role === "ketoan") {
+          navigate("/billing");
         } else {
           alert("❌ Vai trò không hợp lệ.");
         }
