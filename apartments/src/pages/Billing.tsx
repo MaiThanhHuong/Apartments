@@ -49,8 +49,15 @@ import {
   CreditCard,
   Home,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
+
+type Apartment = {
+  sonha: string;
+  hoten: string;
+  // Thêm các trường khác nếu có, ví dụ: tenchuho, id, ...
+};
+
 
 // Dữ liệu mẫu cho hóa đơn
 const invoicesData = [
@@ -134,11 +141,43 @@ const invoicesData = [
   },
 ];
 
+// const getInvoiceStatus = (invoice: any) => {
+//   console.log(invoice)
+//   if (invoice.sotien >= invoice.amount) {
+//     return "Đã thanh toán";
+//   }
+//   const today = new Date();
+//   const due = new Date(invoice.dueDate);
+//   if (today > due) {
+//     return "Quá hạn";
+//   }
+//   return "Chờ thanh toán";
+// };
+
 const Billing = () => {
   const [invoices, setInvoices] = useState(invoicesData);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [activeTab, setActiveTab] = useState("all");
+  const [scope, setScope] = useState("ALL");
+  const [apartments, setApartments] = useState<Apartment[]>([]);
+  const [open, setOpen] = useState(false);
+
+  const today = new Date().toISOString().slice(0, 10); // yyyy-mm-dd
+
+  const [editFormDatata, setEditFormData] = useState({
+    unit: "ALL",
+    resident: "ALL",
+    issueDate: today,
+    dueDate: "",
+    amount: "0",
+    category: "", 
+  })
+
+
+  // useEffect(() => {
+  //   console.log(editFormDatata)
+  // })
 
   const filteredInvoices = invoices.filter((invoice) => {
     // Lọc theo từ khóa tìm kiếm
@@ -186,6 +225,48 @@ const Billing = () => {
         return "bg-secondary";
     }
   };
+
+  useEffect(() => {
+    fetch("http://localhost:3001/api/v1/billing/nhankhau-hokhau")
+      .then((res) => res.json())
+      .then((data) => setApartments(data))
+      .catch((err) => console.error("Lỗi khi fetch:", err));
+  }, []);
+
+  useEffect(() => {
+    fetch("http://localhost:3001/api/v1/billing/invoiceNumber")
+      .then((res) => res.json())
+      .then((data) => setInvoices(data))
+      .catch((err) => console.error("Lỗi khi fetch:", err));
+  }, []);
+
+  const fetchInvoices = () => {
+    fetch("http://localhost:3001/api/v1/billing/invoiceNumber")
+      .then((res) => res.json())
+      .then((data) => setInvoices(data))
+      .catch((err) => console.error("Lỗi khi fetch:", err));
+  };
+
+  const handleCreateInvoice = async () => {
+    try {
+      const res = await fetch("http://localhost:3001/api/v1/billing/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editFormDatata),
+      });
+      if (res.ok) {
+        fetchInvoices()
+        alert("Tạo hóa đơn thành công!");
+        setOpen(false);
+      } else {
+        const error = await res.json();
+        alert("Lỗi: " + error.message);
+      }
+    } catch (err) {
+      alert("Lỗi kết nối server!");
+    }
+  }
+
 
   return (
     <DashboardLayout title="Quản lý hóa đơn">
@@ -247,12 +328,13 @@ const Billing = () => {
                   Tạo và quản lý hóa đơn cho cư dân
                 </CardDescription>
               </div>
-              <Dialog>
+              <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
                   <Button className="w-full md:w-auto">
                     <Plus className="mr-2 h-4 w-4" /> Tạo hóa đơn
                   </Button>
                 </DialogTrigger>
+
                 <DialogContent className="max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle>Tạo hóa đơn mới</DialogTitle>
@@ -262,57 +344,108 @@ const Billing = () => {
                   </DialogHeader>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
+                    <div className="pace-y-2 md:col-span-2">
+                      <Label htmlFor="unit">Phạm vi</Label>
+                      <Select
+                        value={scope}
+                        onValueChange={(value) => {
+                          setScope(value);
+                          if (value === "ALL") {
+                            setEditFormData(prev => ({
+                              ...prev,
+                              unit: "ALL",
+                              resident: "ALL"
+                            }));
+                          }
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Chọn phạm vi" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="ALL">ALL-Tất cả các hộ</SelectItem>
+                          <SelectItem value="CUSTOM">CUSTOM-Chỉ 1 hộ gia đình</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {scope === 'CUSTOM' && <div className="space-y-2">
                       <Label htmlFor="unit">Căn hộ</Label>
-                      <Select>
+                      <Select
+                        onValueChange={(value) => {
+                          const selected = apartments.find(apt => apt.sonha === value);
+                          if (selected && scope === 'CUSTOM') {
+                            setEditFormData(prev => ({
+                              ...prev,
+                              unit: selected.sonha,
+                              resident: selected.hoten
+                            }));
+                          }
+                        }}>
                         <SelectTrigger>
                           <SelectValue placeholder="Chọn căn hộ" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="101">
-                            101 - Nguyễn Văn A
-                          </SelectItem>
-                          <SelectItem value="202">202 - Trần Thị B</SelectItem>
-                          <SelectItem value="305">305 - Lê Văn C</SelectItem>
-                          <SelectItem value="401">401 - Phạm Thị D</SelectItem>
-                          <SelectItem value="502">502 - Hoàng Văn E</SelectItem>
+                          {apartments.map((apt) => {
+                            return <SelectItem key={apt?.sonha} value={apt?.sonha}>{apt?.sonha}- {apt?.hoten}</SelectItem>
+                          })}
                         </SelectContent>
                       </Select>
-                    </div>
-                    <div className="space-y-2">
+                    </div>}
+
+                    <div className={scope === 'ALL' ? " " : "space-y-2"}>
                       <Label htmlFor="category">Danh mục</Label>
-                      <Select>
+                      <Select onValueChange={(value) => setEditFormData(prev => ({ ...prev, category: value }))}>
                         <SelectTrigger>
                           <SelectValue placeholder="Chọn danh mục" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="maintenance">
-                            Bảo trì hàng tháng
-                          </SelectItem>
-                          <SelectItem value="utilities">Tiện ích</SelectItem>
-                          <SelectItem value="parking">Phí đỗ xe</SelectItem>
-                          <SelectItem value="repair">Phí sửa chữa</SelectItem>
-                          <SelectItem value="other">Khác</SelectItem>
+                          <SelectItem value="Bảo trì hàng tháng">Bảo trì hàng tháng</SelectItem>
+                          <SelectItem value="Tiện ích">Tiện ích</SelectItem>
+                          <SelectItem value="Phí đỗ xe">Phí đỗ xe</SelectItem>
+                          <SelectItem value="Phí sửa chữa">Phí sửa chữa</SelectItem>
+                          <SelectItem value="KhácKhác">Khác</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="space-y-2">
+
+                    <div className="">
                       <Label htmlFor="amount">Số tiền ($)</Label>
-                      <Input id="amount" type="number" placeholder="0.00" />
+                      <Input
+                        id="amounta" type="number" placeholder="0.00"
+                        onChange={e => setEditFormData(prev => ({
+                          ...prev,
+                          amount: e.target.value
+                        }))}
+                      />
                     </div>
-                    <div className="space-y-2">
+
+                    <div className={scope === "ALL" ? "col-span-2 w-full" : ""}>
                       <Label htmlFor="due-date">Ngày đến hạn</Label>
-                      <Input id="due-date" type="date" />
+                      <Input
+                        id="due-date"
+                        type="date"
+                        className={scope === "ALL" ? "w-full" : ""}
+                        value={editFormDatata.dueDate}
+                        onChange={e => setEditFormData(prev => ({
+                          ...prev,
+                          dueDate: e.target.value
+                        }))}
+                      />
                     </div>
+
                     <div className="space-y-2 md:col-span-2">
                       <Label htmlFor="description">Mô tả</Label>
                       <Input id="description" placeholder="Mô tả hóa đơn..." />
                     </div>
+
                   </div>
 
                   <DialogFooter className="mt-4">
-                    <Button variant="outline">Hủy</Button>
-                    <Button>Tạo hóa đơn</Button>
+                    <Button variant="outline" onClick={() => setOpen(false)}>Hủy</Button>
+                    <Button onClick={handleCreateInvoice}>
+                      Tạo hóa đơn
+                    </Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
@@ -404,6 +537,7 @@ function InvoicesList({ invoices }: InvoicesListProps) {
         return "bg-secondary";
     }
   };
+
 
   return (
     <div className="rounded-md border overflow-hidden">

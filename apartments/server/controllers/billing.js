@@ -45,15 +45,16 @@ export const createBilling = async (req, res) => {
     try{
         // console.log(req.body);
 
-        const {tenkhoanthu, loaikhoanthu, ngaytao,sotien,thoihan} = req.body;
-        if(!tenkhoanthu || !loaikhoanthu || !ngaytao || !sotien || !thoihan){
+        const {amount, category, dueDate, issueDate, resident, unit } = req.body;
+        // console.log(req.body)
+        if(!amount || !category || !dueDate || !issueDate || !resident || !unit){
             return res.status(400).json({
                 err: 1,
                 message: "Missing required fields"
             });
         }
         const response = await billingService.createBillingServices(req.body);
-        // console.log(response);
+        // console.log(response);  
         if(response.err === 0){
             return res.status(200).json(response.msg);
         }else{
@@ -71,8 +72,8 @@ export const createBilling = async (req, res) => {
 export const updateBillingv1 = async (req, res) => {
     try{
         const {id} = req.params;
-        const {tenkhoanthu, loaikhoanthu, ngaytao,sotien,thoihan} = req.body;
-        if(!tenkhoanthu || !loaikhoanthu || !ngaytao || !sotien || !thoihan){
+        const {tenkhoanthu, loaikhoanthu, ngaytao,sotien,thoihan, phamvi} = req.body;
+        if(!tenkhoanthu || !loaikhoanthu || !ngaytao || !sotien || !thoihan || !phamvi){
             return res.status(400).json({
                 err: 1,
                 message: "Missing required fields"
@@ -92,8 +93,8 @@ export const updateBillingv1 = async (req, res) => {
 export const updateBillingv2 = async (req, res) => {
     try{
         const {id} = req.query; 
-        const {tenkhoanthu, loaikhoanthu, ngaytao,sotien,thoihan} = req.body;
-        if(!tenkhoanthu || !loaikhoanthu || !ngaytao || !sotien || !thoihan){
+        const {tenkhoanthu, loaikhoanthu, ngaytao,sotien,thoihan,phamvi} = req.body;
+        if(!tenkhoanthu || !loaikhoanthu || !ngaytao || !sotien || !thoihan || !phamvi){
             return res.status(400).json({
                 err: 1,
                 message: "Missing required fields"
@@ -134,6 +135,32 @@ export const deleteBillingv2 = async (req, res) => {
             return res.status(404).json('Failed to delete billing');
         }
     } catch (error) {
+        return res.status(500).json(error);
+    }
+}
+
+export const getNhanKhauHoKhau = async (req,res) =>{
+    try{
+        const response = await billingService.getNhanKhauHoKhauServices();
+        if(response.err === 0){
+            return res.status(200).json(response.response[0]);
+        }else{
+            return res.status(404).json(response.msg);
+        }
+    } catch (error) {   
+        return res.status(500).json(error);
+    }
+}
+
+export const getinvoiceNumber = async (req,res) =>{
+    try{
+        const response = await billingService.getinvoiceNumberServices();
+        if(response.err === 0){
+            return res.status(200).json(response.response[0]);
+        }else{
+            return res.status(404).json(response.msg);
+        }
+    } catch (error) {   
         return res.status(500).json(error);
     }
 }

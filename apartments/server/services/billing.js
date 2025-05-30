@@ -1,110 +1,174 @@
 import { db } from "../server.js";
 
-export const getAllBillingServices =  () => new Promise(async (resolve, reject) => {
-    try{
+export const getAllBillingServices = () => new Promise(async (resolve, reject) => {
+    try {
         const response = await db.query("SELECT * FROM khoanthu");
         resolve({
-            err : response ? 0 : 1,
-            msg : response ? "Billing services fetched successfully" : "Failed to fetch billing services",
-            response 
+            err: response ? 0 : 1,
+            msg: response ? "Billing services fetched successfully" : "Failed to fetch billing services",
+            response
         });
-    }catch(error){
+    } catch (error) {
         reject(error);
     }
 });
 
 export const getBillingByIdServicesv1 = (id) => new Promise(async (resolve, reject) => {
-    try{
+    try {
         const response = await db.query("SELECT * FROM khoanthu WHERE id = ?", [id]);
         resolve({
-            err : response ? 0 : 1,
-            msg : response ? "Billing services fetched successfully" : "Failed to fetch billing services",
-            response 
+            err: response ? 0 : 1,
+            msg: response ? "Billing services fetched successfully" : "Failed to fetch billing services",
+            response
         });
-    }catch(error){  
+    } catch (error) {
         reject(error);
     }
 });
 
 export const getBillingByIdServicesv2 = (id) => new Promise(async (resolve, reject) => {
-    try{
+    try {
         const response = await db.query("SELECT * FROM khoanthu WHERE id = ?", [id]);
         resolve({
-            err : response ? 0 : 1,
-            msg : response ? "Billing services fetched successfully" : "Failed to fetch billing services",
-            response 
-        }); 
-    }catch(error){
+            err: response ? 0 : 1,
+            msg: response ? "Billing services fetched successfully" : "Failed to fetch billing services",
+            response
+        });
+    } catch (error) {
         reject(error);
     }
 });
 
 export const createBillingServices = (data) => new Promise(async (resolve, reject) => {
-    try{
-        const response = await db.query("INSERT INTO khoanthu (tenkhoanthu, loaikhoanthu, ngaytao,sotien,thoihan) VALUES (?, ?, ?, ?,?)", [data.tenkhoanthu, data.loaikhoanthu, data.ngaytao,data.sotien,data.thoihan]);
+    try {
+        const { amount, category, dueDate, issueDate, resident, unit } = data;
+        const [hokhauRow] = await db.query("SELECT id FROM hokhau WHERE sonha = ?", [unit]);
+        if (!hokhauRow.length) return resolve({ err: 1, msg: `Không tìm thấy hộ khẩu số ${unit}` });
+        const hokhauId = hokhauRow[0].id;
+        
+        const response1 = await db.query("INSERT INTO khoanthu (tenkhoanthu, loaikhoanthu, ngaytao, sotien, thoihan, phamvi) VALUES (?, ?, ?, ?, ?, ?)", [category, category, issueDate, amount, dueDate, 'CUSTOM']);
+        const response2 = await db.query("INSERT INTO noptien (ngaythu, sotien, nguoinop, khoanthu, hokhau) VALUES (?, ?, ?, ?, ?)", [null, 0, resident, response1[0].insertId, hokhauId]);
         resolve({
-            err : response ? 0 : 1, 
-            msg : response ? "Billing services created successfully" : "Failed to create billing services",
-            response 
+            err: response1 && response2 ? 0 : 1,
+            msg: response1 && response2 ? "Billing services created successfully" : "Failed to create billing services",
+            response: response1 && response2
         });
-    }catch(error){
+    } catch (error) {
         reject(error);
     }
 });
 
 export const updateBillingServicesv1 = (id, data) => new Promise(async (resolve, reject) => {
-    try{
-        const response = await db.query("UPDATE khoanthu SET tenkhoanthu = ?, loaikhoanthu = ?, ngaytao = ?, sotien = ?, thoihan = ? WHERE id = ?", [data.tenkhoanthu, data.loaikhoanthu, data.ngaytao,data.sotien,data.thoihan,id]);
+    try {
+        const response = await db.query("UPDATE khoanthu SET tenkhoanthu = ?, loaikhoanthu = ?, ngaytao = ?, sotien = ?, thoihan = ?, phamvi = ? WHERE id = ?", [data.tenkhoanthu, data.loaikhoanthu, data.ngaytao, data.sotien, data.thoihan, data.phamvi, id]);
         resolve({
-            err : response ? 0 : 1, 
-            msg : response ? "Billing services updated successfully" : "Failed to update billing services",
-            response 
+            err: response ? 0 : 1,
+            msg: response ? "Billing services updated successfully" : "Failed to update billing services",
+            response
         });
-    }catch(error){
+    } catch (error) {
         reject(error);
     }
 });
 
 export const updateBillingServicesv2 = (id, data) => new Promise(async (resolve, reject) => {
-    try{
-        const response = await db.query("UPDATE khoanthu SET tenkhoanthu = ?, loaikhoanthu = ?, ngaytao = ?, sotien = ?, thoihan = ? WHERE id = ?", [data.tenkhoanthu, data.loaikhoanthu, data.ngaytao,data.sotien,data.thoihan,id]);
+    try {
+        const response = await db.query("UPDATE khoanthu SET tenkhoanthu = ?, loaikhoanthu = ?, ngaytao = ?, sotien = ?, thoihan = ?, phamvi = ? WHERE id = ?", [data.tenkhoanthu, data.loaikhoanthu, data.ngaytao, data.sotien, data.thoihan, data.phamvi, id]);
         resolve({
-            err : response ? 0 : 1, 
-            msg : response ? "Billing services updated successfully" : "Failed to update billing services",
-            response 
+            err: response ? 0 : 1,
+            msg: response ? "Billing services updated successfully" : "Failed to update billing services",
+            response
         });
-    }catch(error){
-        reject(error);
-    }
-});    
-
-export const deleteBillingServicesv1 = (id) => new Promise(async (resolve, reject) => {
-    try{
-        await db.query("DELETE FROM noptien WHERE khoanthu = ?", [id]);
-        const response = await db.query("DELETE FROM khoanthu WHERE id = ?", [id]);
-        resolve({
-            err : response ? 0 : 1,
-            msg : response ? "Billing services deleted successfully" : "Failed to delete billing services",
-            response 
-        });
-    }catch(error){
-        reject(error);
-    }   
-}); 
-
-export const deleteBillingServicesv2 = (id) => new Promise(async (resolve, reject) => {
-    try{
-        await db.query("DELETE FROM noptien WHERE khoanthu = ?", [id]);
-        const response = await db.query("DELETE FROM khoanthu WHERE id = ?", [id]);
-        resolve({
-            err : response ? 0 : 1,
-            msg : response ? "Billing services deleted successfully" : "Failed to delete billing services",
-            response 
-        });
-    }catch(error){
+    } catch (error) {
         reject(error);
     }
 });
 
+export const deleteBillingServicesv1 = (id) => new Promise(async (resolve, reject) => {
+    try {
+        await db.query("DELETE FROM noptien WHERE khoanthu = ?", [id]);
+        const response = await db.query("DELETE FROM khoanthu WHERE id = ?", [id]);
+        resolve({
+            err: response ? 0 : 1,
+            msg: response ? "Billing services deleted successfully" : "Failed to delete billing services",
+            response
+        });
+    } catch (error) {
+        reject(error);
+    }
+});
 
+export const deleteBillingServicesv2 = (id) => new Promise(async (resolve, reject) => {
+    try {
+        await db.query("DELETE FROM noptien WHERE khoanthu = ?", [id]);
+        const response = await db.query("DELETE FROM khoanthu WHERE id = ?", [id]);
+        resolve({
+            err: response ? 0 : 1,
+            msg: response ? "Billing services deleted successfully" : "Failed to delete billing services",
+            response
+        });
+    } catch (error) {
+        reject(error);
+    }
+});
 
+export const getNhanKhauHoKhauServices = () => new Promise(async (resolve, reject) => {
+    try {
+        const response = await db.query(`
+            SELECT nhankhau.*, hokhau.sonha, hokhau.duong, hokhau.phuong, hokhau.quan
+            FROM nhankhau
+            JOIN hokhau ON nhankhau.hokhau = hokhau.id
+          `);
+        resolve({
+            err: response ? 0 : 1,
+            msg: response ? "Billing services fetched successfully" : "Failed to fetch billing services",
+            response
+        });
+    } catch (error) {
+        reject(error);
+    }
+});
+
+export const getinvoiceNumberServices = () => new Promise(async (resolve, reject) => {
+    try {
+        const response = await db.query(`
+            SELECT
+            noptien.id,
+            CONCAT('HD-2025-', noptien.id) AS invoiceNumber,
+            hokhau.sonha AS unit,
+            nhankhau.hoten AS resident,
+            khoanthu.ngaytao AS issueDate,
+            khoanthu.thoihan AS dueDate,
+            khoanthu.sotien AS amount,
+            CASE
+                WHEN noptien.sotien >= khoanthu.sotien THEN 'Đã thanh toán'
+                WHEN CURDATE() > khoanthu.thoihan THEN 'Quá hạn'
+                ELSE 'Chờ thanh toán'
+            END AS status,
+            khoanthu.loaikhoanthu AS category,
+            '-' AS paymentMethod,
+            noptien.ngaythu AS paymentDate
+            FROM noptien
+            JOIN khoanthu ON noptien.khoanthu = khoanthu.id
+            JOIN hokhau ON noptien.hokhau = hokhau.id
+            JOIN nhankhau ON hokhau.id = nhankhau.hokhau AND nhankhau.vaitro = 'Chủ hộ'
+;
+          `);
+        resolve({
+            err: response ? 0 : 1,
+            msg: response ? "Billing services fetched successfully" : "Failed to fetch billing services",
+            response
+        });
+    } catch (error) {
+        reject(error);
+    }
+});
+
+const getInvoiceStatus = (invoice) => {
+  // Đã thanh toán nếu số tiền đã nộp >= số tiền phải nộp
+  if (invoice.sotien >= invoice.khoanthuAmount) return "Đã thanh toán";
+  // Quá hạn nếu chưa nộp đủ và quá hạn
+  if (new Date() > new Date(invoice.dueDate)) return "Quá hạn";
+  // Còn lại là chờ thanh toán
+  return "Chờ thanh toán";
+};

@@ -6,12 +6,12 @@ import apartmentsRouter from "./routes/apartments.js";
 import residentsRouter from "./routes/residents.js"
 import loginRouter from "./routes/Login.js";
 
-import settings from "./routes/settings.js";
-// =======
-// import initRoutes from "./routes/index.js";
-// >>>>>>> main
+// import settings from "./routes/settings.js";
 
-dotenv.config({ path: '../.env' });
+import initRoutes from "./routes/index.js";
+
+
+dotenv.config();
 
 export const app = express();
 app.use(cors());
@@ -22,12 +22,11 @@ app.use("/api/apartments", apartmentsRouter);
 app.use("/api/residents", residentsRouter);
 app.use("/api", loginRouter);
 
-app.use("/api/settings",s)
-// =======
+// app.use("/api/settings",s)
 
-// initRoutes(app);
 
-// >>>>>>> main
+initRoutes(app);
+
 export const db = mysql.createPool({
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USER,
@@ -43,7 +42,7 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server đang chạy trên port ${PORT}`);
   console.log(`API endpoint: http://localhost:${PORT}/api/apartments`);
-});
+}); 
 
 
 // Test kết nối database
