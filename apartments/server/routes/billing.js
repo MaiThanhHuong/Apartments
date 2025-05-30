@@ -1,11 +1,14 @@
 import express from "express";
-import * as billingController from "../controllers/billing.js";
+import * as billingController from "../controllers/billing.js"; 
 
 const billingRouter = express.Router();
 
 billingRouter.get("/get-all", billingController.getAllBilling);
 billingRouter.get("/get-by-id/:id", billingController.getBillingByIdv1);
 billingRouter.get("/get-by-id", billingController.getBillingByIdv2);
+billingRouter.get('/nhankhau-hokhau',billingController.getNhanKhauHoKhau);
+billingRouter.get('/invoiceNumber',billingController.getinvoiceNumber);
+
 
 billingRouter.post("/create", billingController.createBilling); 
 
