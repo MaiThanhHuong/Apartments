@@ -6,9 +6,7 @@ import apartmentsRouter from "./routes/apartments.js";
 import residentsRouter from "./routes/residents.js"
 import loginRouter from "./routes/Login.js";
 
-// import settings from "./routes/settings.js";
 
-import initRoutes from "./routes/index.js";
 import settings from "./routes/settings.js";
 import initRoutes from "./routes/index.js";
 
