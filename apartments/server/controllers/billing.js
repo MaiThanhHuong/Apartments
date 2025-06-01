@@ -164,3 +164,17 @@ export const getinvoiceNumber = async (req,res) =>{
         return res.status(500).json(error);
     }
 }
+
+export const payInvoice = async (req, res) => {
+    try{
+        const {id} = req.params;
+        const response = await billingService.payInvoiceServices(id);
+        if(response.err === 0){
+            return res.status(200).json(response.msg);
+        }else{
+            return res.status(404).json(response.msg);
+        }
+    } catch (error) {
+        return res.status(500).json(error);
+    }
+}

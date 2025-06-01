@@ -15,6 +15,7 @@ billingRouter.post("/create", billingController.createBilling);
 
 billingRouter.put("/update-by-id/:id", billingController.updateBillingv1);
 billingRouter.put("/update-by-id", billingController.updateBillingv2);
+billingRouter.put("/pay/:id", billingController.payInvoice);
 
 billingRouter.delete("/delete-by-id/:id", billingController.deleteBillingv1);
 billingRouter.delete("/delete-by-id", billingController.deleteBillingv2);

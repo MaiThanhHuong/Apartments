@@ -45,7 +45,7 @@ export const createBillingServices = (data) => new Promise(async (resolve, rejec
         const [hokhauRow] = await db.query("SELECT id FROM hokhau WHERE sonha = ?", [unit]);
         if (!hokhauRow.length) return resolve({ err: 1, msg: `Không tìm thấy hộ khẩu số ${unit}` });
         const hokhauId = hokhauRow[0].id;
-        
+
         const response1 = await db.query("INSERT INTO khoanthu (tenkhoanthu, loaikhoanthu, ngaytao, sotien, thoihan, phamvi) VALUES (?, ?, ?, ?, ?, ?)", [category, category, issueDate, amount, dueDate, 'CUSTOM']);
         const response2 = await db.query("INSERT INTO noptien (ngaythu, sotien, nguoinop, khoanthu, hokhau) VALUES (?, ?, ?, ?, ?)", [null, 0, resident, response1[0].insertId, hokhauId]);
         resolve({
@@ -165,10 +165,31 @@ export const getinvoiceNumberServices = () => new Promise(async (resolve, reject
 });
 
 const getInvoiceStatus = (invoice) => {
-  // Đã thanh toán nếu số tiền đã nộp >= số tiền phải nộp
-  if (invoice.sotien >= invoice.khoanthuAmount) return "Đã thanh toán";
-  // Quá hạn nếu chưa nộp đủ và quá hạn
-  if (new Date() > new Date(invoice.dueDate)) return "Quá hạn";
-  // Còn lại là chờ thanh toán
-  return "Chờ thanh toán";
+    // Đã thanh toán nếu số tiền đã nộp >= số tiền phải nộp
+    if (invoice.sotien >= invoice.khoanthuAmount) return "Đã thanh toán";
+    // Quá hạn nếu chưa nộp đủ và quá hạn
+    if (new Date() > new Date(invoice.dueDate)) return "Quá hạn";
+    // Còn lại là chờ thanh toán
+    return "Chờ thanh toán";
 };
+
+export const payInvoiceServices = (id) => new Promise(async (resolve, reject) => {
+    try {
+        const [[row]] = await db.query(`
+            SELECT khoanthu.sotien
+            FROM khoanthu
+            JOIN noptien ON khoanthu.id = noptien.khoanthu
+            WHERE noptien.id = ?
+          `, [id]);
+        if (!row) return resolve({ err: 1, msg: "Không tìm thấy hóa đơn" });
+        const response = await db.query("UPDATE noptien SET noptien.sotien = ?, noptien.ngaythu = CONVERT_TZ(NOW(), '+00:00', '+07:00')  WHERE noptien.id = ?", [row.sotien, id]);
+        if(response.affectedRows === 0) return resolve({ err: 1, msg: "Ghi nhận thanh toán thất bại" });
+        resolve({
+            err: response ? 0 : 1,
+            msg: response ? "Ghi nhận thanh toán thành công" : "Ghi nhận thanh toán thất bại",
+            response
+        });
+    } catch (error) {
+        reject(error);
+    }
+});
