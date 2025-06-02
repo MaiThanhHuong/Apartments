@@ -1,5 +1,5 @@
 import { db } from "../server.js";
-
+import formatDate from "../ultis/formatDate.js";
 export const getAllBillingServices = () => new Promise(async (resolve, reject) => {
     try {
         const response = await db.query("SELECT * FROM khoanthu");
@@ -270,3 +270,38 @@ export const getSearchInvoiceServices = (search) => new Promise(async (resolve, 
         reject(error);
     }
 });
+
+export const downloadInvoicePDFServices = (id) => new Promise(async (resolve, reject) => {
+    try {
+        const response = await db.query(`
+            SELECT noptien.id,
+    CONCAT('HD-2025-', noptien.id) AS invoiceNumber,
+    hokhau.sonha AS unit,
+    nhankhau.hoten AS resident,
+    khoanthu.ngaytao AS issueDate,
+    khoanthu.thoihan AS dueDate,
+    khoanthu.sotien AS amount,
+    CASE
+        WHEN noptien.sotien >= khoanthu.sotien THEN 'Đã thanh toán'
+        WHEN CURDATE() > khoanthu.thoihan THEN 'Quá hạn'
+        ELSE 'Chờ thanh toán'
+    END AS status,
+    khoanthu.loaikhoanthu AS category,
+    '-' AS paymentMethod,
+    noptien.ngaythu AS paymentDate
+    FROM noptien
+    JOIN khoanthu ON noptien.khoanthu = khoanthu.id
+    JOIN hokhau ON noptien.hokhau = hokhau.id
+    JOIN nhankhau ON hokhau.id = nhankhau.hokhau AND nhankhau.vaitro = 'Chủ hộ'
+    WHERE noptien.id = ?
+        `, [id]);
+        if (!response)  resolve({ err: 1, msg: "Không tìm thấy hóa đơn" });
+        resolve({
+            err: response ? 0 : 1,
+            msg: response ? "Billing services fetched successfully" : "Failed to fetch billing services",
+            response
+        });
+    } catch (error) {
+        reject(error);
+    }
+})
