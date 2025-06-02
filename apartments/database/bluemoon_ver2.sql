@@ -194,21 +194,6 @@ INSERT INTO `tamtrutamvang` (`id`, `trangthai`, `diachi`, `thoigian`, `noidung`,
 -- Table structure for table `user`
 --
 
-CREATE TABLE `user` (
-  `username` varchar(45) NOT NULL,
-  `password` varchar(45) DEFAULT NULL,
-  `vaitro` varchar(45) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `user`
---
-
-INSERT INTO `user` (`username`, `password`, `vaitro`) VALUES
-('admin1', 'admin1', 'admin'),
-('admin2', 'admin2', 'admin'),
-('admin3', 'admin3', 'admin'),
-('ketoan', '123456', 'ketoan');
 
 --
 -- Indexes for dumped tables
@@ -256,10 +241,6 @@ ALTER TABLE `tamtrutamvang`
   ADD KEY `nhankhau_idx` (`nhankhau`);
 
 --
--- Indexes for table `user`
---
-ALTER TABLE `user`
-  ADD PRIMARY KEY (`username`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -318,6 +299,66 @@ ALTER TABLE `phuongtien`
 ALTER TABLE `tamtrutamvang`
   ADD CONSTRAINT `nhankhau` FOREIGN KEY (`nhankhau`) REFERENCES `nhankhau` (`id`);
 COMMIT;
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user` (
+  `username` varchar(45) NOT NULL,
+  `password` varchar(45) DEFAULT NULL,
+  `vaitro` varchar(45) DEFAULT NULL,
+  `hoten` varchar(100) DEFAULT NULL,
+  `sodienthoai` varchar(15) DEFAULT NULL,
+  `diachi` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user`
+--
+
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES ('admin1','admin1','admin','Nguyễn Văn A','0912345678','123 Đường ABC, Quận X, TP. HCM'),('admin2','admin2','admin','Trần Thị B','0987654321','456 Đường DEF, Quận Y, TP. HCM'),('admin3','admin3','admin','Lê Văn C','0971122334','789 Đường GHI, Quận Z, TP. HCM'),('ketoan','123456','ketoan','Phạm Thị D','0909988776','321 Đường JKL, TP. Đà Nẵng');
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2025-05-30  1:39:03
+DROP TABLE IF EXISTS `service`;
+
+CREATE TABLE `service` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(100) NOT NULL,
+  `description` TEXT,
+  `unit` DECIMAL(10,2) NOT NULL,
+  `resident` VARCHAR(100) NOT NULL,
+  `dateSubmitted` DATE NOT NULL,
+  `priority` VARCHAR(20) NOT NULL,
+  `status` VARCHAR(20) NOT NULL,
+  `category` VARCHAR(50) NOT NULL,
+  `assignedTo` VARCHAR(100),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+INSERT INTO `service` (`id`, `title`, `description`, `unit`, `resident`, `dateSubmitted`, `priority`, `status`, `category`, `assignedTo`) VALUES
+(1, 'Sửa chữa điện', 'Cần sửa chữa hệ thống điện trong nhà', 150.00, 'Nguyễn Văn A', '2025-05-01', 'Cao', 'Đang xử lý', 'Điện', 'Trần Văn B'),
+(2, 'Bảo trì máy lạnh', 'Bảo trì định kỳ máy lạnh phòng khách', 200.00, 'Lê Thị C', '2025-05-02', 'Trung bình', 'Chờ xử lý', 'HVAC', 'Nguyễn Văn D'),
+
+(3, 'Lắp đặt internet', 'Yêu cầu lắp đặt internet mới cho căn hộ', 100.00, 'Phạm Văn E', '2025-05-03', 'Thấp', 'Đã hoàn thành', 'Công nghệ thông tin', 'Trần Thị F'),
+(4, 'Sửa chữa ống nước', 'Ống nước bị rò rỉ cần sửa chữa gấp', 120.00, 'Nguyễn Thị G', '2025-05-04', 'Cao', 'Đang xử lý', 'Nước', 'Lê Văn H'),
+
+(5, 'Vệ sinh nhà cửa', 'Yêu cầu vệ sinh toàn bộ căn hộ', 80.00, 'Trần Văn I', '2025-05-05', 'Thấp', 'Chờ xử lý', 'Vệ sinh', 'Nguyễn Thị J'),
+(6, 'Sơn lại tường', 'Cần sơn lại tường phòng khách', 300.00, 'Lê Văn K', '2025-05-06', 'Trung bình', 'Đã hoàn thành', 'Xây dựng', 'Phạm Thị L');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
