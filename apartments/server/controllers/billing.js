@@ -178,3 +178,18 @@ export const payInvoice = async (req, res) => {
         return res.status(500).json(error);
     }
 }
+
+export const getSearchInvoice = async (req, res) => {
+    try{
+        const {search} = req.query;
+        // console.log(search);
+        const response = await billingService.getSearchInvoiceServices(search);
+        if(response.err === 0){
+            return res.status(200).json(response.response[0]);
+        }else{
+            return res.status(404).json(response.msg);
+        }
+    } catch (error) {
+        return res.status(500).json(error);
+    }
+}

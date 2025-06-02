@@ -115,9 +115,9 @@ const Billing = () => {
 
 
   useEffect(() => {
-    // console.log(editFormDatata)
-    console.log(invoices)
-  }, [invoices])
+    console.log(editFormDatata)
+    // console.log(invoices)
+  }, [invoices,editFormDatata])
 
   const filteredInvoices = invoices.filter((invoice) => {
     // Lọc theo từ khóa tìm kiếm
