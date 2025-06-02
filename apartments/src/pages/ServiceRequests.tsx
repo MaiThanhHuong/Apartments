@@ -40,10 +40,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, MoreHorizontal, Home, Calendar } from "lucide-react";
-import { useState } from "react";
+import {
+  Plus,
+  MoreHorizontal,
+  Home,
+  Calendar,
+  MessageSquare,
+} from "lucide-react";
+import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import axios from 'axios';
+
 
 // Dữ liệu mẫu cho yêu cầu dịch vụ (đồng nhất với mã Billing và Residents)
 const serviceRequestsData = [
@@ -108,58 +116,61 @@ const serviceRequestsData = [
     assignedTo: "Nguyễn Văn Kỹ thuật",
   },
 ];
-
+  interface ServiceRequest {
+  id: number;
+  title: string;
+  description: string;
+  unit: string;
+  resident: string;
+  dateSubmitted: string;
+  priority: string;
+  status: string;
+  category: string;
+  assignedTo: string;
+}
 const ServiceRequests = () => {
-  const [requests, setRequests] = useState(serviceRequestsData);
-  // State cho form tạo mới
-  const [openDialog, setOpenDialog] = useState(false);
-  const [newTitle, setNewTitle] = useState("");
-  const [newUnit, setNewUnit] = useState("");
-  const [newCategory, setNewCategory] = useState("");
-  const [newPriority, setNewPriority] = useState("");
-  const [newDescription, setNewDescription] = useState("");
-
-    // State cho thông báo
-  const [message, setMessage] = useState<string | null>(null);
-
-  // State cho tìm kiếm và lọc
+  const [newRequest, setNewRequest] = useState({
+  title: "",
+  unit: "",
+  priority: "",
+  category: "",
+  description: "",
+  });
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [newStatus, setNewStatus] = useState<string>("");
+  const [detailRequest, setDetailRequest] = useState<ServiceRequest | null>(null);
+  const [requests, setRequests] = useState<ServiceRequest[]>(serviceRequestsData);
   const [searchTerm, setSearchTerm] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [activeTab, setActiveTab] = useState("all");
+  useEffect(() => {
+  axios.get<ServiceRequest[]>('http://localhost:3001/api/service')
+    .then((response) => {
+      setRequests(response.data);
+    })
+    .catch((error) => {
+      console.error('Lỗi khi gọi API:', error);
+    });
+  }, []);
 
-
-    // Thêm state cho cập nhật trạng thái
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [newStatus, setNewStatus] = useState<string>("Chờ xử lý");
-
-    // Thêm state cho gán kỹ thuật viên
-  const [assigningId, setAssigningId] = useState<number | null>(null);
-  const [newTechnician, setNewTechnician] = useState<string>("");
-    const handleCreateRequest = () => {
-    if (!newTitle || !newUnit || !newCategory || !newPriority) return;
-    const newRequest = {
-      id: Date.now(), // hoặc tăng tự động
-      title: newTitle,
-      description: newDescription,
-      unit: newUnit,
-      resident: "Bạn", // hoặc lấy từ user đăng nhập
-      dateSubmitted: new Date().toISOString().slice(0, 10),
-      priority: newPriority,
-      status: "Chờ xử lý",
-      category: newCategory,
-      assignedTo: "-",
-    };
-    setRequests((prev) => [newRequest, ...prev]);
-    // Reset form
-    setNewTitle("");
-    setNewUnit("");
-    setNewCategory("");
-    setNewPriority("");
-    setNewDescription("");
-    setOpenDialog(false);
-    setMessage("Đã gửi yêu cầu thành công!");
+  const handleUpdateStatus = async () => {
+    if (!editingId || !newStatus) return;
+    try {
+      await axios.put(`http://localhost:3001/api/service/${editingId}/status`, { status: newStatus });
+      setRequests((prev) =>
+        prev.map((req) =>
+          req.id === editingId ? { ...req, status: newStatus } : req
+        )
+      );
+      setEditingId(null);
+      setNewStatus("");
+      window.alert("Cập nhật trạng thái thành công!");
+    } catch (err) {
+      window.alert("Cập nhật trạng thái thất bại!");
+    }
   };
+
   const filteredRequests = requests.filter((request) => {
     // Lọc theo từ khóa tìm kiếm
     const searchMatch =
@@ -184,19 +195,7 @@ const ServiceRequests = () => {
 
     return searchMatch && priorityMatch && categoryMatch && statusMatch;
   });
-  const handleUpdateStatus = (id: number, status: string) => {
-    setRequests((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, status } : r))
-    );
-    setEditingId(null);
-  };
-  const handleAssignTechnician = (id: number, technician: string) => {
-    setRequests((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, assignedTo: technician } : r))
-    );
-    setAssigningId(null);
-    setNewTechnician("");
-  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Chờ xử lý":
@@ -223,15 +222,44 @@ const ServiceRequests = () => {
     }
   };
 
+  const handleSubmit = () => {
+    if (!newRequest.title || !newRequest.unit || !newRequest.priority || !newRequest.category || !newRequest.description) {
+      alert("Vui lòng điền đầy đủ thông tin yêu cầu.");
+      return;
+    }
+
+    // Map unit to resident name (adjust as needed for your data)
+    const unitToResident: Record<string, string> = {
+      "101": "Nguyễn Văn A",
+      "203": "Nguyễn Thị G",
+      "305": "Lê Văn C",
+      "401": "Phạm Thị D",
+      "502": "Hoàng Văn E",
+    };
+
+    const newServiceRequest: ServiceRequest = {
+      ...newRequest,
+      id: requests.length + 1,
+      dateSubmitted: new Date().toISOString().split("T")[0],
+      status: "Chờ xử lý",
+      assignedTo: "-",
+      resident: unitToResident[newRequest.unit] || "Không xác định",
+    };
+
+    setRequests([...requests, newServiceRequest]);
+    setNewRequest({
+      title: "",
+      unit: "",
+      priority: "",
+      category: "",
+      description: "",
+    });
+    window.alert("Gửi yêu cầu thành công!");
+  };
+  
   return (
     <DashboardLayout title="Quản lý yêu cầu dịch vụ">
       <div className="space-y-6 animate-fade-in">
-        {message && (
-          <div className="mb-4 text-green-600 bg-green-50 border border-green-200 rounded px-4 py-2 flex items-center justify-between">
-            <span>{message}</span>
-            <button className="ml-2 text-sm text-gray-500" onClick={() => setMessage(null)}>×</button>
-          </div>
-        )}
         <Card>
           <CardHeader>
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -241,7 +269,7 @@ const ServiceRequests = () => {
                   Theo dõi các yêu cầu bảo trì và sửa chữa từ cư dân
                 </CardDescription>
               </div>
-              <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+              <Dialog >
                 <DialogTrigger asChild>
                   <Button className="w-full md:w-auto">
                     <Plus className="mr-2 h-4 w-4" /> Yêu cầu mới
@@ -260,24 +288,20 @@ const ServiceRequests = () => {
                       <Label htmlFor="title">Tiêu đề yêu cầu</Label>
                       <Input
                         id="title"
+                        value={newRequest.title}
+                        onChange={(e) => setNewRequest({ ...newRequest, title: e.target.value })}
                         placeholder="Mô tả ngắn gọn về vấn đề"
-                        value={newTitle}
-                        onChange={(e) => setNewTitle(e.target.value)}
                       />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="unit">Số căn hộ</Label>
-                      <Select value={newUnit} onValueChange={setNewUnit}>
+                      <Select onValueChange={(value) => setNewRequest({ ...newRequest, unit: value })}>
                         <SelectTrigger>
                           <SelectValue placeholder="Chọn căn hộ" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="101">
-                            101 - Nguyễn Văn A
-                          </SelectItem>
-                          <SelectItem value="203">
-                            203 - Nguyễn Thị G
-                          </SelectItem>
+                          <SelectItem value="101">101 - Nguyễn Văn A</SelectItem>
+                          <SelectItem value="203">203 - Nguyễn Thị G</SelectItem>
                           <SelectItem value="305">305 - Lê Văn C</SelectItem>
                           <SelectItem value="401">401 - Phạm Thị D</SelectItem>
                           <SelectItem value="502">502 - Hoàng Văn E</SelectItem>
@@ -286,7 +310,7 @@ const ServiceRequests = () => {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="category">Danh mục</Label>
-                      <Select value={newCategory} onValueChange={setNewCategory}>
+                      <Select onValueChange={(value) => setNewRequest({ ...newRequest, category: value })}>
                         <SelectTrigger>
                           <SelectValue placeholder="Chọn danh mục" />
                         </SelectTrigger>
@@ -302,7 +326,7 @@ const ServiceRequests = () => {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="priority">Mức độ ưu tiên</Label>
-                      <Select value={newPriority} onValueChange={setNewPriority}>
+                      <Select onValueChange={(value) => setNewRequest({ ...newRequest, priority: value })}>
                         <SelectTrigger>
                           <SelectValue placeholder="Chọn mức độ ưu tiên" />
                         </SelectTrigger>
@@ -317,18 +341,27 @@ const ServiceRequests = () => {
                       <Label htmlFor="description">Mô tả chi tiết</Label>
                       <Textarea
                         id="description"
+                        value={newRequest.description}
+                        onChange={(e) => setNewRequest({ ...newRequest, description: e.target.value })}
                         placeholder="Vui lòng cung cấp chi tiết về vấn đề..."
                         className="min-h-[100px]"
-                        value={newDescription}
-                        onChange={(e) => setNewDescription(e.target.value)}
                       />
                     </div>
                   </div>
 
                   <DialogFooter className="mt-4">
-                    <Button variant="outline" onClick={() => {setOpenDialog(false);                        setMessage("Đã hủy gửi yêu cầu.");
-                    }}>Hủy</Button>
-                    <Button onClick={handleCreateRequest}>Gửi yêu cầu</Button>
+                    <Button variant="outline"
+                            onClick={() => {
+                              setNewRequest({
+                                title: "",
+                                unit: "",
+                                priority: "",
+                                category: "",
+                                description: "",
+                              });
+                              window.alert("Đã hủy gửi yêu cầu.");
+                            }}>Hủy</Button>
+                    <Button onClick={handleSubmit}>Gửi yêu cầu</Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
@@ -338,146 +371,75 @@ const ServiceRequests = () => {
             <div className="mb-6 space-y-4">
               <Tabs defaultValue="all" onValueChange={setActiveTab}>
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <TabsList>
+                    <TabsTrigger value="all">Tất cả yêu cầu</TabsTrigger>
+                    <TabsTrigger value="Chờ xử lý">Chờ xử lý</TabsTrigger>
+                    <TabsTrigger value="Đang xử lý">Đang xử lý</TabsTrigger>
+                    <TabsTrigger value="Đã hoàn thành">Đã hoàn thành</TabsTrigger>
+                  </TabsList>
+
                   <div className="flex flex-col md:flex-row gap-4">
                     <Input
                       placeholder="Tìm kiếm yêu cầu..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="md:w-[500px]"
+                      className="md:w-[250px]"
                     />
-
-                    <Select
-                      value={priorityFilter}
-                      onValueChange={(value) => setPriorityFilter(value)}
-                    >
-                      <SelectTrigger className="w-full md:w-[180px]">
-                        <SelectValue placeholder="Mức độ ưu tiên" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Tất cả mức độ</SelectItem>
-                        <SelectItem value="Cao">Cao</SelectItem>
-                        <SelectItem value="Trung bình">Trung bình</SelectItem>
-                        <SelectItem value="Thấp">Thấp</SelectItem>
-                      </SelectContent>
-                    </Select>
-
-                    <Select
-                      value={categoryFilter}
-                      onValueChange={(value) => setCategoryFilter(value)}
-                    >
-                      <SelectTrigger className="w-full md:w-[180px]">
-                        <SelectValue placeholder="Danh mục" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Tất cả danh mục</SelectItem>
-                        <SelectItem value="Ống nước">Ống nước</SelectItem>
-                        <SelectItem value="Điện">Điện</SelectItem>
-                        <SelectItem value="Điều hòa">Điều hòa</SelectItem>
-                        <SelectItem value="Thiết bị">Thiết bị</SelectItem>
-                        <SelectItem value="Mộc">Mộc</SelectItem>
-                      </SelectContent>
-                    </Select>
                   </div>
                 </div>
 
                 <TabsContent value="all" className="mt-4">
-                  <ServiceRequestsList 
-                    requests={filteredRequests}
-                    editingId={editingId}
-                    setEditingId={setEditingId}
-                    newStatus={newStatus}
-                    setNewStatus={setNewStatus}
-                    handleUpdateStatus={handleUpdateStatus}
-                    assigningId={assigningId}
-                    setAssigningId={setAssigningId}
-                    newTechnician={newTechnician}
-                    setNewTechnician={setNewTechnician}
-                    handleAssignTechnician={handleAssignTechnician}
-                  />
+                  <ServiceRequestsList requests={filteredRequests}
+                  onShowDetail={setDetailRequest} />
                 </TabsContent>
-
-                <TabsContent value="pending" className="mt-4">
-                  <ServiceRequestsList
-                    requests={filteredRequests.filter((r) => r.status === "Chờ xử lý")}
-                    editingId={editingId}
-                    setEditingId={setEditingId}
-                    newStatus={newStatus}
-                    setNewStatus={setNewStatus}
-                    handleUpdateStatus={handleUpdateStatus}
-                    assigningId={assigningId}
-                    setAssigningId={setAssigningId}
-                    newTechnician={newTechnician}
-                    setNewTechnician={setNewTechnician}
-                    handleAssignTechnician={handleAssignTechnician}
-                  />
+                <TabsContent value="Chờ xử lý" className="mt-4">
+                  <ServiceRequestsList requests={filteredRequests}
+                  onShowDetail={setDetailRequest} />
                 </TabsContent>
-                <TabsContent value="pending" className="mt-4">
-                  <ServiceRequestsList
-                    requests={filteredRequests.filter((r) => r.status === "Đang xử lý")}
-                    editingId={editingId}
-                    setEditingId={setEditingId}
-                    newStatus={newStatus}
-                    setNewStatus={setNewStatus}
-                    handleUpdateStatus={handleUpdateStatus}
-                    assigningId={assigningId}
-                    setAssigningId={setAssigningId}
-                    newTechnician={newTechnician}
-                    setNewTechnician={setNewTechnician}
-                    handleAssignTechnician={handleAssignTechnician}
-                  />
+                <TabsContent value="Đang xử lý" className="mt-4">
+                  <ServiceRequestsList requests={filteredRequests}
+                  onShowDetail={setDetailRequest}/>
                 </TabsContent>
-
-                <TabsContent value="pending" className="mt-4">
-                  <ServiceRequestsList
-                    requests={filteredRequests.filter((r) => r.status === "Đã hoàn thành")}
-                    editingId={editingId}
-                    setEditingId={setEditingId}
-                    newStatus={newStatus}
-                    setNewStatus={setNewStatus}
-                    handleUpdateStatus={handleUpdateStatus}
-                    assigningId={assigningId}
-                    setAssigningId={setAssigningId}
-                    newTechnician={newTechnician}
-                    setNewTechnician={setNewTechnician}
-                    handleAssignTechnician={handleAssignTechnician}
-                  />
-                </TabsContent>              
-            </Tabs>
+                <TabsContent value="Đã hoàn thành" className="mt-4">
+                  <ServiceRequestsList requests={filteredRequests}
+                  onShowDetail={setDetailRequest}/>
+                </TabsContent>
+              </Tabs>
             </div>
           </CardContent>
         </Card>
+        <Dialog open={!!detailRequest} onOpenChange={() => setDetailRequest(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Chi tiết yêu cầu dịch vụ</DialogTitle>
+            </DialogHeader>
+            {detailRequest && (
+              <div className="space-y-2">
+                <div><b>Tiêu đề:</b> {detailRequest.title}</div>
+                <div><b>Căn hộ:</b> {detailRequest.unit}</div>
+                <div><b>Người gửi:</b> {detailRequest.resident}</div>
+                <div><b>Ngày gửi:</b> {detailRequest.dateSubmitted}</div>
+                <div><b>Mức độ ưu tiên:</b> {detailRequest.priority}</div>
+                <div><b>Trạng thái:</b> {detailRequest.status}</div>
+                <div><b>Danh mục:</b> {detailRequest.category}</div>
+                <div><b>Gán cho:</b> {detailRequest.assignedTo}</div>
+                <div><b>Mô tả chi tiết:</b> {detailRequest.description}</div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );
 };
 
+
 interface ServiceRequestsListProps {
   requests: typeof serviceRequestsData;
-  editingId: number | null;
-  setEditingId: (id: number | null) => void;
-  newStatus: string;
-  setNewStatus: (status: string) => void;
-  handleUpdateStatus: (id: number, status: string) => void;
-  assigningId: number | null;
-  setAssigningId: (id: number | null) => void;
-  newTechnician: string;
-  setNewTechnician: (name: string) => void;
-  handleAssignTechnician: (id: number, technician: string) => void;
+  onShowDetail: (req: ServiceRequest) => void;
 }
 
-function ServiceRequestsList({
-  requests,
-  editingId,
-  setEditingId,
-  newStatus,
-  setNewStatus,
-  handleUpdateStatus,
-  assigningId,
-  setAssigningId,
-  newTechnician,
-  setNewTechnician,
-  handleAssignTechnician,
-}: ServiceRequestsListProps) {
+function ServiceRequestsList({ requests, onShowDetail }: ServiceRequestsListProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Chờ xử lý":
@@ -540,9 +502,7 @@ function ServiceRequestsList({
                 <div className="flex items-center gap-1">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                   <span>
-                    {new Date(request.dateSubmitted).toLocaleDateString(
-                      "vi-VN"
-                    )}
+                    {new Date(request.dateSubmitted).toLocaleDateString("vi-VN")}
                   </span>
                 </div>
               </TableCell>
@@ -555,72 +515,18 @@ function ServiceRequestsList({
                 </Badge>
               </TableCell>
               <TableCell>
-                {editingId === request.id ? (
-                  <div className="flex gap-2 items-center">
-                    <Select
-                      value={newStatus}
-                      onValueChange={setNewStatus}
-                    >
-                      <SelectTrigger className="w-[140px]">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Chờ xử lý">Chờ xử lý</SelectItem>
-                        <SelectItem value="Đang xử lý">Đang xử lý</SelectItem>
-                        <SelectItem value="Đã hoàn thành">Đã hoàn thành</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Button
-                      size="sm"
-                      onClick={() => handleUpdateStatus(request.id, newStatus)}
-                    >
-                      Lưu
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setEditingId(null)}
-                    >
-                      Hủy
-                    </Button>
-                  </div>
-                ) : (
                 <Badge
                   variant="outline"
                   className={getStatusColor(request.status)}
                 >
                   {request.status}
                 </Badge>
-                )}
               </TableCell>
               <TableCell className="hidden md:table-cell">
-                {assigningId === request.id ? (
-                  <div className="flex gap-2 items-center">
-                    <Input
-                      value={newTechnician}
-                      onChange={(e) => setNewTechnician(e.target.value)}
-                      placeholder="Nhập tên kỹ thuật viên"
-                      className="w-[150px]"
-                    />
-                    <Button
-                      size="sm"
-                      onClick={() =>
-                        handleAssignTechnician(request.id, newTechnician)
-                      }
-                    >
-                      Lưu
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setAssigningId(null)}
-                    >
-                      Hủy
-                    </Button>
-                  </div>
-                ) : (
-                  request.assignedTo
-                )}
+                {request.category}
+              </TableCell>
+              <TableCell className="hidden md:table-cell">
+                {request.assignedTo}
               </TableCell>
               <TableCell>
                 <DropdownMenu>
@@ -630,15 +536,9 @@ function ServiceRequestsList({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                      <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => { 
-                        setEditingId(request.id); 
-                        setNewStatus(request.status);}}>Cập nhật trạng thái</DropdownMenuItem>
-                      <DropdownMenuItem
-                      onClick={() => {
-                        setAssigningId(request.id);
-                        setNewTechnician(request.assignedTo === "-" ? "" : request.assignedTo);}}>Gán kỹ thuật viên
-                      </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onShowDetail(request)}>Xem chi tiết</DropdownMenuItem>
+                    <DropdownMenuItem>Cập nhật trạng thái</DropdownMenuItem>
+                    <DropdownMenuItem>Gán kỹ thuật viên</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>
