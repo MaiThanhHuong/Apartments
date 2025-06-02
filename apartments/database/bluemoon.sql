@@ -231,3 +231,28 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2025-05-30  1:39:03
+DROP TABLE IF EXISTS `service`;
+
+CREATE TABLE `service` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(100) NOT NULL,
+  `description` TEXT,
+  `unit` DECIMAL(10,2) NOT NULL,
+  `resident` VARCHAR(100) NOT NULL,
+  `dateSubmitted` DATE NOT NULL,
+  `priority` VARCHAR(20) NOT NULL,
+  `status` VARCHAR(20) NOT NULL,
+  `category` VARCHAR(50) NOT NULL,
+  `assignedTo` VARCHAR(100),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+INSERT INTO `service` (`id`, `title`, `description`, `unit`, `resident`, `dateSubmitted`, `priority`, `status`, `category`, `assignedTo`) VALUES
+(1, 'Sửa chữa điện', 'Cần sửa chữa hệ thống điện trong nhà', 150.00, 'Nguyễn Văn A', '2025-05-01', 'Cao', 'Đang xử lý', 'Điện', 'Trần Văn B'),
+(2, 'Bảo trì máy lạnh', 'Bảo trì định kỳ máy lạnh phòng khách', 200.00, 'Lê Thị C', '2025-05-02', 'Trung bình', 'Chờ xử lý', 'HVAC', 'Nguyễn Văn D'),
+
+(3, 'Lắp đặt internet', 'Yêu cầu lắp đặt internet mới cho căn hộ', 100.00, 'Phạm Văn E', '2025-05-03', 'Thấp', 'Đã hoàn thành', 'Công nghệ thông tin', 'Trần Thị F'),
+(4, 'Sửa chữa ống nước', 'Ống nước bị rò rỉ cần sửa chữa gấp', 120.00, 'Nguyễn Thị G', '2025-05-04', 'Cao', 'Đang xử lý', 'Nước', 'Lê Văn H'),
+
+(5, 'Vệ sinh nhà cửa', 'Yêu cầu vệ sinh toàn bộ căn hộ', 80.00, 'Trần Văn I', '2025-05-05', 'Thấp', 'Chờ xử lý', 'Vệ sinh', 'Nguyễn Thị J'),
+(6, 'Sơn lại tường', 'Cần sơn lại tường phòng khách', 300.00, 'Lê Văn K', '2025-05-06', 'Trung bình', 'Đã hoàn thành', 'Xây dựng', 'Phạm Thị L');

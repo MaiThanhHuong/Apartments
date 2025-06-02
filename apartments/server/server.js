@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import apartmentsRouter from "./routes/apartments.js";
 import residentsRouter from "./routes/residents.js"
 import loginRouter from "./routes/Login.js";
+import serviceRouter from './routes/service.js';
 
 
 import settings from "./routes/settings.js";
@@ -13,12 +14,11 @@ import initRoutes from "./routes/index.js";
 // dotenv.config({ path: '../.env' });
 dotenv.config();
 
-
 export const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use('/api/service', serviceRouter);
 app.use("/api/apartments", apartmentsRouter);
 app.use("/api/residents", residentsRouter);
 app.use("/api", loginRouter);
