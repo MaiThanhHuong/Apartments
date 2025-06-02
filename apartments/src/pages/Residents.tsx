@@ -388,17 +388,7 @@ const Residents = () => {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-2">
-                <User className="h-4 w-4 text-purple-500" />
-                <div>
-                  <p className="text-2xl font-bold text-purple-600">{stats.thanhvien}</p>
-                  <p className="text-xs text-muted-foreground">Thành viên</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+         
         </div>
 
         {/* Bảng quản lý cư dân */}
