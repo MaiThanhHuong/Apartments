@@ -114,10 +114,28 @@ const Billing = () => {
   })
 
 
-  useEffect(() => {
-    console.log(editFormDatata)
-    // console.log(invoices)
-  }, [invoices,editFormDatata])
+
+  useEffect(()=>{
+    if(scope === "ALL"){
+      setEditFormData(prev => ({
+        ...prev,
+        unit: "ALL",
+        resident: "ALL"
+      }))
+    }else{
+      setEditFormData(prev => ({
+        ...prev,
+        unit: "",
+        resident: ""
+      }))
+    }
+  },[scope])
+
+  // useEffect(() => {
+  //   console.log(editFormDatata)
+  //   // console.log(invoices)
+  // }, [invoices,editFormDatata,scope])
+
 
   const filteredInvoices = invoices.filter((invoice) => {
     // Lọc theo từ khóa tìm kiếm
