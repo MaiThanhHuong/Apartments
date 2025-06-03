@@ -1,5 +1,4 @@
 import { db } from "../server.js";
-import formatDate from "../ultis/formatDate.js";
 export const getAllBillingServices = () => new Promise(async (resolve, reject) => {
     try {
         const response = await db.query("SELECT * FROM khoanthu");
@@ -78,6 +77,7 @@ export const createBillingServices = (data) => new Promise(async (resolve, rejec
             const [hokhauRow] = await db.query("SELECT id FROM hokhau WHERE sonha = ?", [unit]);
             if (!hokhauRow.length) return resolve({ err: 1, msg: `Không tìm thấy hộ khẩu số ${unit}` });
             const hokhauId = hokhauRow[0].id;
+
 
             const response1 = await db.query("INSERT INTO khoanthu (tenkhoanthu, loaikhoanthu, ngaytao, sotien, thoihan, phamvi) VALUES (?, ?, ?, ?, ?, ?)", [category, category, issueDate, amount, dueDate, 'CUSTOM']);
             const response2 = await db.query("INSERT INTO noptien (ngaythu, sotien, nguoinop, khoanthu, hokhau) VALUES (?, ?, ?, ?, ?)", [null, 0, resident, response1[0].insertId, hokhauId]);
@@ -295,10 +295,49 @@ export const downloadInvoicePDFServices = (id) => new Promise(async (resolve, re
     JOIN nhankhau ON hokhau.id = nhankhau.hokhau AND nhankhau.vaitro = 'Chủ hộ'
     WHERE noptien.id = ?
         `, [id]);
-        if (!response)  resolve({ err: 1, msg: "Không tìm thấy hóa đơn" });
+        if (!response) resolve({ err: 1, msg: "Không tìm thấy hóa đơn" });
         resolve({
             err: response ? 0 : 1,
             msg: response ? "Billing services fetched successfully" : "Failed to fetch billing services",
+            response
+        });
+    } catch (error) {
+        reject(error);
+    }
+})
+
+export const deleteInvoiceServices = (id) => new Promise(async (resolve, reject) => {
+    try {
+        const response1 = await db.query("SELECT noptien.khoanthu FROM noptien WHERE noptien.id = ?", [id]);
+        if (!response1) return resolve({ err: 1, msg: "Không tìm thấy hóa đơn" });
+        const khoanthuId = response1[0][0].khoanthu;
+        const response2 = await db.query("DELETE FROM noptien WHERE id = ?", [id]);
+        if (!response2) return resolve({ err: 1, msg: "Xóa hóa đơn thất bại" });
+        const response3 = await db.query("DELETE FROM khoanthu WHERE id = ?", [khoanthuId]);
+        if (!response3) return resolve({ err: 1, msg: "Xóa khoản thu thất bại" });
+
+        resolve({
+            err: response1 && response2 && response3 ? 0 : 1,
+            msg: response1 && response2 && response3 ? "Billing services deleted successfully" : "Failed to delete billing services",
+            response: response1 && response2 && response3
+        });
+    } catch (error) {
+        reject(error);
+    }
+})
+
+export const updateInvoiceServices = (id, data) => new Promise(async (resolve, reject) => {
+    try {
+        const res = await db.query("SELECT * FROM khoanthu WHERE id = ?", [id]);
+        if (!res) return resolve({ err: 1, msg: "Không tìm thấy khoản thu" });
+        const response1 = await db.query("SELECT noptien.khoanthu FROM noptien WHERE id = ?", [id]);
+        if (!response1) return resolve({ err: 1, msg: "Không tìm thấy hóa đơn" });
+        const khoanthuId = response1[0][0].khoanthu;
+        const { amount, dueDate, category } = data;
+        const response = await db.query("UPDATE khoanthu SET sotien = ?, thoihan = ?, loaikhoanthu = ?,tenkhoanthu=? WHERE id = ?", [amount, dueDate, category, category, khoanthuId]);
+        resolve({
+            err: response ? 0 : 1,
+            msg: response ? "Billing services updated successfully" : "Failed to update billing services",
             response
         });
     } catch (error) {
