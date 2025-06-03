@@ -337,7 +337,7 @@ export const updateInvoiceServices = (id, data) => new Promise(async (resolve, r
         const response = await db.query("UPDATE khoanthu SET sotien = ?, thoihan = ?, loaikhoanthu = ?,tenkhoanthu=? WHERE id = ?", [amount, dueDate, category, category, khoanthuId]);
         resolve({
             err: response ? 0 : 1,
-            msg: response ? "Billing services updated successfully" : "Failed to update billing services",
+            msg: response ? "Billing services updated successfully!" : "Failed to update billing services",
             response
         });
     } catch (error) {
