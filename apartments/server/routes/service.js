@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const [rows] = await db.query("SELECT * FROM service");
+    const [rows] = await db.query("SELECT * FROM bluemoon.service");
     res.json(rows);
   } catch (err) {
     console.error("❌ Lỗi khi truy vấn service:", err);

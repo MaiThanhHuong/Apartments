@@ -95,23 +95,11 @@ const invoicesData = [
     amount: 850,
     status: "Đã thanh toán",
     category: "Bảo trì hàng tháng",
-    paymentMethod: "Thẻ tín dụng",
-    paymentDate: "2023-05-10",
+    
   }
 ];
 
-// const getInvoiceStatus = (invoice: any) => {
-//   console.log(invoice)
-//   if (invoice.sotien >= invoice.amount) {
-//     return "Đã thanh toán";
-//   }
-//   const today = new Date();
-//   const due = new Date(invoice.dueDate);
-//   if (today > due) {
-//     return "Quá hạn";
-//   }
-//   return "Chờ thanh toán";
-// };
+
 
 const Billing = () => {
   const [invoices, setInvoices] = useState(invoicesData);
@@ -216,7 +204,7 @@ const Billing = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Đã thanh toán":
-        return "bg-success/10 text-success hover:bg-success/20";
+        return "bg-primary/10 text-primary hover:bg-primary/20";
       case "Chờ thanh toán":
         return "bg-warning/10 text-warning hover:bg-warning/20";
       case "Quá hạn":
@@ -355,7 +343,7 @@ const Billing = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-success">
-                ${totalPaid.toLocaleString()}
+                {totalPaid.toLocaleString()} VNĐ
               </div>
               <p className="text-xs text-muted-foreground">
                 {invoices.filter((i) => i.status === "Đã thanh toán").length}{" "}
@@ -371,7 +359,7 @@ const Billing = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-warning">
-                ${totalPending.toLocaleString()}
+                {totalPending.toLocaleString()} VNĐ
               </div>
               <p className="text-xs text-muted-foreground">
                 {invoices.filter((i) => i.status === "Chờ thanh toán").length}{" "}
@@ -385,7 +373,7 @@ const Billing = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-destructive">
-                ${totalOverdue.toLocaleString()}
+                {totalOverdue.toLocaleString()} VNĐ
               </div>
               <p className="text-xs text-muted-foreground">
                 {invoices.filter((i) => i.status === "Quá hạn").length} hóa đơn
@@ -485,7 +473,7 @@ const Billing = () => {
                     </div>
 
                     <div className="">
-                      <Label htmlFor="amount">Số tiền ($)</Label>
+                      <Label htmlFor="amount">Số tiền (VNĐ)</Label>
                       <Input
                         id="amounta"
                         type="number"
@@ -723,11 +711,12 @@ interface InvoicesListProps {
   onEditClick: (invoice: Invoice) => void;
 }
 
+
 function InvoicesList({ invoices, onPayInvoice, onDownloadPDF, fetchInvoices, onEditClick }: InvoicesListProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Đã thanh toán":
-        return "bg-success/10 text-success hover:bg-success/20";
+        return "bg-primary/10 text-primary hover:bg-primary/20";
       case "Chờ thanh toán":
         return "bg-warning/10 text-warning hover:bg-warning/20";
       case "Quá hạn":
@@ -770,6 +759,7 @@ function InvoicesList({ invoices, onPayInvoice, onDownloadPDF, fetchInvoices, on
             </TableHead>
             <TableHead>Ngày đến hạn</TableHead>
             <TableHead>Số tiền</TableHead>
+             <TableHead>Loại khoản thu</TableHead>
             <TableHead>Trạng thái</TableHead>
             <TableHead className="w-[50px]"></TableHead>
           </TableRow>
@@ -802,7 +792,10 @@ function InvoicesList({ invoices, onPayInvoice, onDownloadPDF, fetchInvoices, on
                 </div>
               </TableCell>
               <TableCell className="font-medium">
-                ${invoice.amount.toLocaleString()}
+                {invoice.amount.toLocaleString()} VNĐ
+              </TableCell>
+              <TableCell className="font-medium">
+                {invoice.category.toLocaleString()} 
               </TableCell>
               <TableCell>
                 <Badge
