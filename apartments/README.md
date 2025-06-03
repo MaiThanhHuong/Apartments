@@ -53,6 +53,7 @@ Apartments là một ứng dụng web quản lý căn hộ, cung cấp các ch�
   ```bash
   npm install -g concurrently
   npm install dotenv
+  npm install pdfkit
   ```
 
 ### 4. Chạy ứng dụng
