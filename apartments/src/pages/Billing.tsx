@@ -76,8 +76,7 @@ const invoicesData = [
     amount: 850,
     status: "Đã thanh toán",
     category: "Bảo trì hàng tháng",
-    paymentMethod: "Thẻ tín dụng",
-    paymentDate: "2023-05-10",
+    
   }
 ];
 
@@ -555,6 +554,7 @@ function InvoicesList({ invoices, onPayInvoice, onDownloadPDF }: InvoicesListPro
             </TableHead>
             <TableHead>Ngày đến hạn</TableHead>
             <TableHead>Số tiền</TableHead>
+             <TableHead>Loại khoản thu</TableHead>
             <TableHead>Trạng thái</TableHead>
             <TableHead className="w-[50px]"></TableHead>
           </TableRow>
@@ -588,6 +588,9 @@ function InvoicesList({ invoices, onPayInvoice, onDownloadPDF }: InvoicesListPro
               </TableCell>
               <TableCell className="font-medium">
                 {invoice.amount.toLocaleString()} VNĐ
+              </TableCell>
+              <TableCell className="font-medium">
+                {invoice.category.toLocaleString()} 
               </TableCell>
               <TableCell>
                 <Badge
