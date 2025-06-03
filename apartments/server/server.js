@@ -23,7 +23,7 @@ app.use("/api/apartments", apartmentsRouter);
 app.use("/api/residents", residentsRouter);
 app.use("/api", loginRouter);
 
-// app.use("/api/settings",s);
+app.use("/api/settings", settings);
 
 initRoutes(app);
 
