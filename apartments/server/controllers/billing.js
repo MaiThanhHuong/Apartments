@@ -1,5 +1,4 @@
 import * as billingService from "../services/billing.js";
-import formatDate from "../ultis/formatDate.js";
 import PDFDocument from 'pdfkit';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -299,3 +298,33 @@ export const downloadInvoicePDF = async (req, res) => {
         return res.status(500).json("err" + error);
     }
 }
+
+export const deleteInvoice = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const response = await billingService.deleteInvoiceServices(id);
+
+        if (response.err === 0) {
+            return res.status(200).json(response.msg);
+        } else {
+            return res.status(404).json(response.msg);
+        }
+    } catch (error) {
+        return res.status(500).json(error);
+    }
+}
+
+export const updateInvoice = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const response = await billingService.updateInvoiceServices(id, req.body);
+        if (response.err === 0) {
+            return res.status(200).json(response.msg);
+        } else {
+            return res.status(404).json(response.msg);
+        }
+    } catch (error) {
+        return res.status(500).json(error);
+    }
+}   
+
