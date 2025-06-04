@@ -340,7 +340,7 @@ CREATE TABLE `service` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(100) NOT NULL,
   `description` TEXT,
-  `unit` DECIMAL(10,2) NOT NULL,
+  `unit` DECIMAL(10,0) NOT NULL,
   `resident` VARCHAR(100) NOT NULL,
   `dateSubmitted` DATE NOT NULL,
   `priority` VARCHAR(20) NOT NULL,
