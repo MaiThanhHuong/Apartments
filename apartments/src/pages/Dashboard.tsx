@@ -27,17 +27,45 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-
+  const [stats, setStats] = useState({
+    totalApartments: 0,
+    occupancyRate: 0,
+    vacant: 0,
+    filled: 0,
+    totalResidents: 0,
+    pendingRequests: 0,
+    highPriorityRequests: 0,
+  });
+  useEffect(() => {
+    axios.get("http://localhost:3001/api/dashboard")
+      .then(res => {
+        setStats(res.data as typeof stats);
+      })
+      .catch(() => {
+        // fallback nếu lỗi
+        setStats({
+            totalApartments: 0,
+          occupancyRate: 0,
+          vacant: 0,
+          filled: 0,
+          totalResidents: 0,
+          pendingRequests: 0,
+          highPriorityRequests: 0,
+        });
+      });
+  }, []);
   return (
     <DashboardLayout title="Bảng điều khiển">
       <div className="space-y-6 animate-fade-in">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatsCard
             title="Tổng số căn hộ"
-            value="120"
+            value={stats.totalApartments.toString()}
             icon={Building}
             iconColor="primary"
             description="Căn hộ và văn phòng"
@@ -45,25 +73,25 @@ const Dashboard = () => {
           />
           <StatsCard
             title="Tỷ lệ lấp đầy"
-            value="92%"
+            value={stats.occupancyRate + "%"}
             icon={Home}
             iconColor="success"
-            description="8 căn còn trống"
+            description={`${stats.vacant} căn còn trống`}
             trend={{ direction: "up", value: "Tăng 5% so với tháng trước" }}
           />
           <StatsCard
             title="Tổng số cư dân"
-            value="243"
+            value={stats.totalResidents.toString()}
             icon={Users}
             iconColor="info"
-            description="Trong 112 căn hộ"
+            description="Cư dân hiện tại"
           />
           <StatsCard
             title="Yêu cầu đang chờ"
-            value="18"
+            value={stats.pendingRequests.toString()}
             icon={MessageSquare}
             iconColor="warning"
-            description="5 yêu cầu ưu tiên cao"
+            description={`${stats.highPriorityRequests} yêu cầu ưu tiên cao`}
             trend={{ direction: "down", value: "Giảm 3 so với hôm qua" }}
           />
         </div>
