@@ -121,7 +121,7 @@ const Residents = () => {
     dantoc: "",
     cccd: "",
     nghenghiep: "",
-    trangthai: "Thường trú" as Resident["trangthai"],
+    trangthai: ""
   });
 
   // Handlers cho form thêm mới
@@ -696,19 +696,18 @@ const Residents = () => {
 
                       <TableCell className="hidden md:table-cell">
                         <span
-                          className={`font mono text-sm ${
-                            resident.gioitinh === "F"
+                          className={`font mono text-sm ${resident.gioitinh === "F"
                               ? "text-pink-600"
                               : resident.gioitinh === "M"
-                              ? "text-blue-600"
-                              : "text-gray-600"
-                          }`}
+                                ? "text-blue-600"
+                                : "text-gray-600"
+                            }`}
                         >
                           {resident.gioitinh === "F"
                             ? "Nữ"
                             : resident.gioitinh === "M"
-                            ? "Nam"
-                            : resident.gioitinh}
+                              ? "Nam"
+                              : resident.gioitinh}
                         </span>
                       </TableCell>
 
@@ -726,8 +725,8 @@ const Residents = () => {
                             resident.trangthai === "Thường trú"
                               ? "default"
                               : resident.trangthai === "Tạm trú"
-                              ? "secondary"
-                              : "destructive"
+                                ? "secondary"
+                                : "destructive"
                           }
                         >
                           {resident.trangthai}
@@ -932,6 +931,21 @@ const Residents = () => {
                     required
                     onChange={handleEditChange}
                   />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="trangthai" className="text-sm">
+                    Trạng thái
+                  </Label>
+                  <Select value={editFormData.trangthai} onValueChange={(value) => setEditFormData({ ...editFormData, trangthai: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Chọn trạng thái" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Thường trú">Thường trú</SelectItem>
+                      <SelectItem value="Tạm trú">Tạm trú</SelectItem>
+                      <SelectItem value="Tạm vắng">Tạm vắng</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>
