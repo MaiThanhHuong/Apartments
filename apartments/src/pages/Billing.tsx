@@ -48,9 +48,26 @@ import {
   Download,
   CreditCard,
   Home,
+  Trash2,
+  Edit,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+
+type Invoice = {
+  id: number;
+  invoiceNumber: string;
+  unit: string;
+  resident: string;
+  issueDate: string;
+  dueDate: string;
+  amount: number;
+  status: string;
+  category: string;
+  paymentMethod?: string;
+  paymentDate?: string;
+};
 
 type Apartment = {
   sonha: string;
@@ -61,6 +78,8 @@ interface InvoicesListProps {
   invoices: typeof invoicesData;
   onPayInvoice: (id: number) => void;
   onDownloadPDF: (id: number) => void;
+  fetchInvoices: () => void;
+  onEditClick: (invoice: Invoice) => void;
 }
 
 
@@ -90,6 +109,22 @@ const Billing = () => {
   const [scope, setScope] = useState("ALL");
   const [apartments, setApartments] = useState<Apartment[]>([]);
   const [open, setOpen] = useState(false);
+  // State cho dialog chỉnh sửa
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null); 
+  const [isCreating, setIsCreating] = useState(false);
+
+  
+  // Helper to format date as yyyy-MM-dd in local time
+  const formatDateForInput = (dateStr: string) => {
+    if (!dateStr) return "";
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
+    const d = new Date(dateStr);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  };
 
   const today = new Date();
   const yyyy = today.getFullYear();
@@ -97,8 +132,8 @@ const Billing = () => {
   const dd = String(today.getDate()).padStart(2, '0');
   const localToday = `${yyyy}-${mm}-${dd}`;
 
-  const [editFormDatata, setEditFormData] = useState({
-    unit: "ALL",
+  const [editFormData, setEditFormData] = useState({
+    unit: "ALL",  
     resident: "ALL",
     issueDate: localToday,
     dueDate: "",
@@ -108,26 +143,28 @@ const Billing = () => {
 
 
 
-  useEffect(()=>{
-    if(scope === "ALL"){
-      setEditFormData(prev => ({
-        ...prev,
-        unit: "ALL",
-        resident: "ALL"
-      }))
-    }else{
-      setEditFormData(prev => ({
-        ...prev,
-        unit: "",
-        resident: ""
-      }))
+  useEffect(() => {
+    if (isCreating) {
+      if (scope === "ALL") {
+        setEditFormData(prev => ({
+          ...prev,
+          unit: "ALL",
+          resident: "ALL"
+        }))
+      } else {
+        setEditFormData(prev => ({
+          ...prev,
+          unit: "",
+          resident: ""
+        }))
+      }
     }
-  },[scope])
+  }, [scope, isCreating])
 
-  // useEffect(() => {
-  //   console.log(editFormDatata)
-  //   // console.log(invoices)
-  // }, [invoices,editFormDatata,scope])
+  useEffect(() => {
+    console.log(editingInvoice)
+    console.log(editFormData)
+  }, [invoices,editFormData,scope,isEditDialogOpen])
 
 
   const filteredInvoices = invoices.filter((invoice) => {
@@ -191,11 +228,14 @@ const Billing = () => {
       .catch((err) => console.error("Lỗi khi fetch:", err));
   }, []);
 
-  const fetchInvoices = () => {
-    fetch("http://localhost:3001/api/v1/billing/invoiceNumber")
-      .then((res) => res.json())
-      .then((data) => setInvoices(data))
-      .catch((err) => console.error("Lỗi khi fetch:", err));
+  const fetchInvoices = async () => {
+    try {
+      const res = await fetch("http://localhost:3001/api/v1/billing/invoiceNumber");
+      const data = await res.json();
+      setInvoices(data);
+    } catch (err) {
+      console.error("Lỗi khi fetch:", err);
+    }
   };
 
   const handleCreateInvoice = async () => {
@@ -203,10 +243,11 @@ const Billing = () => {
       const res = await fetch("http://localhost:3001/api/v1/billing/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editFormDatata),
+        body: JSON.stringify(editFormData),
       });
       if (res.ok) {
-        fetchInvoices()
+        setScope("CUSTOM");
+        await fetchInvoices()
         alert("Tạo hóa đơn thành công!");
         setOpen(false);
       } else {
@@ -225,7 +266,7 @@ const Billing = () => {
       });
       if (res.ok) {
         alert("Ghi nhận thanh toán thành công!");
-        fetchInvoices(); // reload lại danh sách hóa đơn
+        await fetchInvoices() // reload lại danh sách hóa đơn
       } else {
         alert("Lỗi khi ghi nhận thanh toán!");
       }
@@ -234,17 +275,32 @@ const Billing = () => {
     }
   }
 
+  const handleEditClick = (invoice: Invoice) => {
+    setIsCreating(false);
+    setScope("CUSTOM");
+    setEditingInvoice(invoice);
+    setEditFormData({
+      unit: invoice.unit,
+      resident: invoice.resident,
+      issueDate: formatDateForInput(invoice.issueDate),
+      dueDate: formatDateForInput(invoice.dueDate),
+      amount: invoice.amount.toString(),
+      category: invoice.category,
+    });
+    setIsEditDialogOpen(true);
+  };
+
   const downloadInvoicePDF = (id: number) => {
     fetch(`http://localhost:3001/api/v1/billing/invoice/${id}/pdf`)
       .then(response => response.blob())
       .then(blob => {
-          const url = window.URL.createObjectURL(new Blob([blob])); 
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `invoice-${id}.pdf`;
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `invoice-${id}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
       })
       .catch(err => console.error("Lỗi khi tải xuống PDF:", err));
   }
@@ -252,6 +308,28 @@ const Billing = () => {
   const handleRemind = (resident: string, unit: string) => {
     alert(`Đã nhắc nhở ${resident} (Số nhà: ${unit})`);
   };
+  const handleUpdateInvoice = async () => {
+    // console.log("editFormData" + editFormData);
+    // console.log("editingInvoice" + editingInvoice)
+    try {
+      const id = editingInvoice?.id;
+      const res = await fetch(`http://localhost:3001/api/v1/billing/update/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editFormData), 
+      });
+      if (res.ok) {
+        alert("Cập nhật hóa đơn thành công!");
+        setIsEditDialogOpen(false);
+        fetchInvoices();
+      } else {
+        alert("Lỗi khi cập nhật hóa đơn!");
+      }
+    } catch (err) {
+      alert("Lỗi kết nối server!");
+    }
+  }
+  
 
   return (
     <DashboardLayout title="Quản lý hóa đơn">
@@ -397,7 +475,10 @@ const Billing = () => {
                     <div className="">
                       <Label htmlFor="amount">Số tiền (VNĐ)</Label>
                       <Input
-                        id="amounta" type="number" placeholder="0.00"
+                        id="amounta"
+                        type="number"
+                        placeholder="0.00"
+                        value={editFormData.amount}
                         onChange={e => setEditFormData(prev => ({
                           ...prev,
                           amount: e.target.value
@@ -411,7 +492,7 @@ const Billing = () => {
                         id="due-date"
                         type="date"
                         className={scope === "ALL" ? "w-full" : ""}
-                        value={editFormDatata.dueDate}
+                        value={editFormData.dueDate}
                         onChange={e => setEditFormData(prev => ({
                           ...prev,
                           dueDate: e.target.value
@@ -474,6 +555,8 @@ const Billing = () => {
                     invoices={filteredInvoices}
                     onPayInvoice={handlePayInvoice}
                     onDownloadPDF={downloadInvoicePDF}
+                    fetchInvoices={fetchInvoices}
+                    onEditClick={handleEditClick}
                   />
                 </TabsContent>
 
@@ -484,6 +567,8 @@ const Billing = () => {
                     )}
                     onPayInvoice={handlePayInvoice}
                     onDownloadPDF={downloadInvoicePDF}
+                    fetchInvoices={fetchInvoices}
+                    onEditClick={handleEditClick}
                   />
                 </TabsContent>
 
@@ -494,6 +579,8 @@ const Billing = () => {
                     )}
                     onPayInvoice={handlePayInvoice}
                     onDownloadPDF={downloadInvoicePDF}
+                    fetchInvoices={fetchInvoices}
+                    onEditClick={handleEditClick}
                   />
                 </TabsContent>
 
@@ -504,12 +591,113 @@ const Billing = () => {
                     )}
                     onPayInvoice={handlePayInvoice}
                     onDownloadPDF={downloadInvoicePDF}
+                    fetchInvoices={fetchInvoices}
+                    onEditClick={handleEditClick}
                   />
                 </TabsContent>
               </Tabs>
             </div>
           </CardContent>
         </Card>
+
+        {/* Dialog for Create/Edit Invoice */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>{editingInvoice ? "Chỉnh sửa hóa đơn" : "Tạo hóa đơn mới"}</DialogTitle>
+              <DialogDescription>
+                {editingInvoice ? "Chỉnh sửa thông tin hóa đơn cho cư dân" : "Nhập chi tiết hóa đơn để tạo hóa đơn mới cho cư dân"}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="pace-y-2 md:col-span-2">
+                <Label htmlFor="unit">Phạm vi</Label>
+                <Select
+                  value={scope}
+                  onValueChange={(value) => {
+                    setScope(value);
+                    if (value === "ALL") {
+                      setEditFormData(prev => ({
+                        ...prev,
+                        unit: "ALL",
+                        resident: "ALL"
+                      }));
+                    }
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Chọn phạm vi" />
+                  </SelectTrigger>
+                  <SelectContent >
+                    <SelectItem value="CUSTOM">CUSTOM-Chỉ 1 hộ gia đình</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {scope === 'CUSTOM' && <div className="space-y-2">
+                <Label htmlFor="unit">Căn hộ</Label>
+                <Input value={editFormData.unit + " - " + editFormData.resident} onChange={e => setEditFormData(prev => ({ ...prev, unit: e.target.value }))} />
+              </div>}
+
+              <div className={scope === 'ALL' ? " " : "space-y-2"}>
+                <Label htmlFor="category">Danh mục</Label>
+                <Select value={editFormData.category} onValueChange={(value) => setEditFormData(prev => ({ ...prev, category: value }))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Chọn danh mục" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Bảo trì hàng tháng">Bảo trì hàng tháng</SelectItem>
+                    <SelectItem value="Tiện ích">Tiện ích</SelectItem>
+                    <SelectItem value="Phí đỗ xe">Phí đỗ xe</SelectItem>
+                    <SelectItem value="Phí sửa chữa">Phí sửa chữa</SelectItem>
+                    <SelectItem value="KhácKhác">Khác</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="">
+                <Label htmlFor="amount">Số tiền ($)</Label>
+                <Input
+                  id="amounta"
+                  type="number"
+                  placeholder="0.00"
+                  value={editFormData.amount}
+                  onChange={e => setEditFormData(prev => ({
+                    ...prev,
+                    amount: e.target.value
+                  }))}
+                />
+              </div>
+
+              <div className={scope === "ALL" ? "col-span-2 w-full" : ""}>
+                <Label htmlFor="due-date">Ngày đến hạn</Label>
+                <Input
+                  value={editFormData.dueDate}
+                  id="due-date"
+                  type="date"
+                  className={scope === "ALL" ? "w-full" : ""}
+                  onChange={e => setEditFormData(prev => ({
+                    ...prev,
+                    dueDate: e.target.value
+                  }))}
+                />
+              </div>
+
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="description">Mô tả</Label>
+                <Input id="description" placeholder="Mô tả hóa đơn..." />
+              </div>
+            </div>
+
+            <DialogFooter className="mt-4">
+              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>Hủy</Button>
+              <Button onClick={editingInvoice ? handleUpdateInvoice : handleCreateInvoice}>
+                {editingInvoice ? "Lưu" : "Tạo hóa đơn"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );
@@ -519,11 +707,12 @@ interface InvoicesListProps {
   invoices: typeof invoicesData;
   onPayInvoice: (id: number) => void;
   onDownloadPDF: (id: number) => void;
+  fetchInvoices: () => void;
+  onEditClick: (invoice: Invoice) => void;
 }
 
 
-
-function InvoicesList({ invoices, onPayInvoice, onDownloadPDF }: InvoicesListProps) {
+function InvoicesList({ invoices, onPayInvoice, onDownloadPDF, fetchInvoices, onEditClick }: InvoicesListProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Đã thanh toán":
@@ -539,6 +728,22 @@ function InvoicesList({ invoices, onPayInvoice, onDownloadPDF }: InvoicesListPro
 
   const handleRemind = (resident: string, unit: string) => {
     alert(`Đã nhắc nhở ${resident} (Số nhà: ${unit})`);
+  };
+
+  const handleDeleteInvoice = async (id: number) => {
+    try {
+      const res = await fetch(`http://localhost:3001/api/v1/billing/delete-invoice/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        alert("Xóa hóa đơn thành công");
+        await fetchInvoices();
+      } else {
+        alert("Xóa hóa đơn thất bại");
+      }
+    } catch (error) {
+      console.error("Lỗi khi xóa hóa đơn:", error);
+    }
   };
 
   return (
@@ -611,10 +816,44 @@ function InvoicesList({ invoices, onPayInvoice, onDownloadPDF }: InvoicesListPro
                     <DropdownMenuItem onClick={() => onDownloadPDF(invoice.id)}>
                       <Download className="mr-2 h-4 w-4" /> Tải PDF
                     </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onEditClick(invoice)}>
+                      <Edit className="mr-2 h-4 w-4" />
+                      Chỉnh sửa
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => onPayInvoice(invoice.id)}>
                       <CreditCard className="mr-2 h-4 w-4" /> Ghi nhận thanh
                       toán
                     </DropdownMenuItem>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <DropdownMenuItem
+                          onSelect={(e) => e.preventDefault()}
+                          className="text-red-600 focus:text-red-600"
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Xóa hóa đơn
+                        </DropdownMenuItem>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Xác nhận xóa</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Bạn có chắc chắn muốn xóa hóa đơn số {invoice.id}?
+                            Hành động này không thể hoàn tác.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Hủy</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => handleDeleteInvoice(invoice.id)}
+                            className="bg-red-600 hover:bg-red-700"
+                          // disabled={actionLoading}
+                          >Xóa
+                            {/* {actionLoading ? "Đang xóa..." : "Xóa"} */}
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                     <DropdownMenuItem onClick={() => handleRemind(invoice.resident, invoice.unit)}>
                       Gửi nhắc nhở
                     </DropdownMenuItem>

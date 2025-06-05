@@ -1,3 +1,5 @@
+create database bluemoon;
+use bluemoon;
 -- phpMyAdmin SQL Dump
 -- version 5.2.0
 -- https://www.phpmyadmin.net/
@@ -351,15 +353,16 @@ CREATE TABLE `service` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 INSERT INTO `service` (`id`, `title`, `description`, `unit`, `resident`, `dateSubmitted`, `priority`, `status`, `category`, `assignedTo`) VALUES
-(1, 'Sửa chữa điện', 'Cần sửa chữa hệ thống điện trong nhà', 150.00, 'Nguyễn Văn A', '2025-05-01', 'Cao', 'Đang xử lý', 'Điện', 'Trần Văn B'),
-(2, 'Bảo trì máy lạnh', 'Bảo trì định kỳ máy lạnh phòng khách', 200.00, 'Lê Thị C', '2025-05-02', 'Trung bình', 'Chờ xử lý', 'HVAC', 'Nguyễn Văn D'),
+(1, 'Sửa chữa điện', 'Cần sửa chữa hệ thống điện trong nhà', 25, 'Rivkah Marston', '2025-05-01', 'Cao', 'Đang xử lý', 'Điện', 'Trần Văn B'),
+(2, 'Bảo trì máy lạnh', 'Bảo trì định kỳ máy lạnh phòng khách', 17, 'Vernen Pinchback', '2025-05-02', 'Trung bình', 'Chờ xử lý', 'HVAC', 'Nguyễn Văn D'),
 
-(3, 'Lắp đặt internet', 'Yêu cầu lắp đặt internet mới cho căn hộ', 100.00, 'Phạm Văn E', '2025-05-03', 'Thấp', 'Đã hoàn thành', 'Công nghệ thông tin', 'Trần Thị F'),
-(4, 'Sửa chữa ống nước', 'Ống nước bị rò rỉ cần sửa chữa gấp', 120.00, 'Nguyễn Thị G', '2025-05-04', 'Cao', 'Đang xử lý', 'Nước', 'Lê Văn H'),
+(3, 'Lắp đặt internet', 'Yêu cầu lắp đặt internet mới cho căn hộ', 73, 'Jae Grammer', '2025-05-03', 'Thấp', 'Đã hoàn thành', 'Công nghệ thông tin', 'Trần Thị F'),
+(4, 'Sửa chữa ống nước', 'Ống nước bị rò rỉ cần sửa chữa gấp', 16, 'Brand Cankett', '2025-05-04', 'Cao', 'Đang xử lý', 'Nước', 'Lê Văn H'),
 
-(5, 'Vệ sinh nhà cửa', 'Yêu cầu vệ sinh toàn bộ căn hộ', 80.00, 'Trần Văn I', '2025-05-05', 'Thấp', 'Chờ xử lý', 'Vệ sinh', 'Nguyễn Thị J'),
-(6, 'Sơn lại tường', 'Cần sơn lại tường phòng khách', 300.00, 'Lê Văn K', '2025-05-06', 'Trung bình', 'Đã hoàn thành', 'Xây dựng', 'Phạm Thị L');
+(5, 'Vệ sinh nhà cửa', 'Yêu cầu vệ sinh toàn bộ căn hộ', 99, 'Marna Clayton', '2025-05-05', 'Thấp', 'Chờ xử lý', 'Vệ sinh', 'Nguyễn Thị J'),
+(6, 'Sơn lại tường', 'Cần sơn lại tường phòng khách', 45, 'Mickey Ewells', '2025-05-06', 'Trung bình', 'Đã hoàn thành', 'Xây dựng', 'Phạm Thị L');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+

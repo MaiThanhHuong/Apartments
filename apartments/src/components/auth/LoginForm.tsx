@@ -7,7 +7,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -55,6 +54,9 @@ export function LoginForm() {
         } else {
           alert("❌ Vai trò không hợp lệ.");
         }
+        // Lưu role vào localStorage và reload lại trang để cập nhật giao diện theo role
+        localStorage.setItem("role", data.user.role);
+        window.location.reload();
       } else {
         alert("❌ Lỗi: " + (data.message || "Đăng nhập thất bại."));
       }
