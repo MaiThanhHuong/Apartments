@@ -16,6 +16,7 @@ import {
   FileText,
   Bell,
   ArrowRight,
+  Wallet
 } from "lucide-react";
 import {
   Table,
@@ -34,13 +35,15 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalApartments: 0,
+    totalResidents: 0,
+    totalIncome: 0,
     occupancyRate: 0,
     vacant: 0,
     filled: 0,
-    totalResidents: 0,
     pendingRequests: 0,
-    highPriorityRequests: 0,
+    highPriorityRequests: 0
   });
+
   useEffect(() => {
     axios.get("http://localhost:3001/api/dashboard")
       .then(res => {
@@ -49,13 +52,14 @@ const Dashboard = () => {
       .catch(() => {
         // fallback nếu lỗi
         setStats({
-            totalApartments: 0,
-          occupancyRate: 0,
-          vacant: 0,
-          filled: 0,
-          totalResidents: 0,
-          pendingRequests: 0,
-          highPriorityRequests: 0,
+          totalApartments: 0,
+    totalResidents: 0,
+    totalIncome: 0,
+    occupancyRate: 0,
+    vacant: 0,
+    filled: 0,
+    pendingRequests: 0,
+    highPriorityRequests: 0
         });
       });
   }, []);
@@ -72,19 +76,19 @@ const Dashboard = () => {
             trend={{ direction: "up", value: "2 căn mới trong tháng này" }}
           />
           <StatsCard
-            title="Tỷ lệ lấp đầy"
-            value={stats.occupancyRate + "%"}
-            icon={Home}
-            iconColor="success"
-            description={`${stats.vacant} căn còn trống`}
-            trend={{ direction: "up", value: "Tăng 5% so với tháng trước" }}
-          />
-          <StatsCard
             title="Tổng số cư dân"
             value={stats.totalResidents.toString()}
             icon={Users}
             iconColor="info"
             description="Cư dân hiện tại"
+          />
+          <StatsCard
+            title="Tổng tiền dịch vụ"
+            value={stats.totalIncome + "đ"}
+            icon={Wallet}
+            iconColor="success"
+            description={`Tiền dịch vụ cư dân`}
+            trend={{ direction: "up", value: "Tăng 5% so với tháng trước" }}
           />
           <StatsCard
             title="Yêu cầu đang chờ"
