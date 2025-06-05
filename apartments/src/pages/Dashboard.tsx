@@ -16,6 +16,7 @@ import {
   FileText,
   Bell,
   ArrowRight,
+  Wallet
 } from "lucide-react";
 import {
   Table,
@@ -27,44 +28,77 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [stats, setStats] = useState({
+    totalApartments: 0,
+    totalResidents: 0,
+    totalIncome: 0,
+    paidCount: 0,
+    unpaidCount: 0,
+    totalRecords: 0
+  });
 
+  useEffect(() => {
+    axios.get("http://localhost:3001/api/dashboard")
+      .then(res => {
+        console.log(res.data);
+        setStats(res.data as typeof stats);
+      })
+      .catch(() => {
+        // fallback nếu lỗi
+        setStats({
+          totalApartments: 0,
+          totalResidents: 0,
+          totalIncome: 0,
+          paidCount: 0,
+          unpaidCount: 0,
+          totalRecords: 0
+        });
+      });
+  }, []);
   return (
     <DashboardLayout title="Bảng điều khiển">
       <div className="space-y-6 animate-fade-in">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatsCard
             title="Tổng số căn hộ"
-            value="120"
+            value={stats.totalApartments.toString()}
             icon={Building}
             iconColor="primary"
             description="Căn hộ và văn phòng"
             trend={{ direction: "up", value: "2 căn mới trong tháng này" }}
           />
           <StatsCard
-            title="Tỷ lệ lấp đầy"
-            value="92%"
-            icon={Home}
+            title="Tổng số cư dân"
+            value={stats.totalResidents.toString()}
+            icon={Users}
+            iconColor="info"
+            description="Cư dân hiện tại"
+          />
+          <StatsCard
+            title="Tổng tiền dịch vụ"
+            value={stats.totalIncome.toLocaleString() + " VNĐ"}
+            icon={Wallet}
             iconColor="success"
-            description="8 căn còn trống"
+            description={`Tiền dịch vụ cư dân`}
             trend={{ direction: "up", value: "Tăng 5% so với tháng trước" }}
           />
           <StatsCard
-            title="Tổng số cư dân"
-            value="243"
-            icon={Users}
-            iconColor="info"
-            description="Trong 112 căn hộ"
-          />
-          <StatsCard
-            title="Yêu cầu đang chờ"
-            value="18"
-            icon={MessageSquare}
+            title="Tỉ lệ thu phí"
+            value={stats.paidCount && stats.totalRecords
+              ? `${Math.round((stats.paidCount / stats.totalRecords) * 100)}%`
+              : "0%"}
+            icon={FileText}
             iconColor="warning"
-            description="5 yêu cầu ưu tiên cao"
-            trend={{ direction: "down", value: "Giảm 3 so với hôm qua" }}
+            description={stats.unpaidCount ? `${stats.unpaidCount} chưa hoàn thành` : "Không có dữ liệu"}
+            trend={{
+              direction: "down", // hoặc có thể bỏ prop trend nếu component hỗ trợ
+              value: `trên tổng số ${stats.totalRecords} hóa đơn`
+            }}
           />
         </div>
 

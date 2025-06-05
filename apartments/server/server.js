@@ -6,9 +6,9 @@ import apartmentsRouter from "./routes/apartments.js";
 import residentsRouter from "./routes/residents.js"
 import loginRouter from "./routes/Login.js";
 import serviceRouter from './routes/service.js';
+import dashboardRouter from "./routes/dashboard.js";
 
-
-import settings from "./routes/settings.js";
+import  settings  from "./routes/settings.js";
 import initRoutes from "./routes/index.js";
 
 // dotenv.config({ path: '../.env' });
@@ -22,8 +22,8 @@ app.use('/api/service', serviceRouter);
 app.use("/api/apartments", apartmentsRouter);
 app.use("/api/residents", residentsRouter);
 app.use("/api", loginRouter);
-
-// app.use("/api/settings",s);
+app.use("/api/dashboard", dashboardRouter);
+// app.use("/api/settings", settings);
 
 initRoutes(app);
 

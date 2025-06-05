@@ -1,43 +1,42 @@
 import express from "express";
-import { db } from "../server.js";
+import bcrypt from "bcrypt"; // Import bcrypt for password hashing
 
 const router = express.Router();
 
-// Authenticate user
-router.post('/login', async (req, res) => {
+
+// Update user password
+router.put("/settings/change-password", async (req, res) => {
   const pool = req.app.locals.pool;
-  const { username, password } = req.body;
+  const { username, currentPassword, newPassword } = req.body;
+
   try {
-    const [rows] = await pool.query('SELECT * FROM users WHERE username = ? AND password = ?', [
+    // Find user by username
+    const [rows] = await pool.query("SELECT * FROM users WHERE username = ?", [username]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const user = rows[0];
+
+    // Verify current password
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid current password" });
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password in database
+    await pool.query("UPDATE users SET password = ? WHERE username = ?", [
+      hashedPassword,
       username,
-      password,
     ]);
-    if (rows.length === 0) {
-      return res.status(401).json({ message: 'Invalid username or password' });
-    }
-    res.json(rows[0]);
-  } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
-  }
-});
 
-// Get system settings for a user
-router.get('/:username', async (req, res) => {
-  const pool = req.app.locals.pool;
-  try {
-    // Query the users table to get user details based on username
-    const [rows] = await pool.query('SELECT * FROM users WHERE username = ?', [
-      req.params.username,
-    ]);
-    
-    if (rows.length === 0) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    // Return the user data
-    res.json(rows[0]);
+    res.status(200).json({ message: "Password updated successfully" });
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 

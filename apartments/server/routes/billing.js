@@ -9,6 +9,7 @@ billingRouter.get("/get-by-id", billingController.getBillingByIdv2);
 billingRouter.get('/nhankhau-hokhau',billingController.getNhanKhauHoKhau);
 billingRouter.get('/invoiceNumber',billingController.getinvoiceNumber);
 billingRouter.get('/search-invoice',billingController.getSearchInvoice);
+billingRouter.get('/invoice/:id/pdf',billingController.downloadInvoicePDF);
 
 billingRouter.post("/create", billingController.createBilling); 
 
@@ -16,9 +17,10 @@ billingRouter.post("/create", billingController.createBilling);
 billingRouter.put("/update-by-id/:id", billingController.updateBillingv1);
 billingRouter.put("/update-by-id", billingController.updateBillingv2);
 billingRouter.put("/pay/:id", billingController.payInvoice);
+billingRouter.put("/update/:id", billingController.updateInvoice);
 
 billingRouter.delete("/delete-by-id/:id", billingController.deleteBillingv1);
 billingRouter.delete("/delete-by-id", billingController.deleteBillingv2);
-
+billingRouter.delete("/delete-invoice/:id", billingController.deleteInvoice);
 
 export default billingRouter;

@@ -19,6 +19,8 @@ interface SidebarProps {
 }
 
 export function Sidebar({ className }: SidebarProps) {
+  const role = localStorage.getItem("role");
+  if (role === "ketoan") return null;
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
 
