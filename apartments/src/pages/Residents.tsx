@@ -327,7 +327,7 @@ const Residents = () => {
     <DashboardLayout title="Quản lý cư dân">
       <div className="space-y-6 animate-fade-in">
         {/* Thống kê tổng quan */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center space-x-2">
