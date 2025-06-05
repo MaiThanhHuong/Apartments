@@ -636,19 +636,13 @@ const Residents = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Cư dân</TableHead>
-                    <TableHead>Số hộ</TableHead>
-                    <TableHead className="hidden lg:table-cell">
-                      Ngày sinh
-                    </TableHead>
-                    <TableHead className="hidden md:table-cell">
-                      Vai trò
-                    </TableHead>
-                    <TableHead className="hidden md:table-cell">
-                      Giới tính
-                    </TableHead>
-                    <TableHead className="hidden md:table-cell">
-                      Dân tộc
-                    </TableHead>
+
+                    <TableHead>Căn hộ</TableHead>
+                    <TableHead className="hidden lg:table-cell">Ngày sinh</TableHead>
+                    <TableHead className="hidden md:table-cell">Vai trò</TableHead>
+                    <TableHead className="hidden md:table-cell">Giới tính</TableHead>
+                    <TableHead className="hidden md:table-cell">Dân tộc</TableHead>
+
                     <TableHead className="hidden lg:table-cell">CCCD</TableHead>
                     <TableHead>Trạng thái</TableHead>
                     <TableHead className="w-[70px]">Thao tác</TableHead>
@@ -896,15 +890,9 @@ const Residents = () => {
                   </Select>
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="vaitro" className="text-sm">
-                    Vai trò
-                  </Label>
-                  <Select
-                    value={editFormData.vaitro}
-                    onValueChange={(value) =>
-                      setEditFormData({ ...editFormData, vaitro: value })
-                    }
-                  >
+                  <Label htmlFor="vaitro" className="text-sm">Quan hệ với chủ hộ </Label>
+                  <Select value={editFormData.vaitro} onValueChange={(value) => setEditFormData({ ...editFormData, vaitro: value })}>
+
                     <SelectTrigger>
                       <SelectValue placeholder="Chọn vai trò" />
                     </SelectTrigger>
