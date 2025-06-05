@@ -37,29 +37,26 @@ const Dashboard = () => {
     totalApartments: 0,
     totalResidents: 0,
     totalIncome: 0,
-    occupancyRate: 0,
-    vacant: 0,
-    filled: 0,
-    pendingRequests: 0,
-    highPriorityRequests: 0
+    paidCount: 0,
+    unpaidCount: 0,
+    totalRecords: 0
   });
 
   useEffect(() => {
     axios.get("http://localhost:3001/api/dashboard")
       .then(res => {
+        console.log(res.data);
         setStats(res.data as typeof stats);
       })
       .catch(() => {
         // fallback nếu lỗi
         setStats({
           totalApartments: 0,
-    totalResidents: 0,
-    totalIncome: 0,
-    occupancyRate: 0,
-    vacant: 0,
-    filled: 0,
-    pendingRequests: 0,
-    highPriorityRequests: 0
+          totalResidents: 0,
+          totalIncome: 0,
+          paidCount: 0,
+          unpaidCount: 0,
+          totalRecords: 0
         });
       });
   }, []);
@@ -84,19 +81,24 @@ const Dashboard = () => {
           />
           <StatsCard
             title="Tổng tiền dịch vụ"
-            value={stats.totalIncome + "đ"}
+            value={stats.totalIncome.toLocaleString() + " VNĐ"}
             icon={Wallet}
             iconColor="success"
             description={`Tiền dịch vụ cư dân`}
             trend={{ direction: "up", value: "Tăng 5% so với tháng trước" }}
           />
           <StatsCard
-            title="Yêu cầu đang chờ"
-            value={stats.pendingRequests.toString()}
-            icon={MessageSquare}
+            title="Tỉ lệ thu phí"
+            value={stats.paidCount && stats.totalRecords
+              ? `${Math.round((stats.paidCount / stats.totalRecords) * 100)}%`
+              : "0%"}
+            icon={FileText}
             iconColor="warning"
-            description={`${stats.highPriorityRequests} yêu cầu ưu tiên cao`}
-            trend={{ direction: "down", value: "Giảm 3 so với hôm qua" }}
+            description={stats.unpaidCount ? `${stats.unpaidCount} chưa hoàn thành` : "Không có dữ liệu"}
+            trend={{
+              direction: "down", // hoặc có thể bỏ prop trend nếu component hỗ trợ
+              value: `trên tổng số ${stats.totalRecords} hóa đơn`
+            }}
           />
         </div>
 
