@@ -45,6 +45,7 @@ export function LoginForm() {
 
       if (response.ok) {
         alert("✅ Đăng nhập thành công!");
+        localStorage.setItem('user', JSON.stringify(data.user));
         setUsername(""); // Reset username field
         setPassword(""); // Reset password field
         const role = data.user.role;

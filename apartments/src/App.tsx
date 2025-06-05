@@ -15,6 +15,7 @@ import SettingsPage from "@/pages/Settings";
 import Accountant from "./pages/Billing.tsx";
 
 
+
 const queryClient = new QueryClient();
 
 const App = () => (

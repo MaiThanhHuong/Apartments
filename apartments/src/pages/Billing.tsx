@@ -80,6 +80,7 @@ interface InvoicesListProps {
   onDownloadPDF: (id: number) => void;
   fetchInvoices: () => void;
   onEditClick: (invoice: Invoice) => void;
+  user: any;
 }
 
 
@@ -113,6 +114,8 @@ const Billing = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null); 
   const [isCreating, setIsCreating] = useState(false);
+  // Lấy user từ localStorage
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   
   // Helper to format date as yyyy-MM-dd in local time
@@ -393,9 +396,12 @@ const Billing = () => {
               </div>
               <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
-                  <Button className="w-full md:w-auto">
-                    <Plus className="mr-2 h-4 w-4" /> Tạo hóa đơn
-                  </Button>
+                  {/* Ẩn nút tạo hóa đơn nếu là admin */}
+                  {user.role !== 'admin' && (
+                    <Button className="w-full md:w-auto">
+                      <Plus className="mr-2 h-4 w-4" /> Tạo hóa đơn
+                    </Button>
+                  )}
                 </DialogTrigger>
 
                 <DialogContent className="max-h-[90vh] overflow-y-auto">
@@ -557,6 +563,7 @@ const Billing = () => {
                     onDownloadPDF={downloadInvoicePDF}
                     fetchInvoices={fetchInvoices}
                     onEditClick={handleEditClick}
+                    user={user}
                   />
                 </TabsContent>
 
@@ -569,6 +576,7 @@ const Billing = () => {
                     onDownloadPDF={downloadInvoicePDF}
                     fetchInvoices={fetchInvoices}
                     onEditClick={handleEditClick}
+                    user={user}
                   />
                 </TabsContent>
 
@@ -581,6 +589,7 @@ const Billing = () => {
                     onDownloadPDF={downloadInvoicePDF}
                     fetchInvoices={fetchInvoices}
                     onEditClick={handleEditClick}
+                    user={user}
                   />
                 </TabsContent>
 
@@ -593,6 +602,7 @@ const Billing = () => {
                     onDownloadPDF={downloadInvoicePDF}
                     fetchInvoices={fetchInvoices}
                     onEditClick={handleEditClick}
+                    user={user}
                   />
                 </TabsContent>
               </Tabs>
@@ -709,10 +719,11 @@ interface InvoicesListProps {
   onDownloadPDF: (id: number) => void;
   fetchInvoices: () => void;
   onEditClick: (invoice: Invoice) => void;
+  user: any;
 }
 
 
-function InvoicesList({ invoices, onPayInvoice, onDownloadPDF, fetchInvoices, onEditClick }: InvoicesListProps) {
+function InvoicesList({ invoices, onPayInvoice, onDownloadPDF, fetchInvoices, onEditClick, user }: InvoicesListProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Đã thanh toán":
@@ -805,7 +816,7 @@ function InvoicesList({ invoices, onPayInvoice, onDownloadPDF, fetchInvoices, on
                   {invoice.status}
                 </Badge>
               </TableCell>
-              <TableCell>
+              {user.role !== 'admin' && <TableCell>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon">
@@ -813,53 +824,54 @@ function InvoicesList({ invoices, onPayInvoice, onDownloadPDF, fetchInvoices, on
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => onDownloadPDF(invoice.id)}>
-                      <Download className="mr-2 h-4 w-4" /> Tải PDF
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onEditClick(invoice)}>
-                      <Edit className="mr-2 h-4 w-4" />
-                      Chỉnh sửa
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onPayInvoice(invoice.id)}>
-                      <CreditCard className="mr-2 h-4 w-4" /> Ghi nhận thanh
-                      toán
-                    </DropdownMenuItem>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <DropdownMenuItem
-                          onSelect={(e) => e.preventDefault()}
-                          className="text-red-600 focus:text-red-600"
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Xóa hóa đơn
+                    {/* Ẩn các nút nếu là admin */}
+                      <>
+                        <DropdownMenuItem onClick={() => onDownloadPDF(invoice.id)}>
+                          <Download className="mr-2 h-4 w-4" /> Tải PDF
                         </DropdownMenuItem>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Xác nhận xóa</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Bạn có chắc chắn muốn xóa hóa đơn số {invoice.id}?
-                            Hành động này không thể hoàn tác.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Hủy</AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={() => handleDeleteInvoice(invoice.id)}
-                            className="bg-red-600 hover:bg-red-700"
-                          // disabled={actionLoading}
-                          >Xóa
-                            {/* {actionLoading ? "Đang xóa..." : "Xóa"} */}
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                    <DropdownMenuItem onClick={() => handleRemind(invoice.resident, invoice.unit)}>
-                      Gửi nhắc nhở
-                    </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => onEditClick(invoice)}>
+                          <Edit className="mr-2 h-4 w-4" />
+                          Chỉnh sửa
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => onPayInvoice(invoice.id)}>
+                          <CreditCard className="mr-2 h-4 w-4" /> Ghi nhận thanh toán
+                        </DropdownMenuItem>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <DropdownMenuItem
+                              onSelect={(e) => e.preventDefault()}
+                              className="text-red-600 focus:text-red-600"
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Xóa hóa đơn
+                            </DropdownMenuItem>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Xác nhận xóa</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Bạn có chắc chắn muốn xóa hóa đơn số {invoice.id}?
+                                Hành động này không thể hoàn tác.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Hủy</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDeleteInvoice(invoice.id)}
+                                className="bg-red-600 hover:bg-red-700"
+                              >Xóa</AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                        <DropdownMenuItem onClick={() => handleRemind(invoice.resident, invoice.unit)}>
+                          Gửi nhắc nhở
+                        </DropdownMenuItem>
+                      </>
+                    
                   </DropdownMenuContent>
+
                 </DropdownMenu>
-              </TableCell>
+              </TableCell>}
             </TableRow>
           ))}
         </TableBody>
