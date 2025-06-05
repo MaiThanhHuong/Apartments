@@ -106,7 +106,7 @@ const Residents = () => {
     dantoc: "",
     cccd: "",
     nghenghiep: "",
-    trangthai: "Thường trú" as Resident['trangthai'],
+    trangthai: "Thường trú" as Resident["trangthai"],
   });
 
   // State cho dialog chỉnh sửa
@@ -121,11 +121,13 @@ const Residents = () => {
     dantoc: "",
     cccd: "",
     nghenghiep: "",
-    trangthai: "Thường trú" as Resident['trangthai'],
+    trangthai: "Thường trú" as Resident["trangthai"],
   });
 
   // Handlers cho form thêm mới
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
@@ -187,7 +189,7 @@ const Residents = () => {
     setEditFormData({
       hoten: resident.hoten,
       hokhau: resident.hokhau,
-      ngaysinh: resident.ngaysinh.split('T')[0],
+      ngaysinh: resident.ngaysinh.split("T")[0],
       vaitro: resident.vaitro,
       gioitinh: resident.gioitinh,
       dantoc: resident.dantoc,
@@ -198,7 +200,9 @@ const Residents = () => {
     setIsEditDialogOpen(true);
   };
 
-  const handleEditChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleEditChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setEditFormData({ ...editFormData, [e.target.id]: e.target.value });
   };
 
@@ -272,11 +276,11 @@ const Residents = () => {
   // Thống kê cư dân
   const stats = {
     total: residents.length,
-    thuongtru: residents.filter(r => r.trangthai === "Thường trú").length,
-    tamtru: residents.filter(r => r.trangthai === "Tạm trú").length,
-    tamvang: residents.filter(r => r.trangthai === "Tạm vắng").length,
-    chuho: residents.filter(r => r.vaitro === "Chủ hộ").length,
-    thanhvien: residents.filter(r => r.vaitro != "Chủ hộ").length,
+    thuongtru: residents.filter((r) => r.trangthai === "Thường trú").length,
+    tamtru: residents.filter((r) => r.trangthai === "Tạm trú").length,
+    tamvang: residents.filter((r) => r.trangthai === "Tạm vắng").length,
+    chuho: residents.filter((r) => r.vaitro === "Chủ hộ").length,
+    thanhvien: residents.filter((r) => r.vaitro != "Chủ hộ").length,
   };
 
   // Lọc cư dân
@@ -285,7 +289,8 @@ const Residents = () => {
       resident.hoten.toLowerCase().includes(searchTerm.toLowerCase()) ||
       resident.cccd.includes(searchTerm);
 
-    const statusMatch = statusFilter === "all" || resident.trangthai === statusFilter;
+    const statusMatch =
+      statusFilter === "all" || resident.trangthai === statusFilter;
     const roleMatch = roleFilter === "all" || resident.vaitro === roleFilter;
 
     return searchMatch && statusMatch && roleMatch;
@@ -345,7 +350,9 @@ const Residents = () => {
               <div className="flex items-center space-x-2">
                 <div className="h-2 w-2 rounded-full bg-green-500"></div>
                 <div>
-                  <p className="text-2xl font-bold text-green-600">{stats.thuongtru}</p>
+                  <p className="text-2xl font-bold text-green-600">
+                    {stats.thuongtru}
+                  </p>
                   <p className="text-xs text-muted-foreground">Thường trú</p>
                 </div>
               </div>
@@ -357,7 +364,9 @@ const Residents = () => {
               <div className="flex items-center space-x-2">
                 <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
                 <div>
-                  <p className="text-2xl font-bold text-yellow-600">{stats.tamtru}</p>
+                  <p className="text-2xl font-bold text-yellow-600">
+                    {stats.tamtru}
+                  </p>
                   <p className="text-xs text-muted-foreground">Tạm trú</p>
                 </div>
               </div>
@@ -369,7 +378,9 @@ const Residents = () => {
               <div className="flex items-center space-x-2">
                 <div className="h-2 w-2 rounded-full bg-red-500"></div>
                 <div>
-                  <p className="text-2xl font-bold text-red-600">{stats.tamvang}</p>
+                  <p className="text-2xl font-bold text-red-600">
+                    {stats.tamvang}
+                  </p>
                   <p className="text-xs text-muted-foreground">Tạm vắng</p>
                 </div>
               </div>
@@ -381,14 +392,14 @@ const Residents = () => {
               <div className="flex items-center space-x-2">
                 <Home className="h-4 w-4 text-blue-500" />
                 <div>
-                  <p className="text-2xl font-bold text-blue-600">{stats.chuho}</p>
+                  <p className="text-2xl font-bold text-blue-600">
+                    {stats.chuho}
+                  </p>
                   <p className="text-xs text-muted-foreground">Chủ hộ</p>
                 </div>
               </div>
             </CardContent>
           </Card>
-
-         
         </div>
 
         {/* Bảng quản lý cư dân */}
@@ -413,7 +424,10 @@ const Residents = () => {
                   <Upload className="mr-2 h-4 w-4" />
                   Nhập Excel
                 </Button>
-                <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+                <Dialog
+                  open={isAddDialogOpen}
+                  onOpenChange={setIsAddDialogOpen}
+                >
                   <DialogTrigger asChild>
                     <Button className="w-full md:w-auto">
                       <Plus className="mr-2 h-4 w-4" /> Thêm cư dân
@@ -430,7 +444,9 @@ const Residents = () => {
                     <div className="grid gap-3 py-4">
                       <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-1">
-                          <Label htmlFor="hoten" className="text-sm">Họ tên</Label>
+                          <Label htmlFor="hoten" className="text-sm">
+                            Họ tên
+                          </Label>
                           <Input
                             id="hoten"
                             placeholder="Họ và tên"
@@ -440,7 +456,9 @@ const Residents = () => {
                           />
                         </div>
                         <div className="space-y-1">
-                          <Label htmlFor="hokhau" className="text-sm">Số hộ khẩu</Label>
+                          <Label htmlFor="hokhau" className="text-sm">
+                            Số hộ khẩu
+                          </Label>
                           <Input
                             id="hokhau"
                             placeholder="Số hộ khẩu"
@@ -453,7 +471,9 @@ const Residents = () => {
 
                       <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-1">
-                          <Label htmlFor="ngaysinh" className="text-sm">Ngày sinh</Label>
+                          <Label htmlFor="ngaysinh" className="text-sm">
+                            Ngày sinh
+                          </Label>
                           <Input
                             id="ngaysinh"
                             type="date"
@@ -463,7 +483,9 @@ const Residents = () => {
                           />
                         </div>
                         <div className="space-y-1">
-                          <Label htmlFor="cccd" className="text-sm">CCCD</Label>
+                          <Label htmlFor="cccd" className="text-sm">
+                            CCCD
+                          </Label>
                           <Input
                             id="cccd"
                             placeholder="Số CCCD"
@@ -476,8 +498,15 @@ const Residents = () => {
 
                       <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-1">
-                          <Label htmlFor="gioitinh" className="text-sm">Giới tính</Label>
-                          <Select value={formData.gioitinh} onValueChange={(value) => setFormData({ ...formData, gioitinh: value })}>
+                          <Label htmlFor="gioitinh" className="text-sm">
+                            Giới tính
+                          </Label>
+                          <Select
+                            value={formData.gioitinh}
+                            onValueChange={(value) =>
+                              setFormData({ ...formData, gioitinh: value })
+                            }
+                          >
                             <SelectTrigger>
                               <SelectValue placeholder="Chọn giới tính" />
                             </SelectTrigger>
@@ -488,8 +517,15 @@ const Residents = () => {
                           </Select>
                         </div>
                         <div className="space-y-1">
-                          <Label htmlFor="vaitro" className="text-sm">Vai trò</Label>
-                          <Select value={formData.vaitro} onValueChange={(value) => setFormData({ ...formData, vaitro: value })}>
+                          <Label htmlFor="vaitro" className="text-sm">
+                            Vai trò
+                          </Label>
+                          <Select
+                            value={formData.vaitro}
+                            onValueChange={(value) =>
+                              setFormData({ ...formData, vaitro: value })
+                            }
+                          >
                             <SelectTrigger>
                               <SelectValue placeholder="Chọn vai trò" />
                             </SelectTrigger>
@@ -498,7 +534,9 @@ const Residents = () => {
                               <SelectItem value="Vợ/Chồng">Vợ/Chồng</SelectItem>
                               <SelectItem value="Con cái">Con cái</SelectItem>
                               <SelectItem value="Cha mẹ">Cha mẹ</SelectItem>
-                              <SelectItem value="Anh/Chị/Em">Anh/Chị/Em</SelectItem>
+                              <SelectItem value="Anh/Chị/Em">
+                                Anh/Chị/Em
+                              </SelectItem>
                               <SelectItem value="Khác">Khác</SelectItem>
                             </SelectContent>
                           </Select>
@@ -507,7 +545,9 @@ const Residents = () => {
 
                       <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-1">
-                          <Label htmlFor="dantoc" className="text-sm">Dân tộc</Label>
+                          <Label htmlFor="dantoc" className="text-sm">
+                            Dân tộc
+                          </Label>
                           <Input
                             id="dantoc"
                             placeholder="Dân tộc"
@@ -517,7 +557,9 @@ const Residents = () => {
                           />
                         </div>
                         <div className="space-y-1">
-                          <Label htmlFor="nghenghiep" className="text-sm">Nghề nghiệp</Label>
+                          <Label htmlFor="nghenghiep" className="text-sm">
+                            Nghề nghiệp
+                          </Label>
                           <Input
                             id="nghenghiep"
                             placeholder="Nghề nghiệp"
@@ -537,10 +579,7 @@ const Residents = () => {
                       >
                         Hủy
                       </Button>
-                      <Button
-                        onClick={handleSubmit}
-                        disabled={actionLoading}
-                      >
+                      <Button onClick={handleSubmit} disabled={actionLoading}>
                         {actionLoading ? "Đang lưu..." : "Lưu"}
                       </Button>
                     </DialogFooter>
@@ -598,10 +637,18 @@ const Residents = () => {
                   <TableRow>
                     <TableHead>Cư dân</TableHead>
                     <TableHead>Số hộ</TableHead>
-                    <TableHead className="hidden lg:table-cell">Ngày sinh</TableHead>
-                    <TableHead className="hidden md:table-cell">Vai trò</TableHead>
-                    <TableHead className="hidden md:table-cell">Giới tính</TableHead>
-                    <TableHead className="hidden md:table-cell">Dân tộc</TableHead>
+                    <TableHead className="hidden lg:table-cell">
+                      Ngày sinh
+                    </TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Vai trò
+                    </TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Giới tính
+                    </TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Dân tộc
+                    </TableHead>
                     <TableHead className="hidden lg:table-cell">CCCD</TableHead>
                     <TableHead>Trạng thái</TableHead>
                     <TableHead className="w-[70px]">Thao tác</TableHead>
@@ -615,12 +662,18 @@ const Residents = () => {
                           <Avatar className="h-10 w-10">
                             <AvatarImage src={resident.avatar} />
                             <AvatarFallback>
-                              {resident.hoten.split(' ').map((n) => n[0]).join('').slice(0, 2)}
+                              {resident.hoten
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")
+                                .slice(0, 2)}
                             </AvatarFallback>
                           </Avatar>
                           <div>
                             <p className="font-medium">{resident.hoten}</p>
-                            <p className="text-sm text-muted-foreground">{resident.nghenghiep}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {resident.nghenghiep}
+                            </p>
                           </div>
                         </div>
                       </TableCell>
@@ -636,22 +689,32 @@ const Residents = () => {
                         <div className="flex items-center gap-1">
                           <Calendar className="h-4 w-4 text-muted-foreground" />
                           <span>
-                            {new Date(resident.ngaysinh).toLocaleDateString("vi-VN")}
+                            {new Date(resident.ngaysinh).toLocaleDateString(
+                              "vi-VN"
+                            )}
                           </span>
                         </div>
                       </TableCell>
 
                       <TableCell className="hidden md:table-cell">
-                        <Badge variant="outline">
-                          {resident.vaitro}
-                        </Badge>
+                        <Badge variant="outline">{resident.vaitro}</Badge>
                       </TableCell>
 
                       <TableCell className="hidden md:table-cell">
-                        <span className={`font mono text-sm ${resident.gioitinh === "F" ? "text-pink-600" :
-                            resident.gioitinh === "M" ? "text-blue-600" : "text-gray-600"
-                          }`}>
-                          {resident.gioitinh === "F" ? "Nữ" : resident.gioitinh === "M" ? "Nam" : resident.gioitinh}
+                        <span
+                          className={`font mono text-sm ${
+                            resident.gioitinh === "F"
+                              ? "text-pink-600"
+                              : resident.gioitinh === "M"
+                              ? "text-blue-600"
+                              : "text-gray-600"
+                          }`}
+                        >
+                          {resident.gioitinh === "F"
+                            ? "Nữ"
+                            : resident.gioitinh === "M"
+                            ? "Nam"
+                            : resident.gioitinh}
                         </span>
                       </TableCell>
 
@@ -666,8 +729,11 @@ const Residents = () => {
                       <TableCell>
                         <Badge
                           variant={
-                            resident.trangthai === "Thường trú" ? "default" :
-                              resident.trangthai === "Tạm trú" ? "secondary" : "destructive"
+                            resident.trangthai === "Thường trú"
+                              ? "default"
+                              : resident.trangthai === "Tạm trú"
+                              ? "secondary"
+                              : "destructive"
                           }
                         >
                           {resident.trangthai}
@@ -677,13 +743,19 @@ const Residents = () => {
                       <TableCell>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" disabled={actionLoading}>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              disabled={actionLoading}
+                            >
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleEditClick(resident)}>
+                            <DropdownMenuItem
+                              onClick={() => handleEditClick(resident)}
+                            >
                               <Edit className="mr-2 h-4 w-4" />
                               Chỉnh sửa
                             </DropdownMenuItem>
@@ -699,10 +771,13 @@ const Residents = () => {
                               </AlertDialogTrigger>
                               <AlertDialogContent>
                                 <AlertDialogHeader>
-                                  <AlertDialogTitle>Xác nhận xóa</AlertDialogTitle>
+                                  <AlertDialogTitle>
+                                    Xác nhận xóa
+                                  </AlertDialogTitle>
                                   <AlertDialogDescription>
-                                    Bạn có chắc chắn muốn xóa nhân khẩu số {resident.id}?
-                                    Hành động này không thể hoàn tác.
+                                    Bạn có chắc chắn muốn xóa nhân khẩu số{" "}
+                                    {resident.id}? Hành động này không thể hoàn
+                                    tác.
                                   </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
@@ -748,7 +823,9 @@ const Residents = () => {
             <div className="grid gap-3 py-4">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <Label htmlFor="hoten" className="text-sm">Họ tên</Label>
+                  <Label htmlFor="hoten" className="text-sm">
+                    Họ tên
+                  </Label>
                   <Input
                     id="hoten"
                     placeholder="Họ và tên"
@@ -758,7 +835,9 @@ const Residents = () => {
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="hokhau" className="text-sm">Số hộ khẩu</Label>
+                  <Label htmlFor="hokhau" className="text-sm">
+                    Số hộ khẩu
+                  </Label>
                   <Input
                     id="hokhau"
                     placeholder="Số hộ khẩu"
@@ -771,7 +850,9 @@ const Residents = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <Label htmlFor="ngaysinh" className="text-sm">Ngày sinh</Label>
+                  <Label htmlFor="ngaysinh" className="text-sm">
+                    Ngày sinh
+                  </Label>
                   <Input
                     id="ngaysinh"
                     type="date"
@@ -781,7 +862,9 @@ const Residents = () => {
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="cccd" className="text-sm">CCCD</Label>
+                  <Label htmlFor="cccd" className="text-sm">
+                    CCCD
+                  </Label>
                   <Input
                     id="cccd"
                     placeholder="Số CCCD"
@@ -794,8 +877,15 @@ const Residents = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <Label htmlFor="gioitinh" className="text-sm">Giới tính</Label>
-                  <Select value={editFormData.gioitinh} onValueChange={(value) => setEditFormData({ ...editFormData, gioitinh: value })}>
+                  <Label htmlFor="gioitinh" className="text-sm">
+                    Giới tính
+                  </Label>
+                  <Select
+                    value={editFormData.gioitinh}
+                    onValueChange={(value) =>
+                      setEditFormData({ ...editFormData, gioitinh: value })
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Chọn giới tính" />
                     </SelectTrigger>
@@ -806,8 +896,15 @@ const Residents = () => {
                   </Select>
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="vaitro" className="text-sm">Vai trò</Label>
-                  <Select value={editFormData.vaitro} onValueChange={(value) => setEditFormData({ ...editFormData, vaitro: value })}>
+                  <Label htmlFor="vaitro" className="text-sm">
+                    Vai trò
+                  </Label>
+                  <Select
+                    value={editFormData.vaitro}
+                    onValueChange={(value) =>
+                      setEditFormData({ ...editFormData, vaitro: value })
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Chọn vai trò" />
                     </SelectTrigger>
@@ -825,7 +922,9 @@ const Residents = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <Label htmlFor="dantoc" className="text-sm">Dân tộc</Label>
+                  <Label htmlFor="dantoc" className="text-sm">
+                    Dân tộc
+                  </Label>
                   <Input
                     id="dantoc"
                     placeholder="Dân tộc"
@@ -835,7 +934,9 @@ const Residents = () => {
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="nghenghiep" className="text-sm">Nghề nghiệp</Label>
+                  <Label htmlFor="nghenghiep" className="text-sm">
+                    Nghề nghiệp
+                  </Label>
                   <Input
                     id="nghenghiep"
                     placeholder="Nghề nghiệp"
@@ -858,10 +959,7 @@ const Residents = () => {
               >
                 Hủy
               </Button>
-              <Button
-                onClick={handleEditSubmit}
-                disabled={actionLoading}
-              >
+              <Button onClick={handleEditSubmit} disabled={actionLoading}>
                 {actionLoading ? "Đang cập nhật..." : "Cập nhật"}
               </Button>
             </DialogFooter>
