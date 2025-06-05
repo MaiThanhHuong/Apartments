@@ -58,7 +58,15 @@ router.put('/:id', async (req, res) => {
 router.delete("/:id", async (req, res) => {
     const { id } = req.params;
     try {
+        // const [result] = await db.query("DELETE FROM hokhau WHERE id = ?", [id]);
+        // Xóa dữ liệu liên quan trong nhankhau trước
+        await db.query("DELETE FROM tamtrutamvang WHERE nhankhau = ?", [id]);
+        await db.query("DELETE FROM nhankhau WHERE hokhau = ?", [id]);
+
+        // Sau đó xóa hokhau
         const [result] = await db.query("DELETE FROM hokhau WHERE id = ?", [id]);
+        console.log("Hokhau deleted:", result);
+
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: "Không tìm thấy căn hộ để xóa." });
         }
