@@ -103,7 +103,7 @@ const Dashboard = () => {
         </div>
 
         <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          <Card className="hover-card-effect md:col-span-2">
+          <Card className="hover-card-effect md:col-span-3">
             <CardHeader>
               <CardTitle className="flex justify-between items-center">
                 <span>Yêu cầu dịch vụ gần đây</span>
@@ -171,7 +171,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="hover-card-effect">
+          {/* <Card className="hover-card-effect">
             <CardHeader>
               <CardTitle className="flex justify-between items-center">
                 <span>Thông báo</span>
@@ -203,7 +203,7 @@ const Dashboard = () => {
                 </div>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">

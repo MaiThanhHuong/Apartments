@@ -180,19 +180,18 @@ const handleSaveTechnician = async () => {
     return searchMatch && priorityMatch && categoryMatch && statusMatch;
   });
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Chờ xử lý":
-        return "bg-warning/10 text-warning hover:bg-warning/20";
-      case "Đang xử lý":
-        return "bg-info/10 text-info hover:bg-info/20";
-      case "Đã hoàn thành":
-        return "bg-success/10 text-success hover:bg-success/20";
-      default:
-        return "bg-secondary";
-    }
-  };
-
+ const getStatusColor = (status: string) => {
+  switch (status) {
+    case "Chờ xử lý":
+      return "bg-gray-200 text-gray-600 hover:bg-gray-300"; // Màu xám nhạt
+    case "Đang xử lý":
+      return "bg-yellow-100 text-yellow-600 hover:bg-yellow-200"; // Màu vàng nhạt
+    case "Đã hoàn thành":
+      return "bg-green-100 text-green-600 hover:bg-green-200"; // Màu xanh lá cây
+    default:
+      return "bg-secondary";
+  }
+};
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "Cao":
@@ -480,18 +479,18 @@ interface ServiceRequestsListProps {
 }
 
 function ServiceRequestsList({ requests, onShowDetail, onEditStatus, onAssignTechnician}: ServiceRequestsListProps) {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Chờ xử lý":
-        return "bg-warning/10 text-warning hover:bg-warning/20";
-      case "Đang xử lý":
-        return "bg-info/10 text-info hover:bg-info/20";
-      case "Đã hoàn thành":
-        return "bg-success/10 text-success hover:bg-success/20";
-      default:
-        return "bg-secondary";
-    }
-  };
+ const getStatusColor = (status: string) => {
+  switch (status) {
+    case "Chờ xử lý":
+      return "bg-gray-200 text-gray-600 hover:bg-gray-300"; // Màu xám nhạt
+    case "Đang xử lý":
+      return "bg-yellow-100 text-yellow-600 hover:bg-yellow-200"; // Màu vàng nhạt
+    case "Đã hoàn thành":
+      return "bg-green-100 text-green-600 hover:bg-green-200"; // Màu xanh lá cây
+    default:
+      return "bg-secondary";
+  }
+};
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
