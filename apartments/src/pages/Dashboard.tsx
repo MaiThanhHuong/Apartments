@@ -313,7 +313,7 @@ const Dashboard = () => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">Đã lấp đầy</span>
-                  <span className="text-sm font-medium">92%</span>
+                  <span className="text-sm font-medium">91%</span>
                 </div>
                 <div className="w-full bg-secondary rounded-full h-2.5">
                   <div
@@ -324,7 +324,7 @@ const Dashboard = () => {
 
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">Còn trống</span>
-                  <span className="text-sm font-medium">7%</span>
+                  <span className="text-sm font-medium">9%</span>
                 </div>
                 <div className="w-full bg-secondary rounded-full h-2.5">
                   <div
@@ -335,7 +335,7 @@ const Dashboard = () => {
 
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">Đang bảo trì</span>
-                  <span className="text-sm font-medium">1%</span>
+                  <span className="text-sm font-medium">0%</span>
                 </div>
                 <div className="w-full bg-secondary rounded-full h-2.5">
                   <div
@@ -347,13 +347,13 @@ const Dashboard = () => {
                 <div className="pt-2 border-t border-border">
                   <div className="grid grid-cols-2 gap-2 mt-2">
                     <div className="bg-secondary/50 p-3 rounded-md text-center">
-                      <p className="text-2xl font-bold">112</p>
+                      <p className="text-2xl font-bold">10</p>
                       <p className="text-xs text-muted-foreground">
                         Căn hộ đã lấp đầy
                       </p>
                     </div>
                     <div className="bg-secondary/50 p-3 rounded-md text-center">
-                      <p className="text-2xl font-bold">8</p>
+                      <p className="text-2xl font-bold">1</p>
                       <p className="text-xs text-muted-foreground">
                         Căn hộ còn trống
                       </p>

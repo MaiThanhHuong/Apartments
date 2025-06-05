@@ -39,6 +39,22 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: "Lỗi server", error: err.message });
   }
 });
+router.get("/", async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 1000;
+    const [rows] = await db.query(
+      `SELECT s.*, h.soNha
+       FROM service s
+       LEFT JOIN hokhau h ON s.unit = h.id
+       ORDER BY s.id ASC
+       LIMIT ?`,
+      [limit]
+    );
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ message: "Lỗi server", error: err.message });
+  }
+});
 router.post("/", async (req, res) => {
   try {
     const {
