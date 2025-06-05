@@ -69,7 +69,10 @@ router.put('/:id', async (req, res) => {
 router.delete("/:id", async (req, res) => {
     const { id } = req.params;
     try {
+        const [result1] = await db.query("DELETE FROM tamtrutamvang WHERE nhankhau = ?", [id]);
         const [result] = await db.query("DELETE FROM nhankhau WHERE id = ?", [id]);
+        console.log("Kết quả xóa tamtrutamvang:", result1.affectedRows);
+        console.log("Kết quả xóa nhankhau:", result.affectedRows);
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: "Không tìm thấy nhân khẩu để xóa." });
         }
