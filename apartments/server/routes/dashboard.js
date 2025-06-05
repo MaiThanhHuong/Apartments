@@ -12,15 +12,27 @@ router.get("/", async (req, res) => {
     (SELECT COUNT(*) FROM noptien WHERE sotien > 0) AS paidCount,
     (SELECT COUNT(*) FROM noptien WHERE sotien <= 0) AS unpaidCount,
     (SELECT COUNT(*) FROM noptien) AS totalRecords;`);
+
+
+    // Truy vấn các dịch vụ gần đây
+  const [recentServices] = await db.query(`
+    SELECT unit, title, status, dateSubmitted
+    FROM service
+    ORDER BY id DESC
+    LIMIT 3;
+  `);
+
     res.json({
       totalApartments: rows[0].totalApartments || 0,
       totalResidents: rows[0].totalResidents || 0,
       totalIncome: rows[0].totalIncome || 0,
       paidCount: rows[0].paidCount || 0,
       unpaidCount: rows[0].unpaidCount || 0,
-      totalRecords: rows[0].totalRecords || 0
+      totalRecords: rows[0].totalRecords || 0,
+      recentServices: recentServices || []
     });
-  } catch (error) {
+  }
+   catch (error) {
     console.error("Lỗi truy vấn số lượng căn hộ:", error);
     res.status(500).json({ message: "Lỗi máy chủ khi lấy số lượng căn hộ" });
   }

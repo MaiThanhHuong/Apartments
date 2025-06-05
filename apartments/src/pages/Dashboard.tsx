@@ -11,12 +11,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Building,
   Users,
-  Home,
-  MessageSquare,
+  Home, // Home không được sử dụng, có thể bỏ
+  MessageSquare, // MessageSquare không được sử dụng, có thể bỏ
   FileText,
-  Bell,
+  Bell, // Bell không được sử dụng trong phần code hiện tại, có thể bỏ nếu card Thông báo vẫn được comment
   ArrowRight,
-  Wallet
+  Wallet,
 } from "lucide-react";
 import {
   Table,
@@ -28,8 +28,33 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react"; // Thêm useMemo
 import axios from "axios";
+
+// Định nghĩa kiểu Invoice
+type Invoice = {
+  id: number;
+  invoiceNumber: string;
+  unit: string;
+  resident: string;
+  issueDate: string; // Format YYYY-MM-DD
+  dueDate: string;   // Format YYYY-MM-DD
+  amount: number;
+  status: string;    // Ví dụ: "Đã thanh toán", "Chờ thanh toán", "Quá hạn"
+  category: string;
+  paymentMethod?: string;
+  paymentDate?: string; // Format YYYY-MM-DD, optional
+};
+
+// Định nghĩa kiểu Service (đã có)
+interface Service {
+  unit: string;
+  title: string;
+  status: string;
+  dateSubmitted: string;
+}
+
+const MAX_RECENT_ITEMS_OVERVIEW = 3; // Số lượng mục hiển thị cho tổng quan thanh toán
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -39,14 +64,31 @@ const Dashboard = () => {
     totalIncome: 0,
     paidCount: 0,
     unpaidCount: 0,
-    totalRecords: 0
+    totalRecords: 0,
   });
+  const [recentServices, setRecentServices] = useState<Service[]>([]);
+
+  // State mới cho dữ liệu hóa đơn của phần Tổng quan thanh toán
+  const [allInvoicesForOverview, setAllInvoicesForOverview] = useState<Invoice[]>([]);
+  const [loadingInvoices, setLoadingInvoices] = useState<boolean>(true);
+
 
   useEffect(() => {
-    axios.get("http://localhost:3001/api/dashboard")
-      .then(res => {
-        console.log(res.data);
-        setStats(res.data as typeof stats);
+    // Fetch dashboard stats và recent services
+    axios
+      .get("http://localhost:3001/api/dashboard")
+      .then((res) => {
+        const data = res.data;
+        // Gán giá trị cho stats một cách cẩn thận hơn
+        setStats({
+            totalApartments: data.totalApartments || 0,
+            totalResidents: data.totalResidents || 0,
+            totalIncome: data.totalIncome || 0,
+            paidCount: data.paidCount || 0,
+            unpaidCount: data.unpaidCount || 0,
+            totalRecords: data.totalRecords || 0,
+        });
+        setRecentServices(data.recentServices || []);
       })
       .catch(() => {
         // fallback nếu lỗi
@@ -56,13 +98,87 @@ const Dashboard = () => {
           totalIncome: 0,
           paidCount: 0,
           unpaidCount: 0,
-          totalRecords: 0
+          totalRecords: 0,
         });
+        setRecentServices([]);
+        console.error("Lỗi khi fetch dữ liệu dashboard chung.");
+      });
+
+    // Fetch dữ liệu hóa đơn cho phần Tổng quan thanh toán
+    setLoadingInvoices(true);
+    axios
+      .get("http://localhost:3001/api/v1/billing/invoiceNumber") // Endpoint lấy danh sách hóa đơn
+      .then((res) => {
+        if (Array.isArray(res.data)) {
+          setAllInvoicesForOverview(res.data);
+        } else {
+          console.error("Dữ liệu hóa đơn (invoiceNumber) không phải là mảng:", res.data);
+          setAllInvoicesForOverview([]);
+        }
+      })
+      .catch((err) => {
+        console.error("Lỗi khi fetch danh sách hóa đơn cho tổng quan:", err);
+        setAllInvoicesForOverview([]);
+      })
+      .finally(() => {
+        setLoadingInvoices(false);
       });
   }, []);
+
+  // Xử lý dữ liệu hóa đơn để lấy ra các mục gần đây
+  const recentPaidInvoices = useMemo(() => {
+    return allInvoicesForOverview
+      .filter(invoice => invoice.status === "Đã thanh toán")
+      .sort((a, b) => {
+        const dateA = new Date(a.paymentDate || a.issueDate);
+        const dateB = new Date(b.paymentDate || b.issueDate);
+        if (dateB.getTime() !== dateA.getTime()) {
+          return dateB.getTime() - dateA.getTime();
+        }
+        return b.id - a.id;
+      })
+      .slice(0, MAX_RECENT_ITEMS_OVERVIEW);
+  }, [allInvoicesForOverview]);
+
+  const recentPendingInvoices = useMemo(() => {
+    return allInvoicesForOverview
+      .filter(invoice => invoice.status === "Chờ thanh toán")
+      .sort((a, b) => {
+        const dateA = new Date(a.dueDate);
+        const dateB = new Date(b.dueDate);
+        if (dateA.getTime() !== dateB.getTime()) {
+          return dateA.getTime() - dateB.getTime();
+        }
+        const issueDateA = new Date(a.issueDate);
+        const issueDateB = new Date(b.issueDate);
+        if (issueDateB.getTime() !== issueDateA.getTime()) {
+            return issueDateB.getTime() - issueDateA.getTime();
+        }
+        return b.id - a.id;
+      })
+      .slice(0, MAX_RECENT_ITEMS_OVERVIEW);
+  }, [allInvoicesForOverview]);
+
+  // Hàm tiện ích định dạng
+  const formatDateForDisplay = (dateString?: string) => {
+    if (!dateString) return "N/A";
+    const dateParts = dateString.split('-');
+    if (dateParts.length === 3) {
+      const year = parseInt(dateParts[0]);
+      const month = parseInt(dateParts[1]) - 1;
+      const day = parseInt(dateParts[2]);
+      return new Date(year, month, day).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
+    return new Date(dateString).toLocaleDateString('vi-VN');
+  };
+
+  const formatCurrencyForDisplay = (amount: number) => {
+    return `${amount.toLocaleString('vi-VN')} VNĐ`; 
+  };
+
   return (
     <DashboardLayout title="Bảng điều khiển">
-      <div className="space-y-6 animate-fade-in">
+     <div className="space-y-6 animate-fade-in">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatsCard
             title="Tổng số căn hộ"
@@ -102,22 +218,17 @@ const Dashboard = () => {
           />
         </div>
 
+        {/* Recent Services and Notifications */}
         <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          <Card className="hover-card-effect md:col-span-3">
+          <Card className="hover-card-effect md:col-span-3"> {/* Sửa lỗi md:col-span-2 thành md:col-span-3 nếu muốn full width trên md */}
             <CardHeader>
               <CardTitle className="flex justify-between items-center">
                 <span>Yêu cầu dịch vụ gần đây</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => navigate("/service-requests")}
-                >
+                <Button variant="ghost" size="sm" onClick={() => navigate("/service-requests")}>
                   Xem tất cả <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>
               </CardTitle>
-              <CardDescription>
-                Yêu cầu bảo trì và dịch vụ mới nhất
-              </CardDescription>
+              <CardDescription>Yêu cầu bảo trì và dịch vụ mới nhất</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
@@ -130,180 +241,106 @@ const Dashboard = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <TableRow>
-                    <TableCell className="font-medium">201</TableCell>
-                    <TableCell>Rò rỉ ống nước trong phòng tắm</TableCell>
-                    <TableCell>
-                      <span className="px-2 py-1 bg-warning/10 text-warning rounded-full text-xs font-medium">
-                        Chờ xử lý
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      Hôm nay
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium">305</TableCell>
-                    <TableCell>Ổ cắm điện không hoạt động</TableCell>
-                    <TableCell>
-                      <span className="px-2 py-1 bg-info/10 text-info rounded-full text-xs font-medium">
-                        Đang xử lý
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      Hôm qua
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium">512</TableCell>
-                    <TableCell>Sửa điều hòa không khí</TableCell>
-                    <TableCell>
-                      <span className="px-2 py-1 bg-success/10 text-success rounded-full text-xs font-medium">
-                        Đã hoàn thành
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      2 ngày trước
-                    </TableCell>
-                  </TableRow>
+                  {recentServices.length > 0 ? recentServices.map((service, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="font-medium">{service.unit}</TableCell>
+                      <TableCell>{service.title}</TableCell>
+                      <TableCell>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          service.status === 'Hoàn thành' ? 'bg-green-100 text-green-800' :
+                          service.status === 'Đang xử lý' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {service.status}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">{formatDateForDisplay(service.dateSubmitted)}</TableCell>
+                    </TableRow>
+                  )) : (
+                    <TableRow><TableCell colSpan={4} className="text-center">Không có yêu cầu dịch vụ nào.</TableCell></TableRow>
+                  )}
                 </TableBody>
               </Table>
             </CardContent>
           </Card>
-
-          {/* <Card className="hover-card-effect">
-            <CardHeader>
-              <CardTitle className="flex justify-between items-center">
-                <span>Thông báo</span>
-                <Button variant="ghost" size="sm">
-                  <Bell className="h-4 w-4" />
-                </Button>
-              </CardTitle>
-              <CardDescription>Thông báo mới nhất của tòa nhà</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <h4 className="font-semibold">Bảo trì thang máy</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Thang máy số 2 sẽ được bảo trì vào thứ Bảy từ 10 giờ sáng đến 2 giờ chiều.
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Đăng 2 ngày trước
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-semibold">Thông báo cắt nước</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Nước sẽ bị cắt ở Tháp Bắc để sửa chữa đường ống vào thứ Hai từ 9 giờ sáng đến 11 giờ sáng.
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Đăng 3 ngày trước
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card> */}
+          {/* Card Thông báo (đang được comment) */}
         </div>
 
+        {/* Payment Overview and Occupancy Status */}
         <div className="grid gap-4 md:grid-cols-2">
+          {/* --- Tổng quan thanh toán (Đã được FIX) --- */}
           <Card className="hover-card-effect">
             <CardHeader>
               <CardTitle className="flex justify-between items-center">
                 <span>Tổng quan thanh toán</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => navigate("/billing")}
-                >
+                <Button variant="ghost" size="sm" onClick={() => navigate("/billing")}>
                   Xem tất cả <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>
               </CardTitle>
               <CardDescription>Tổng quan về các khoản thanh toán gần đây</CardDescription>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="received">
-                <TabsList>
-                  <TabsTrigger value="received">Đã nhận</TabsTrigger>
-                  <TabsTrigger value="pending">Chờ thanh toán</TabsTrigger>
-                </TabsList>
-                <TabsContent value="received" className="pt-4">
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <p className="font-medium">Căn hộ 402</p>
-                        <p className="text-sm text-muted-foreground">
-                          Phí bảo trì hàng tháng
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium text-success">$850.00</p>
-                        <p className="text-xs text-muted-foreground">
-                          15/05/2023
-                        </p>
-                      </div>
+              {loadingInvoices ? (
+                <p className="text-center py-4">Đang tải dữ liệu hóa đơn...</p>
+              ) : (
+                <Tabs defaultValue="received">
+                  <TabsList>
+                    <TabsTrigger value="received">Đã nhận</TabsTrigger>
+                    <TabsTrigger value="pending">Chờ thanh toán</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="received" className="pt-4">
+                    <div className="space-y-4">
+                      {recentPaidInvoices.length > 0 ? (
+                        recentPaidInvoices.map((invoice) => (
+                          <div key={`paid-dashboard-${invoice.id}`} className="flex justify-between items-start">
+                            <div className="flex-grow pr-2">
+                              <p className="font-medium truncate" title={`Căn hộ ${invoice.unit}`}>Căn hộ {invoice.unit}</p>
+                              <p className="text-sm text-muted-foreground truncate" title={invoice.category}>{invoice.category}</p>
+                            </div>
+                            <div className="text-right flex-shrink-0">
+                              <p className="font-medium text-success">{formatCurrencyForDisplay(invoice.amount)}</p>
+                              <p className="text-xs text-muted-foreground">{formatDateForDisplay(invoice.paymentDate || invoice.issueDate)}</p>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-sm text-muted-foreground text-center py-4">Không có thanh toán nào đã nhận gần đây.</p>
+                      )}
                     </div>
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <p className="font-medium">Căn hộ 205</p>
-                        <p className="text-sm text-muted-foreground">
-                          Phí bảo trì hàng tháng
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium text-success">$750.00</p>
-                        <p className="text-xs text-muted-foreground">
-                          14/05/2023
-                        </p>
-                      </div>
+                  </TabsContent>
+                  <TabsContent value="pending" className="pt-4">
+                    <div className="space-y-4">
+                      {recentPendingInvoices.length > 0 ? (
+                        recentPendingInvoices.map((invoice) => (
+                          <div key={`pending-dashboard-${invoice.id}`} className="flex justify-between items-start">
+                            <div className="flex-grow pr-2">
+                              <p className="font-medium truncate" title={`Căn hộ ${invoice.unit}`}>Căn hộ {invoice.unit}</p>
+                              <p className="text-sm text-muted-foreground truncate" title={invoice.category}>{invoice.category}</p>
+                            </div>
+                            <div className="text-right flex-shrink-0">
+                              <p className="font-medium text-warning">{formatCurrencyForDisplay(invoice.amount)}</p>
+                              <p className="text-xs text-muted-foreground">Hạn: {formatDateForDisplay(invoice.dueDate)}</p>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-sm text-muted-foreground text-center py-4">Không có khoản nào đang chờ thanh toán.</p>
+                      )}
                     </div>
-                  </div>
-                </TabsContent>
-                <TabsContent value="pending" className="pt-4">
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <p className="font-medium">Căn hộ 301</p>
-                        <p className="text-sm text-muted-foreground">
-                          Phí bảo trì hàng tháng
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium text-warning">$800.00</p>
-                        <p className="text-xs text-muted-foreground">
-                          Hạn 20/05/2023
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <p className="font-medium">Căn hộ 507</p>
-                        <p className="text-sm text-muted-foreground">
-                          Phí bảo trì hàng tháng
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium text-warning">$900.00</p>
-                        <p className="text-xs text-muted-foreground">
-                          Hạn 25/05/2023
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </TabsContent>
-              </Tabs>
+                  </TabsContent>
+                </Tabs>
+              )}
             </CardContent>
           </Card>
+          {/* --- Kết thúc Tổng quan thanh toán --- */}
 
+          {/* Trạng thái lấp đầy (Vẫn là dữ liệu cứng, cần làm tương tự nếu muốn động) */}
           <Card className="hover-card-effect">
-            <CardHeader>
+            { /* ... JSX của Trạng thái lấp đầy ... */ }
+             <CardHeader>
               <CardTitle className="flex justify-between items-center">
                 <span>Trạng thái lấp đầy</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => navigate("/apartments")}
-                >
+                <Button variant="ghost" size="sm" onClick={() => navigate("/apartments")}>
                   Xem tất cả <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>
               </CardTitle>
