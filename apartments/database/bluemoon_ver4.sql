@@ -94,7 +94,7 @@ CREATE TABLE `nhankhau` (
   PRIMARY KEY (`id`),
   KEY `hokhau_idx` (`hokhau`),
   CONSTRAINT `hokhau_nhankhau` FOREIGN KEY (`hokhau`) REFERENCES `hokhau` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -103,7 +103,7 @@ CREATE TABLE `nhankhau` (
 
 LOCK TABLES `nhankhau` WRITE;
 /*!40000 ALTER TABLE `nhankhau` DISABLE KEYS */;
-INSERT INTO `nhankhau` VALUES (1,'Rivkah Marston','1981-12-03','M','Mèo','857924521998','Tài xế','Chủ hộ',1),(2,'Vernen Pinchback','1990-02-20','F','Dao','838586808899','Nông dân','Chủ hộ',2),(3,'Jae Grammer','1998-01-12','F','Ede','378698246241','Bác sĩ','Chủ hộ',3),(4,'Brand Cankett','1971-06-06','F','Mường','951369231022','Tài xế','Chủ hộ',4),(5,'Marna Clayton','2011-04-22','F','Kinh','108849605125','Kỹ sư','Chủ hộ',5),(6,'Mickey Ewells','1970-03-24','M','Tày','983176988043','Công nhân','Chủ hộ',6),(7,'Cullin Yerlett','1998-12-31','F','Dao','835945540765','Tài xế','Chủ hộ',7),(8,'Kellie Ivanisov','1981-09-11','M','Tày','136747392433','Tài xế','Chủ hộ',8),(9,'Chester Lagde','1993-12-03','M','Kinh','954863037515','Giáo viên','Chủ hộ',9),(10,'Laurena Swainger','2008-12-06','M','Tày','470408567848','Công nhân','Chủ hộ',10),(11,'1','2025-06-06','F','1','1','1','Vợ/Chồng',1),(12,'1','2025-06-13','M','1','1','1','Vợ/Chồng',1);
+INSERT INTO `nhankhau` VALUES (1,'Rivkah Marston','1981-12-03','M','Mèo','857924521998','Tài xế','Chủ hộ',1),(2,'Vernen Pinchback','1990-02-20','F','Dao','838586808899','Nông dân','Chủ hộ',2),(3,'Jae Grammer','1998-01-12','F','Ede','378698246241','Bác sĩ','Chủ hộ',3),(4,'Brand Cankett','1971-06-06','F','Mường','951369231022','Tài xế','Chủ hộ',4),(5,'Marna Clayton','2011-04-22','F','Kinh','108849605125','Kỹ sư','Chủ hộ',5),(6,'Mickey Ewells','1970-03-24','M','Tày','983176988043','Công nhân','Chủ hộ',6),(7,'Cullin Yerlett','1998-12-31','F','Dao','835945540765','Tài xế','Chủ hộ',7),(8,'Kellie Ivanisov','1981-09-11','M','Tày','136747392433','Tài xế','Chủ hộ',8),(9,'Chester Lagde','1993-12-03','M','Kinh','954863037515','Giáo viên','Chủ hộ',9),(10,'Laurena Swainger','2008-12-06','M','Tày','470408567848','Công nhân','Chủ hộ',10);
 /*!40000 ALTER TABLE `nhankhau` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -119,7 +119,7 @@ DELIMITER ;;
     -- Chỉ kiểm tra nếu vai trò là "Chủ hộ"
     IF NEW.vaitro = 'Chủ hộ' AND EXISTS (
         SELECT 1 FROM `nhankhau` 
-        WHERE `hokhau` = NEW.`hokhau`
+        WHERE hokhau = NEW.hokhau 
         AND vaitro = 'Chủ hộ'
     ) THEN
         SIGNAL SQLSTATE '45000' 
@@ -143,7 +143,7 @@ DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_check_unique_chuho_update` BEFORE UPDATE ON `nhankhau` FOR EACH ROW BEGIN
     IF NEW.vaitro = 'Chủ hộ' AND EXISTS (
         SELECT 1 FROM `nhankhau` 
-        WHERE `hokhau` = NEW.`hokhau`
+        WHERE hokhau = NEW.hokhau 
         AND vaitro = 'Chủ hộ'
         AND id != NEW.id
     ) THEN
@@ -185,7 +185,7 @@ CREATE TABLE `noptien` (
 
 LOCK TABLES `noptien` WRITE;
 /*!40000 ALTER TABLE `noptien` DISABLE KEYS */;
-INSERT INTO `noptien` VALUES (3,'2025-01-02',50000,'Vernen Pinchback',3,2),(11,NULL,0,'Vernen Pinchback',15,2),(12,NULL,0,'Laurena Swainger',16,10);
+INSERT INTO `noptien` VALUES (3,'2025-01-02',1000,'Vernen Pinchback',3,2),(11,'2025-06-06',35000,'Vernen Pinchback',15,2),(12,'2025-06-06',23000,'Laurena Swainger',16,10);
 /*!40000 ALTER TABLE `noptien` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -214,6 +214,38 @@ LOCK TABLES `phuongtien` WRITE;
 /*!40000 ALTER TABLE `phuongtien` DISABLE KEYS */;
 INSERT INTO `phuongtien` VALUES ('09F-5165','Xe máy',9),('11E-2849','Xe máy',4),('18Y-8944','Ô tô',3),('19F-6467','Xe máy',8),('27H-3291','Xe máy',10),('40C-2088','Xe máy',2),('48Z-2196','Ô tô',1),('71V-1964','Xe máy',5),('75X-9282','Ô tô',6),('82F-8282','Ô tô',7);
 /*!40000 ALTER TABLE `phuongtien` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service`
+--
+
+DROP TABLE IF EXISTS `service`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL,
+  `description` text,
+  `unit` decimal(10,0) NOT NULL,
+  `resident` varchar(100) NOT NULL,
+  `dateSubmitted` date NOT NULL,
+  `priority` varchar(20) NOT NULL,
+  `status` varchar(20) NOT NULL,
+  `category` varchar(50) NOT NULL,
+  `assignedTo` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service`
+--
+
+LOCK TABLES `service` WRITE;
+/*!40000 ALTER TABLE `service` DISABLE KEYS */;
+INSERT INTO `service` VALUES (1,'Sửa chữa điện','Cần sửa chữa hệ thống điện trong nhà',25,'Rivkah Marston','2025-05-01','Cao','Đang xử lý','Điện','Trần Văn B'),(2,'Bảo trì máy lạnh','Bảo trì định kỳ máy lạnh phòng khách',17,'Vernen Pinchback','2025-05-02','Trung bình','Chờ xử lý','HVAC','Nguyễn Văn D'),(3,'Lắp đặt internet','Yêu cầu lắp đặt internet mới cho căn hộ',73,'Jae Grammer','2025-05-03','Thấp','Đã hoàn thành','Công nghệ thông tin','Trần Thị F'),(4,'Sửa chữa ống nước','Ống nước bị rò rỉ cần sửa chữa gấp',16,'Brand Cankett','2025-05-04','Cao','Đang xử lý','Nước','Lê Văn H'),(5,'Vệ sinh nhà cửa','Yêu cầu vệ sinh toàn bộ căn hộ',99,'Marna Clayton','2025-05-05','Thấp','Chờ xử lý','Vệ sinh','Nguyễn Thị J'),(6,'Sơn lại tường','Cần sơn lại tường phòng khách',45,'Mickey Ewells','2025-05-06','Trung bình','Đã hoàn thành','Xây dựng','Phạm Thị L'),(7,'1','1',2,'Vernen Pinchback','2025-06-05','Trung bình','Chờ xử lý','Điện','-');
+/*!40000 ALTER TABLE `service` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -291,4 +323,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-06-05 22:51:44
+-- Dump completed on 2025-06-06  0:11:24
