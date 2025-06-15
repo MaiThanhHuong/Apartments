@@ -17,7 +17,9 @@ Apartments là một ứng dụng web quản lý căn hộ, cung cấp các ch�
 ## 🛠️ Tính năng chính
 
 - **Quản lý căn hộ:** Thêm, sửa, xóa thông tin căn hộ.
-- **Tìm kiếm & lọc:** Tìm kiếm theo tên, loại căn hộ hoặc các tiêu chí khác.
+- **Quản lý hộ khẩu, nhân khẩu:** Cập nhật thông tin từng nhân khẩu, hộ khẩu.
+- **Tìm kiếm & Thống kê:** Tìm kiếm theo tên, loại căn hộ hoặc các tiêu chí khác.
+- **Thu phí dịch vụ, quản lý khoản thu & Thống kê:** Thêm, sửa, xóa khoản thu, thống kê theo từng hộ gia đình.
 - **Hiển thị chi tiết căn hộ:** Giao diện trực quan và dễ sử dụng.
 - **Responsive Design:** Hỗ trợ sử dụng trên các thiết bị di động và desktop.
 
