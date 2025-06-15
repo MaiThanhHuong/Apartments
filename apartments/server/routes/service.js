@@ -1,6 +1,6 @@
 // routes/service.js
 import express from "express";
-import { db } from "../server.js"; // Đường dẫn tới db pool (đúng là ../server.js nếu bạn khai báo pool ở đó)
+import { db } from "../db.js"; 
 
 const router = express.Router();
 

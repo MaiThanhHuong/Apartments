@@ -1,5 +1,5 @@
 import express from "express";
-import mysql from "mysql2"
+// import mysql from "mysql2"
 import cors from "cors";
 import dotenv from "dotenv";
 import apartmentsRouter from "./routes/apartments.js";
@@ -27,15 +27,15 @@ app.use("/api/dashboard", dashboardRouter);
 
 initRoutes(app);
 
-export const db = mysql.createPool({
-  host: process.env.MYSQL_HOST,
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DATABASE,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-}).promise();
+// export const db = mysql.createPool({
+//   host: process.env.MYSQL_HOST,
+//   user: process.env.MYSQL_USER,
+//   password: process.env.MYSQL_PASSWORD,
+//   database: process.env.MYSQL_DATABASE,
+//   waitForConnections: true,
+//   connectionLimit: 10,
+//   queueLimit: 0
+// }).promise();
 
 const PORT = process.env.PORT || 3001;
 
@@ -45,7 +45,7 @@ app.listen(PORT, () => {
 }); 
 
 
-// Test kết nối database
-db.query('SELECT 1')
-  .then(() => console.log('✅ Kết nối database thành công'))
-  .catch(err => console.error('❌ Lỗi kết nối database:', err));
+// // Test kết nối database
+// db.query('SELECT 1')
+//   .then(() => console.log('✅ Kết nối database thành công'))
+//   .catch(err => console.error('❌ Lỗi kết nối database:', err));

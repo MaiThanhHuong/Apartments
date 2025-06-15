@@ -1,4 +1,4 @@
-import { db } from "../server.js";
+import { db } from "../db.js";
 export const getAllBillingServices = () => new Promise(async (resolve, reject) => {
     try {
         const response = await db.query("SELECT * FROM khoanthu");
