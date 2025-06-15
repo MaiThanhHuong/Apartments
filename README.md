@@ -38,8 +38,13 @@ Apartments là một ứng dụng web quản lý căn hộ, cung cấp các ch�
 ## 🚀 Cài đặt và chạy ứng dụng
 
 ### 1. Clone dự án và thiết lập cơ sở dữ liệu
+
 - Đầu tiên, cài đặt **MySQL** trên máy tính của bạn.
 - Import dữ liệu mẫu từ tệp `bluemoon_ver4.sql`:
+-  Git clone dự án về local
+  ```bash
+  https://github.com/MaiThanhHuong/Apartments
+  ```
   1. Di chuyển đến thư mục chứa tệp dữ liệu:
      ```bash
      cd apartments/database/
@@ -48,6 +53,7 @@ Apartments là một ứng dụng web quản lý căn hộ, cung cấp các ch�
      ```bash
      mysql -u [tên_người_dùng] -p [tên_cơ_sở_dữ_liệu] < bluemoon_backup.sql
      ```
+  
 
 ### 2. Cấu hình tệp `.env`
 - Tạo tệp `.env` trong thư mục gốc dự án.
