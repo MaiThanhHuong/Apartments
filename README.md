@@ -53,7 +53,7 @@ Apartments là một ứng dụng web quản lý căn hộ, cung cấp các ch�
      ```
   2. Mở MySQL Workbench hoặc sử dụng lệnh CLI để import:
      ```bash
-     mysql -u [tên_người_dùng] -p [tên_cơ_sở_dữ_liệu] < bluemoon_backup.sql
+     mysql -u [tên_người_dùng] -p [tên_cơ_sở_dữ_liệu] < bluemoon_ver4ver4.sql
      ```
   
 
@@ -90,6 +90,10 @@ Apartments là một ứng dụng web quản lý căn hộ, cung cấp các ch�
   ```bash
   npm run dev
   ```
+- Khởi chạy testcase trong thư mục ./server/tests
+   ```bash
+  npm test
+  ```
 
 Ứng dụng sẽ chạy tại [http://localhost:5173](http://localhost:5173).
 
@@ -101,6 +105,8 @@ Apartments là một ứng dụng web quản lý căn hộ, cung cấp các ch�
 - **Backend:** Node.js, Express.js
 - **Database:** MySQL
 - **Authentication:** JWT (JSON Web Token)
+- **Test:** Jest
+
 
 ## 📂 Cấu trúc thư mục
 
@@ -117,7 +123,9 @@ git ls-tree -r HEAD --name-only
 │   ├── controllers/     # Controller: Xử lý logic cho từng chức năng
 │   ├── routes/          # API endpoints
 │   ├── services/        # Các dịch vụ hỗ trợ giao tiếp với database
+│   ├── tests/           # Testcase
 │   ├── ultis/           # Các hàm tiện ích (format ngày, xử lý chuỗi, ...)
+│   ├── db.js            # Connect với database, tránh vòng lặp khi import server.js
 │   └── server.js        # Điểm khởi động của server
 ├── src/                 # Frontend: React.js với TypeScript
 │   ├── components/      # Các thành phần UI tái sử dụng
@@ -131,6 +139,7 @@ git ls-tree -r HEAD --name-only
 ├── README.md            # Tài liệu hướng dẫn sử dụng và cài đặt
 ├── tailwind.config.js   # Cấu hình Tailwind CSS
 ├── vite.config.ts       # Cấu hình Vite cho ứng dụng
+├── jest.config.ts       # Cấu hình Jest cho ứng dụng
 └── package.json         # Quản lý dependencies và script
 ```
 
