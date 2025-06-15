@@ -10,8 +10,8 @@ Apartments là một ứng dụng web quản lý căn hộ, cung cấp các ch�
 | **Trương Ngọc Mai**     | **20225879** |
 | **Nguyễn Đức Thành**    | **20225930** |
 | **Mai Thanh Hương**     | **20225852** |
-| **Phan Thanh Thắng**    | **20225852** |
-| **Nguyễn Khắc Hiếu**    | **20225852** |
+| **Phan Thanh Thắng**    | **20225927** |
+| **Nguyễn Khắc Hiếu**    | **20225839** |
 
 
 ## 🛠️ Tính năng chính
